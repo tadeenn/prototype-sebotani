@@ -1,0 +1,299 @@
+<!DOCTYPE html><html lang="id" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#2e3132",
+                        "background": "#f8f9fa",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#6ffbbe",
+                        "on-secondary-fixed": "#2a1700",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "tertiary-container": "#ff7a73",
+                        "tertiary-fixed": "#ffdad7",
+                        "outline": "#6c7a71",
+                        "primary-container": "#10b981",
+                        "on-surface-variant": "#3c4a42",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb3ad",
+                        "primary-fixed-dim": "#4edea3",
+                        "primary": "#006c49",
+                        "inverse-primary": "#4edea3",
+                        "surface-bright": "#f8f9fa",
+                        "surface-variant": "#e1e3e4",
+                        "surface": "#f8f9fa",
+                        "on-primary-container": "#00422b",
+                        "secondary-fixed": "#ffddb8",
+                        "outline-variant": "#bbcabf",
+                        "on-tertiary-fixed-variant": "#930013",
+                        "on-secondary-container": "#684000",
+                        "surface-tint": "#006c49",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e7e8e9",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-container": "#edeeef",
+                        "secondary": "#855300",
+                        "on-tertiary-fixed": "#410004",
+                        "on-surface": "#191c1d",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-dim": "#d9dadb",
+                        "on-primary-fixed": "#002113",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary-container": "#fea619",
+                        "on-tertiary-container": "#79000e",
+                        "tertiary": "#b91a24",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#005236",
+                        "on-error": "#ffffff",
+                        "on-background": "#191c1d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "xs": "8px",
+                        "xl": "32px",
+                        "margin-desktop": "40px",
+                        "sm": "12px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "md": "16px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "data-mono": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "data-mono": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-24">
+<!-- Top AppBar -->
+<header class="bg-surface dark:bg-on-background shadow-sm fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-14">
+<div class="flex items-center gap-sm cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_35}}'">
+<img alt="SEBOTANI Logo" class="h-8 w-8 object-contain" src="https://prototype-sebotani.vercel.app/sebotani-logo.png">
+<span class="font-headline-md-mobile text-headline-md-mobile font-bold text-primary">SEBOTANI</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold border-2 border-primary overflow-hidden cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_2}}'">
+<img class="h-full w-full object-cover" data-alt="A clean, professional headshot of a smiling Indonesian farmer wearing a traditional hat, set against a blurred lush green coffee plantation background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBtI-4XMdIo4mlw9wny-Ocv0WcfvHVXquvS-PPewRNANRFzmM0fkI_9ZUAYgI-moj26Pt0Ikbozx2Qibeje6CXpjQFPUhGi8w77kqXg1tTJqgR6q6gr-M1X6TLrRqUVtMdwcOlHOByTbR32gNTMDRZB2A_P8wE5IquMCVpI_jsLGyXKAiBk0VSP3OZ9E7X-88_Tkjkwb8His9dtxnJcHQ6AvM0d97J6NtPK1k0yQsdqC66xfdMzyka3ryy2Vq-MY7nj4y8_CwX_rQ">
+</div>
+</div>
+</header>
+<main class="pt-20 px-margin-mobile space-y-6 max-w-2xl mx-auto">
+<!-- Profile Header Section -->
+<section class="flex flex-col items-center py-6">
+<div class="relative mb-4">
+<div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md">
+<img class="w-full h-full object-cover" data-alt="A high-resolution headshot of a friendly Indonesian male farmer, Petani Sejahtera, with a warm and confident expression. He is positioned against a background of vibrant green coffee leaves in sharp detail with soft bokeh. The overall visual style is crisp, modern, and trustworthy, reflecting the premium identity of an agricultural tech brand using emerald green and clean white tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUxbxa3OqFWlJqxX9dCy9OzcZzWBEUJ2aSvwpW4qZX1uB13djLVtGGW2ZHg57b1eunQEBGn02J4yhA7o_SluIBmfWZINjWLwapqUXyP0rDVoem6qfhWUJaDHXl8k2_z_3eYEMQZ2tJIrVfYNlCKLe_dkTqdxTkh_zkCg7BEFSpc214V90nICWMvVyH_FvDemEdiqPuXApfomBdvUbqxcyOYSHbE5KfUn17uxJsdoMQaQpGwBTgQuWXSie1sT05-0n8DIvKnwyK_gA">
+</div>
+<button class="absolute bottom-0 right-0 bg-primary text-on-primary p-2 rounded-full shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+<h1 class="font-headline-md-mobile text-headline-md-mobile text-on-surface text-center">Kelompok Tani 1</h1>
+<p class="font-body-md text-body-md text-on-surface-variant text-center">Pemilik Lahan - Zona 1</p>
+</section>
+<!-- Bento Grid Layout for Info -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Personal Information Card -->
+<section class="bg-surface rounded-lg p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-variant/30">
+<div class="flex items-center gap-xs mb-md">
+<span class="material-symbols-outlined text-primary">person</span>
+<h2 class="font-title-sm text-title-sm">Informasi Pribadi</h2>
+</div>
+<div class="space-y-4">
+<div class="border-b border-surface-variant pb-2">
+<p class="font-label-caps text-label-caps text-on-surface-variant">Nama Ketua</p>
+<p class="font-body-lg text-body-lg font-semibold">Mas Agung</p>
+</div>
+<div class="border-b border-surface-variant pb-2">
+<p class="font-label-caps text-label-caps text-on-surface-variant">Nomor Telepon</p>
+<p class="font-body-lg text-body-lg font-semibold">+62 812-3456-7890</p>
+</div>
+<div class="border-b border-surface-variant pb-2">
+<p class="font-label-caps text-label-caps text-on-surface-variant">Email</p>
+<p class="font-body-lg text-body-lg font-semibold">petani.sejahtera@email.com</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Alamat</p>
+<p class="font-body-lg text-body-lg font-semibold">Jl. Raya Seboto No. 45, Boyolali</p>
+</div>
+</div>
+</section>
+<!-- Farm Information Card -->
+<section class="bg-surface rounded-lg p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-variant/30 h-fit">
+<div class="flex items-center gap-xs mb-md">
+<span class="material-symbols-outlined text-primary">agriculture</span>
+<h2 class="font-title-sm text-title-sm">Informasi Lahan</h2>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-primary-container/10 p-3 rounded-lg">
+<p class="font-label-caps text-label-caps text-primary">Luas Lahan</p>
+<p class="font-data-mono text-data-mono text-primary">2.5</p>
+<p class="font-body-md text-body-md text-on-primary-container">Hektar</p>
+</div>
+<div class="bg-secondary-container/10 p-3 rounded-lg">
+<p class="font-label-caps text-label-caps text-secondary">Komoditas</p>
+<div class="mt-2">
+<span class="material-symbols-outlined text-secondary block">coffee</span>
+<p class="font-body-lg text-body-lg font-semibold text-on-secondary-container">Kopi Arabika</p>
+</div>
+</div>
+</div>
+<div class="mt-4 p-3 bg-surface-container-low rounded-lg flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant">location_on</span>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Lokasi Utama</p>
+<p class="font-body-md text-body-md font-semibold">Seboto, Boyolali, Jawa Tengah</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Account Settings List -->
+<section class="bg-surface rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)] overflow-hidden">
+<div class="px-md py-md border-b border-surface-variant/50">
+<h2 class="font-title-sm text-title-sm">Pengaturan Akun</h2>
+</div>
+<div class="divide-y divide-surface-variant/50">
+<button class="w-full flex items-center justify-between p-md hover:bg-surface-container transition-colors active:scale-[0.99]">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant">lock_reset</span>
+<span class="font-body-lg text-body-lg">Ubah Password</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-md hover:bg-surface-container transition-colors active:scale-[0.99]">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant">notifications_active</span>
+<span class="font-body-lg text-body-lg">Notifikasi</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="text-label-caps text-primary">Aktif</span>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</button>
+<button class="w-full flex items-center justify-between p-md hover:bg-surface-container transition-colors active:scale-[0.99]">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant">language</span>
+<span class="font-body-lg text-body-lg">Bahasa</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="text-label-caps text-on-surface-variant">Indonesia</span>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</button>
+</div>
+</section>
+<!-- Logout Button -->
+<div class="pt-4 pb-12">
+<button class="w-full h-14 bg-white border-2 border-error text-error font-semibold rounded-lg flex items-center justify-center gap-xs active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined">logout</span>
+                Keluar dari Akun
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-surface dark:bg-on-background px-base pb-safe border-t border-outline-variant shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+<!-- Beranda -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="{{DATA:SCREEN:SCREEN_35}}">
+<div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
+<span class="material-symbols-outlined">home</span>
+</div>
+<span class="font-label-caps text-[10px]">Beranda</span>
+</a>
+<!-- Riwayat -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="{{DATA:SCREEN:SCREEN_9}}">
+<div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
+<span class="material-symbols-outlined">history</span>
+</div>
+<span class="font-label-caps text-[10px]">Riwayat</span>
+</a>
+<!-- Bantuan -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="{{DATA:SCREEN:SCREEN_6}}">
+<div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
+<span class="material-symbols-outlined">help_outline</span>
+</div>
+<span class="font-label-caps text-[10px]">Bantuan</span>
+</a>
+<!-- Profil (Active) -->
+<a class="flex flex-col items-center justify-center text-primary font-bold group" href="{{DATA:SCREEN:SCREEN_2}}">
+<div class="bg-primary/10 rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
+<span class="material-symbols-outlined fill-icon">account_circle</span>
+</div>
+<span class="font-label-caps text-[10px]">Profil</span>
+</a>
+</nav>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('button, a').forEach(elem => {
+            elem.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Simple scroll transparency for header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('bg-white/95', 'backdrop-blur-md');
+            } else {
+                header.classList.remove('bg-white/95', 'backdrop-blur-md');
+            }
+        });
+    </script>
+
+
+
+
+</body></html>
