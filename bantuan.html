@@ -1,0 +1,234 @@
+<!DOCTYPE html><html class="light" lang="id" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#00422b",
+                        "surface-container-low": "#f3f4f5",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#ffb3ad",
+                        "secondary": "#855300",
+                        "on-surface": "#191c1d",
+                        "surface": "#f8f9fa",
+                        "on-primary-fixed": "#002113",
+                        "error-container": "#ffdad6",
+                        "primary": "#006c49",
+                        "inverse-surface": "#2e3132",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "on-secondary-fixed": "#2a1700",
+                        "on-background": "#191c1d",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#f8f9fa",
+                        "inverse-primary": "#4edea3",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-variant": "#e1e3e4",
+                        "secondary-container": "#fea619",
+                        "primary-fixed": "#6ffbbe",
+                        "surface-container-highest": "#e1e3e4",
+                        "outline": "#6c7a71",
+                        "on-secondary-container": "#684000",
+                        "secondary-fixed": "#ffddb8",
+                        "on-tertiary-container": "#79000e",
+                        "primary-fixed-dim": "#4edea3",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-tint": "#006c49",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-fixed": "#410004",
+                        "surface-container": "#edeeef",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#ff7a73",
+                        "tertiary": "#b91a24",
+                        "on-primary-fixed-variant": "#005236",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#10b981",
+                        "outline-variant": "#bbcabf",
+                        "tertiary-fixed": "#ffdad7",
+                        "on-tertiary-fixed-variant": "#930013",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "surface-dim": "#d9dadb",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#3c4a42",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "40px",
+                        "sm": "12px",
+                        "gutter": "16px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "xs": "8px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "data-mono": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav {
+            font-variation-settings: 'FILL' 1;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-open .accordion-content {
+            max-height: 200px;
+        }
+        .accordion-open .arrow-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-20 overflow-x-hidden">
+<!-- Top AppBar -->
+<header class="bg-surface-container-lowest border-b border-outline-variant fixed top-0 left-0 w-full z-50 flex justify-between items-center px-md h-16"><div class="flex items-center gap-sm"><img alt="SEBOTANI Logo" class="h-8 w-8 object-contain" src="https://prototype-sebotani.vercel.app/sebotani-logo.png"><span class="font-headline-md-mobile text-headline-md-mobile font-bold text-primary">SEBOTANI</span></div><div class="flex items-center gap-md"><div class="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold border-2 border-primary overflow-hidden"><img class="h-full w-full object-cover" alt="User Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFVpzfotx42bO29Jv06O2yS7Gnm9qzYhWKzdQnbV6rdXxpRbi5mbXx6SicAamxh7P8Vmteds_fCutC41L0Sqq_DX4WbeqZzs7JoHzoafHKGJ1j013MGtwGxyv6hGwd1CUulgBudks6SZ1cfJ8H6nkdADQQFNGFaTXABADSyu4axzyG2dctTQBsbzfkVWx4_XBRSLtEweUlg9A6FWJ751Zs0TTmmfzvyIvLSOqIgr_AdE1ydhrhfVkZdwyeVs5S8whDvjotp-4SP3E"></div></div></header>
+<main class="w-full pt-16">
+<!-- Hero Section -->
+<section class="bg-primary py-xl px-margin-mobile relative overflow-hidden">
+<div class="absolute top-0 right-0 opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-[200px]" data-icon="potted_plant">potted_plant</span>
+</div>
+<div class="relative z-10 flex flex-col items-center text-center">
+<h1 class="text-white font-display-lg text-display-lg mb-xs">Pusat Bantuan</h1>
+<p class="text-primary-fixed font-body-lg text-body-lg opacity-90">Punya kendala? Kami siap bantu.</p>
+</div>
+</section>
+<!-- Search Bar Overlay -->
+<section class="px-margin-mobile -mt-8 relative z-20">
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-xs flex items-center border border-outline-variant focus-within:border-primary transition-all">
+<span class="material-symbols-outlined text-outline px-md" data-icon="search">search</span>
+<input class="w-full py-md bg-transparent border-none focus:ring-0 text-on-surface font-body-md placeholder:text-outline-variant" placeholder="Cari kendala yang Anda alami..." type="text">
+</div>
+</section>
+<!-- Contact Section -->
+<section class="mt-xl px-margin-mobile mt-lg">
+<div class="flex items-center gap-xs mb-md">
+<span class="material-symbols-outlined text-primary" data-icon="headset_mic">headset_mic</span>
+<h2 class="text-on-surface font-title-sm text-title-sm">Hubungi Customer Service</h2>
+</div>
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant overflow-hidden shadow-sm">
+<!-- WhatsApp Option -->
+<button class="w-full flex items-center justify-between p-md hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-md text-left">
+<div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="chat" style="font-variation-settings: &quot;FILL&quot; 1;">chat</span>
+</div>
+<div>
+<p class="font-title-sm text-on-surface">Chat WhatsApp</p>
+<p class="text-on-surface-variant text-body-md opacity-70">Langsung ditangani tim kami (08:00 - 17:00)</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+<div class="h-[1px] bg-outline-variant mx-md"></div>
+<!-- Email Option -->
+<button class="w-full flex items-center justify-between p-md hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-md text-left">
+<div class="w-12 h-12 rounded-full bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container text-3xl" data-icon="mail">mail</span>
+</div>
+<div>
+<p class="font-title-sm text-on-surface">Kirim Email</p>
+<p class="text-on-surface-variant text-body-md opacity-70">Balasan maksimal 1x24 jam kerja</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- FAQ Section -->
+<section class="mt-lg px-margin-mobile mb-10">
+<div class="flex items-center gap-xs mb-md">
+<span class="material-symbols-outlined text-primary" data-icon="description">description</span>
+<h2 class="text-on-surface font-title-sm text-title-sm">Topik Sering Dicari</h2>
+</div>
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant divide-y divide-outline-variant overflow-hidden shadow-sm">
+<!-- FAQ 1 -->
+<div class="accordion-item accordion-open"><button class="w-full flex items-center justify-between p-md text-left font-body-lg text-on-surface hover:bg-surface-container-low transition-all" onclick="toggleAccordion(this)"><span class="">Mengapa sensor pH tidak memberikan data?</span><span class="material-symbols-outlined arrow-icon transition-transform duration-300" data-icon="keyboard_arrow_down">keyboard_arrow_down</span></button><div class="accordion-content"><div class="px-md pb-md text-on-surface-variant text-body-md">Pastikan kabel sensor terpasang dengan benar dan probe sensor tidak dalam keadaan kering. Bersihkan probe dengan air distilasi dan lakukan kalibrasi ulang melalui menu Pengaturan di aplikasi.</div></div></div>
+<!-- FAQ 2 -->
+<div class="accordion-item"><button class="w-full flex items-center justify-between p-md text-left font-body-lg text-on-surface hover:bg-surface-container-low transition-all" onclick="toggleAccordion(this)"><span class="">Bagaimana cara menyambungkan ulang koneksi Wi-Fi mesin?</span><span class="material-symbols-outlined arrow-icon transition-transform duration-300" data-icon="keyboard_arrow_down">keyboard_arrow_down</span></button><div class="accordion-content"><div class="px-md pb-md text-on-surface-variant text-body-md">Tekan tombol Reset pada panel mesin selama 5 detik hingga lampu indikator biru berkedip cepat. Buka aplikasi SEBOTANI, pilih 'Tambah Perangkat', dan ikuti instruksi konfigurasi jaringan.</div></div></div>
+<!-- FAQ 3 -->
+<div class="accordion-item"><button class="w-full flex items-center justify-between p-md text-left font-body-lg text-on-surface hover:bg-surface-container-low transition-all" onclick="toggleAccordion(this)"><span class="">Kenapa penyemprotan otomatis tidak berjalan sesuai jadwal?</span><span class="material-symbols-outlined arrow-icon transition-transform duration-300" data-icon="keyboard_arrow_down">keyboard_arrow_down</span></button><div class="accordion-content"><div class="px-md pb-md text-on-surface-variant text-body-md">Periksa ketersediaan air di tangki utama dan pastikan pompa tidak tersumbat. Cek juga sinkronisasi waktu pada aplikasi untuk memastikan jadwal sudah terunggah ke memori mesin.</div></div></div>
+<!-- FAQ 4 -->
+<div class="accordion-item"><button class="w-full flex items-center justify-between p-md text-left font-body-lg text-on-surface hover:bg-surface-container-low transition-all" onclick="toggleAccordion(this)"><span class="">Indikator lampu merah berkedip pada mesin, apa artinya?</span><span class="material-symbols-outlined arrow-icon transition-transform duration-300" data-icon="keyboard_arrow_down">keyboard_arrow_down</span></button><div class="accordion-content"><div class="px-md pb-md text-on-surface-variant text-body-md">Lampu merah berkedip menandakan adanya malfungsi sistem atau daya baterai kritis. Segera hubungi teknisi melalui fitur Chat WhatsApp jika mesin tidak merespons setelah pengisian daya.</div></div></div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-surface-container-lowest px-base pb-safe border-t border-outline-variant shadow-[0_-4px_12px_rgba(0,0,0,0.05)]"><!-- Beranda --><a class="flex flex-col items-center justify-center text-on-surface-variant group" href="#"><div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform"><span class="material-symbols-outlined">home</span></div><span class="font-label-caps text-[10px]">Beranda</span></a><!-- Riwayat --><a class="flex flex-col items-center justify-center text-on-surface-variant group" href="#"><div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform"><span class="material-symbols-outlined">history</span></div><span class="font-label-caps text-[10px]">Riwayat</span></a><!-- Bantuan (Active) --><a class="flex flex-col items-center justify-center text-primary font-bold group" href="#"><div class="bg-primary-container/20 rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform"><span class="material-symbols-outlined active-nav">help_outline</span></div><span class="font-label-caps text-[10px]">Bantuan</span></a><!-- Profil --><a class="flex flex-col items-center justify-center text-on-surface-variant group" href="#"><div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform"><span class="material-symbols-outlined">account_circle</span></div><span class="font-label-caps text-[10px]">Profil</span></a></nav>
+<script>
+        function toggleAccordion(button) {
+            const item = button.parentElement;
+            const isOpen = item.classList.contains('accordion-open');
+            
+            // Close all items
+            document.querySelectorAll('.accordion-item').forEach(el => {
+                el.classList.remove('accordion-open');
+            });
+            
+            // Toggle current
+            if (!isOpen) {
+                item.classList.add('accordion-open');
+            }
+        }
+
+        // Ripple Effect for buttons
+        document.querySelectorAll('button, a').forEach(btn => {
+            btn.addEventListener('mousedown', function(e) {
+                const ripple = document.createElement('span');
+                ripple.className = 'absolute bg-white/20 rounded-full w-2 h-2 pointer-events-none transform -translate-x-1/2 -translate-y-1/2 animate-ping';
+                ripple.style.left = e.clientX - this.getBoundingClientRect().left + 'px';
+                ripple.style.top = e.clientY - this.getBoundingClientRect().top + 'px';
+                this.classList.add('relative', 'overflow-hidden');
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+
+
+</body></html>
