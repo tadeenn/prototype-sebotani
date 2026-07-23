@@ -1,0 +1,252 @@
+<!DOCTYPE html><html lang="id" style=""><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><meta charset="utf-8"><script id="tailwind-config">try{
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#930013",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "inverse-on-surface": "#f0f1f2",
+                        "outline": "#6c7a71",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#410004",
+                        "surface-bright": "#f8f9fa",
+                        "surface": "#f8f9fa",
+                        "on-primary-fixed": "#002113",
+                        "surface-container-high": "#e7e8e9",
+                        "secondary-fixed": "#ffddb8",
+                        "background": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary-container": "#79000e",
+                        "tertiary": "#b91a24",
+                        "surface-tint": "#006c49",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#fea619",
+                        "on-background": "#191c1d",
+                        "surface-variant": "#e1e3e4",
+                        "primary-container": "#10b981",
+                        "primary-fixed": "#6ffbbe",
+                        "surface-container-highest": "#e1e3e4",
+                        "inverse-primary": "#4edea3",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#005236",
+                        "primary-fixed-dim": "#4edea3",
+                        "on-primary-container": "#00422b",
+                        "inverse-surface": "#2e3132",
+                        "surface-container": "#edeeef",
+                        "on-secondary-container": "#684000",
+                        "on-surface": "#191c1d",
+                        "on-surface-variant": "#3c4a42",
+                        "on-secondary-fixed": "#2a1700",
+                        "tertiary-fixed-dim": "#ffb3ad",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#bbcabf",
+                        "secondary": "#855300",
+                        "primary": "#006c49",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#ff7a73",
+                        "tertiary-fixed": "#ffdad7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "40px",
+                        "base": "4px",
+                        "md": "16px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "xs": "8px",
+                        "sm": "12px",
+                        "xl": "32px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "data-mono": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    }catch(_e){}</script></head><body class="bg-background text-on-surface min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-primary shadow-sm flex justify-between items-center px-margin-mobile h-14"><div class="flex items-center w-full justify-between"><button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors active:scale-95 duration-150"><span class="material-symbols-outlined text-white">arrow_back</span></button><div class="flex flex-col items-center"><span class="font-headline-md-mobile text-headline-md-mobile text-white">Prakiraan Cuaca</span></div><div class="flex items-center justify-center w-10 h-10"><img alt="SEBOTANI" class="h-8 w-8 object-contain brightness-0 invert" src="https://prototype-sebotani.vercel.app/sebotani-logo.png"></div></div></header>
+<!-- Main Content -->
+<main class="flex-grow pt-20 pb-24 px-margin-mobile max-w-2xl mx-auto w-full">
+<!-- Current Weather Hero Card -->
+<section class="mb-lg">
+<div class="weather-gradient rounded-xl p-lg text-white shadow-lg relative overflow-hidden" style="background: linear-gradient(135deg, rgb(0, 108, 73) 0%, rgb(16, 185, 129) 100%);">
+<!-- Atmospheric Background Detail -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-label-caps text-label-caps opacity-90 uppercase tracking-widest">Cuaca Terkini</p>
+<h1 class="font-headline-md-mobile text-headline-md-mobile mt-base">Kebun Kopi Seboto</h1>
+<div class="flex items-center gap-2 mt-base opacity-80">
+<span class="material-symbols-outlined text-[18px] text-white">location_on</span>
+<p class="font-body-md text-body-md text-white">Seboto, Boyolali, Jawa Tengah</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-[64px] text-white" style="font-variation-settings: &quot;FILL&quot; 1;">wb_sunny</span>
+</div>
+<div class="mt-xl flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-[64px] leading-none">29</span>
+<span class="font-display-lg text-display-lg text-[32px] leading-none">°C</span>
+</div>
+<p class="font-title-sm text-title-sm mt-xs text-white">Cerah Berawan</p>
+<div class="grid grid-cols-3 gap-gutter mt-lg pt-lg border-t border-white/20">
+<div class="text-center">
+<p class="font-label-caps text-label-caps opacity-70 mb-1 text-white">Kelembapan</p>
+<p class="font-title-sm text-title-sm text-white">65%</p>
+</div>
+<div class="text-center border-x border-white/20">
+<p class="font-label-caps text-label-caps opacity-70 mb-1 text-white">Angin</p>
+<p class="font-title-sm text-title-sm text-white">12 km/h</p>
+</div>
+<div class="text-center">
+<p class="font-label-caps text-label-caps opacity-70 mb-1 text-white">UV Index</p>
+<p class="font-title-sm text-title-sm text-white">Medium</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 3-Day Forecast Section -->
+<section class="mb-lg">
+<div class="flex items-center justify-between mb-md">
+<h2 class="font-headline-md-mobile text-headline-md-mobile text-on-surface">Prakiraan 3 Hari</h2>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">info</span>
+<span class="font-label-caps text-label-caps">Sumber: BMKG</span>
+</div>
+</div>
+<div class="space-y-md">
+<!-- Day 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[32px]">partly_cloudy_day</span>
+</div>
+<div>
+<p class="font-title-sm text-title-sm">Besok</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Cerah Berawan</p>
+</div>
+</div>
+<div class="text-right">
+<div class="flex items-center justify-end gap-2">
+<span class="font-body-lg text-body-lg font-bold text-primary">30°</span>
+<span class="font-body-md text-body-md text-on-surface-variant">/ 24°</span>
+</div>
+<div class="flex items-center justify-end gap-1 text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[14px]">water_drop</span>
+<span class="font-label-caps text-label-caps">70%</span>
+</div>
+</div>
+</div>
+<!-- Day 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[32px]">rainy</span>
+</div>
+<div>
+<p class="font-title-sm text-title-sm">Lusa</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Hujan Ringan</p>
+</div>
+</div>
+<div class="text-right">
+<div class="flex items-center justify-end gap-2">
+<span class="font-body-lg text-body-lg font-bold text-primary">27°</span>
+<span class="font-body-md text-body-md text-on-surface-variant">/ 23°</span>
+</div>
+<div class="flex items-center justify-end gap-1 text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[14px]">water_drop</span>
+<span class="font-label-caps text-label-caps">85%</span>
+</div>
+</div>
+</div>
+<!-- Day 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[32px]">cloudy</span>
+</div>
+<div>
+<p class="font-title-sm text-title-sm">Kamis, 24 Okt</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Berawan</p>
+</div>
+</div>
+<div class="text-right">
+<div class="flex items-center justify-end gap-2">
+<span class="font-body-lg text-body-lg font-bold text-primary">28°</span>
+<span class="font-body-md text-body-md text-on-surface-variant">/ 24°</span>
+</div>
+<div class="flex items-center justify-end gap-1 text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[14px]">water_drop</span>
+<span class="font-label-caps text-label-caps">75%</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Agricultural Insight Card -->
+<section class="mb-xl">
+<div class="bg-primary-container/10 border border-primary-container p-md rounded-xl flex gap-md items-start">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">agriculture</span>
+<div>
+<h3 class="font-title-sm text-title-sm text-on-primary-container">Saran Budidaya</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Kondisi cerah berawan sangat baik untuk pemupukan. Pastikan kelembapan tanah tetap terjaga sebelum suhu meningkat di siang hari.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Fixed Bottom Action -->
+<footer class="fixed bottom-0 w-full p-md bg-surface/80 backdrop-blur-md border-t border-outline-variant/10">
+<button class="bg-primary text-on-primary font-semibold py-3 px-lg rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] active:scale-95 transition-transform duration-150 w-full">
+        Kembali ke Beranda
+    </button>
+</footer>
+<!-- Decorative Bottom Spacer -->
+<div class="h-20"></div>
+<script>
+        // Simple micro-interaction for active states
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('touchstart', () => {
+                btn.style.opacity = '0.8';
+            });
+            btn.addEventListener('touchend', () => {
+                btn.style.opacity = '1';
+            });
+        });
+    </script>
+
+
+
+
+
+</body></html>
