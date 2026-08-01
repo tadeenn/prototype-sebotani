@@ -1,0 +1,236 @@
+<!DOCTYPE html><html lang="id" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;family=Be+Vietnam+Pro:wght@400;500;700&amp;family=JetBrains+Mono:wght@600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#161d19",
+                        "primary": "#24622e",
+                        "surface-container": "#eeeee9",
+                        "surface-tint": "#2e6b36",
+                        "tertiary-container": "#69706b",
+                        "surface-container-highest": "#e3e3de",
+                        "on-tertiary-fixed-variant": "#414844",
+                        "on-secondary-fixed": "#2f1500",
+                        "surface-container-high": "#e8e8e3",
+                        "on-error-container": "#93000a",
+                        "background": "#fafaf4",
+                        "surface-variant": "#e3e3de",
+                        "secondary-container": "#fda559",
+                        "secondary-fixed-dim": "#ffb77e",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#41493f",
+                        "on-secondary-fixed-variant": "#6e3900",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#723b00",
+                        "secondary": "#904d02",
+                        "on-primary-container": "#cdffca",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#3e7b44",
+                        "outline": "#71796e",
+                        "surface": "#fafaf4",
+                        "inverse-surface": "#2f312e",
+                        "tertiary-fixed-dim": "#c1c8c2",
+                        "on-background": "#1a1c19",
+                        "tertiary-fixed": "#dde4de",
+                        "surface-dim": "#dadad5",
+                        "primary-fixed-dim": "#95d695",
+                        "inverse-on-surface": "#f1f1ec",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#fafaf4",
+                        "inverse-primary": "#95d695",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f4f4ee",
+                        "outline-variant": "#c0c9bc",
+                        "on-primary-fixed": "#002106",
+                        "secondary-fixed": "#ffdcc3",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#125220",
+                        "on-tertiary-container": "#edf4ed",
+                        "on-surface": "#1a1c19",
+                        "tertiary": "#515853",
+                        "primary-fixed": "#b0f3b0",
+                        "error": "#ba1a1a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "container-padding": "16px",
+                        "xl": "32px",
+                        "card-gap": "12px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Manrope"],
+                        "headline-sm": ["Manrope"],
+                        "label-caps": ["JetBrains Mono"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "headline-md-mobile": ["Manrope"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-md": ["Manrope"],
+                        "data-display": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "data-display": ["48px", {"lineHeight": "48px", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .graph-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 3s linear forwards;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: 0; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md flex flex-col">
+<!-- Header (TopAppBar) -->
+<header class="bg-primary flex justify-between items-center px-md py-sm w-full sticky top-0 z-50 shadow-md">
+<button class="text-on-primary p-xs active:scale-95 transition-transform">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-md-mobile text-headline-md-mobile font-bold text-on-primary">Analisis Rekomendasi</h1>
+<div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center p-1">
+<img class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBddXfbBPrq_MhRtEeYQ5knLHbsEqkYw_Uhj_7GT4F17FjZ_PPaYCYKvUcCtSxp2o1L1WmW-LSwa30QKRcgw1peHlFvJw6UFTkjwEdCYmjdpyJ3T4ZS_zCjbgNw1S6bBMcKzXsoMapapK1zgPWz-I5sUN8wY4R-xbzK49w0Pccs-ZVq_N1SVrrAsBPfb66eDKMWwnX8ahzicoc7NOnk_X3ioEmft9BNoI-JigAItFQfBF59twYbFLPGKGps3XCdUJZ6yrA" alt="Sebotani Logo">
+</div>
+</header>
+<!-- Content Canvas -->
+<main class="flex-1 px-container-padding py-md space-y-md">
+<!-- Welcome Section -->
+<div class="text-center mb-md">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Analisis Kesehatan Tanaman Anda</h2>
+</div>
+<!-- Weekly Check Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-[0px_4px_20px_rgba(0,0,0,0.04)] flex gap-md items-start">
+<div class="w-16 h-16 bg-surface-container rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A detailed digital illustration showing a healthy coffee plant in a pot with various soil sensors and digital measurement icons floating around it. The visual style is modern, technical, and organic, using a palette of deep greens and earthy browns to represent precision agriculture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgGq0lh9u90y21WYcVHVZT3D0Hg-8LmvmQxKPxLgAQ-jkr4RhXcugNQ7X1WMp4Go3bIph1D4vJ5jxRrranGaI_XdUvS-atIMC7zLiUJAxUYEmCPKi1ifH6-xIfYf7M1cbHPT4eSBZWWahNA-puen8KBlEMcWebVFuO5thp_LVGjkiAVFWW3g8nAhfDLqt8_hGMycKKTKbZKP6SMM_bs3Fa7jBgRFFz-W8Kold_JLfvKrCo9RMGCwLrgw">
+</div>
+<div class="flex-1">
+<h3 class="font-body-lg text-body-lg font-bold text-on-surface mb-xs leading-tight">Cek Kondisi Tanaman Seminggu Terakhir</h3>
+<p class="text-on-surface-variant text-body-md">Sistem akan menganalisis data sensor 7 hari ke belakang untuk memberikan instruksi perawatan yang tepat.</p>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full bg-primary-container text-on-primary py-md rounded-lg font-bold flex items-center justify-center gap-sm shadow-sm active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined">analytics</span>
+<span class="">Mulai Analisis Tanaman Anda</span>
+</button>
+<!-- Condition Summary Bento Grid -->
+<div class="grid grid-cols-1 gap-md">
+<!-- Summary Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary">monitoring</span>
+<h4 class="font-headline-sm text-headline-sm">Ringkasan Kondisi Lahan</h4>
+</div>
+<div class="grid grid-cols-2 gap-sm mb-lg">
+<div class="bg-surface-container-low p-sm rounded-lg border-l-4 border-secondary">
+<div class="flex items-center gap-xs text-secondary mb-xs">
+<span class="material-symbols-outlined text-[18px]">opacity</span>
+<span class="font-label-caps text-label-caps">KELEMBAPAN</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="text-headline-md font-bold">42%</span>
+<span class="material-symbols-outlined text-error text-[16px]">warning</span>
+</div>
+<p class="text-[10px] text-on-surface-variant italic">(Terlalu Kering)</p>
+</div>
+<div class="bg-surface-container-low p-sm rounded-lg border-l-4 border-error">
+<div class="flex items-center gap-xs text-error mb-xs">
+<span class="material-symbols-outlined text-[18px]">science</span>
+<span class="font-label-caps text-label-caps">PH TANAH</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="text-headline-md font-bold">5.1</span>
+<span class="material-symbols-outlined text-error text-[16px]">error</span>
+</div>
+<p class="text-[10px] text-on-surface-variant italic">(Sangat Asam)</p>
+</div>
+</div>
+<!-- Sparkline Placeholder -->
+<div class="h-32 w-full relative">
+<svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 40">
+<path class="graph-line" d="M0,30 Q10,15 20,25 T40,20 T60,30 T80,10 T100,5" fill="none" stroke="#3E7B44" stroke-width="2"></path>
+<path class="graph-line" d="M0,25 Q10,22 20,28 T40,24 T60,26 T80,28 T100,30" fill="none" stroke="#904D02" stroke-width="2"></path>
+</svg>
+<div class="flex justify-between mt-sm text-[10px] text-outline">
+<span class="">Min</span><span class="">Sel</span><span class="">Rab</span><span class="">Kam</span><span class="">Jum</span><span class="">Sab</span><span class="">Min</span>
+</div>
+</div>
+</div>
+<!-- Recommendation Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm border-l-8 border-primary">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary">eco</span>
+<h4 class="font-headline-sm text-headline-sm">Langkah Harus Diapain</h4>
+</div>
+<!-- Step 1: Irrigation -->
+<div class="mb-lg">
+<h5 class="font-bold text-on-surface mb-xs border-b border-outline-variant pb-xs">Irigasi Tambahan</h5>
+<p class="text-body-md text-on-surface-variant">Lahan terlalu kering selama 4 hari berturut-turut. Aktifkan sistem irigasi otomatis selama 15 menit setiap jam 08.00 pagi.</p>
+</div>
+<!-- Step 2: Fertilizer -->
+<div>
+<h5 class="font-bold text-on-surface mb-xs border-b border-outline-variant pb-xs">Rekomendasi Pupuk</h5>
+<p class="text-body-md text-on-surface-variant mb-md">Tanah Anda terlalu asam (pH 5.1). Taburkan Kapur Dolomit untuk menaikkan pH, lalu gunakan pupuk kandang.</p>
+<div class="grid grid-cols-2 gap-sm">
+<div class="bg-surface-container-high p-sm rounded-lg flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[20px]">layers</span>
+</div>
+<div>
+<p class="font-bold text-[10px]">Kapur Dolomit</p>
+<p class="text-[10px] text-on-surface-variant">200g per pohon</p>
+</div>
+</div>
+<div class="bg-surface-container-high p-sm rounded-lg flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[20px]">paid</span>
+</div>
+<div>
+<p class="font-bold text-[10px]">Biaya Rata-rata</p>
+<p class="text-[10px] text-on-surface-variant">Rp 12.500/btg</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main><div class="px-container-padding mb-lg"><button class="w-full bg-primary text-on-primary py-md font-bold text-headline-sm shadow-md active:scale-[0.98] transition-all rounded-lg">Kembali ke Beranda</button></div>
+<!-- FAB -->
+
+<!-- Bottom Navigation Shell -->
+
+
+
+</body></html>
