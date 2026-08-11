@@ -81,8 +81,38 @@
         }
     }catch(_e){}
     </script>
+    <style>
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 </head>
 <body class="bg-background text-on-surface min-h-screen flex flex-col">
+
+<!-- POPUP MODAL DETAIL 3 JAM SEKALI -->
+<div id="weather-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm p-4">
+    <div id="modal-content" class="bg-surface rounded-2xl shadow-xl max-w-md w-full max-h-[85vh] flex flex-col transform scale-95 transition-transform duration-300 border border-outline-variant/30 overflow-hidden">
+        <!-- Modal Header -->
+        <div class="bg-primary text-white p-4 flex justify-between items-center">
+            <div>
+                <h3 id="modal-title" class="font-headline-md-mobile text-[18px] font-bold">Detail Per 3 Jam</h3>
+                <p id="modal-date" class="text-xs opacity-80">Memuat tanggal...</p>
+            </div>
+            <button onclick="tutupModal()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <!-- Modal Body (List per 3 Jam) -->
+        <div id="modal-body" class="p-lg overflow-y-auto space-y-md flex-grow hide-scrollbar">
+            <!-- Diisi oleh Javascript -->
+        </div>
+        <!-- Modal Footer -->
+        <div class="p-md bg-gray-50 border-t border-gray-100 text-center">
+            <button onclick="tutupModal()" class="bg-primary text-white font-semibold py-2 px-6 rounded-xl w-full text-sm">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- Top App Bar -->
 <header class="fixed top-0 w-full z-50 bg-primary shadow-sm flex justify-between items-center px-margin-mobile h-14">
@@ -101,14 +131,17 @@
 
 <!-- Main Content -->
 <main class="flex-grow pt-20 pb-24 px-margin-mobile max-w-2xl mx-auto w-full">
-    <!-- Current Weather Hero Card -->
+    <!-- Current Weather Hero Card (Bisa Diklik) -->
     <section class="mb-lg">
-        <div class="weather-gradient rounded-xl p-lg text-white shadow-lg relative overflow-hidden" style="background: linear-gradient(135deg, rgb(0, 108, 73) 0%, rgb(16, 185, 129) 100%);">
+        <div onclick="bukaDetailHari('hari_ini')" class="weather-gradient rounded-xl p-lg text-white shadow-lg relative overflow-hidden cursor-pointer hover:scale-[1.01] transition-transform" style="background: linear-gradient(135deg, rgb(0, 108, 73) 0%, rgb(16, 185, 129) 100%);">
             <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
             <div class="relative z-10">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="font-label-caps text-label-caps opacity-90 uppercase tracking-widest">Cuaca Terkini</p>
+                        <div class="flex items-center gap-1">
+                            <p class="font-label-caps text-label-caps opacity-90 uppercase tracking-widest">Cuaca Terkini</p>
+                            <span class="material-symbols-outlined text-xs opacity-75">touch_app</span>
+                        </div>
                         <h1 class="font-headline-md-mobile text-headline-md-mobile mt-base">Kebun Kopi Seboto</h1>
                         <div class="flex items-center gap-2 mt-base opacity-80">
                             <span class="material-symbols-outlined text-[18px] text-white">location_on</span>
@@ -132,6 +165,7 @@
                         <p id="current-wind" class="font-title-sm text-title-sm text-white">-- km/j</p>
                     </div>
                 </div>
+                <p class="text-[11px] text-center opacity-75 mt-3">Ketuk untuk melihat detail grafik suhu & curah hujan per 3 jam</p>
             </div>
         </div>
     </section>
@@ -146,8 +180,8 @@
             </div>
         </div>
         <div class="space-y-md">
-            <!-- Day 1 (Besok) -->
-            <div class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+            <!-- Day 1 (Besok - Bisa Diklik) -->
+            <div onclick="bukaDetailHari(1)" class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow cursor-pointer">
                 <div class="flex items-center gap-md">
                     <div class="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center text-primary">
                         <span id="fc-1-icon" class="material-symbols-outlined text-[32px]">sync</span>
@@ -157,20 +191,23 @@
                         <p id="fc-1-desc" class="font-body-md text-body-md text-on-surface-variant">--</p>
                     </div>
                 </div>
-                <div class="text-right">
-                    <div class="flex items-center justify-end gap-2">
-                        <span id="fc-1-temp-max" class="font-body-lg text-body-lg font-bold text-primary">--°</span>
-                        <span id="fc-1-temp-min" class="font-body-md text-body-md text-on-surface-variant">/ --°</span>
+                <div class="text-right flex items-center gap-3">
+                    <div>
+                        <div class="flex items-center justify-end gap-2">
+                            <span id="fc-1-temp-max" class="font-body-lg text-body-lg font-bold text-primary">--°</span>
+                            <span id="fc-1-temp-min" class="font-body-md text-body-md text-on-surface-variant">/ --°</span>
+                        </div>
+                        <div class="flex items-center justify-end gap-1 text-on-surface-variant mt-1">
+                            <span class="material-symbols-outlined text-[14px]">water_drop</span>
+                            <span id="fc-1-humid" class="font-label-caps text-label-caps">--%</span>
+                        </div>
                     </div>
-                    <div class="flex items-center justify-end gap-1 text-on-surface-variant mt-1">
-                        <span class="material-symbols-outlined text-[14px]">water_drop</span>
-                        <span id="fc-1-humid" class="font-label-caps text-label-caps">--%</span>
-                    </div>
+                    <span class="material-symbols-outlined text-gray-400 text-sm">chevron_right</span>
                 </div>
             </div>
             
-            <!-- Day 2 (Lusa) -->
-            <div class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+            <!-- Day 2 (Lusa - Bisa Diklik) -->
+            <div onclick="bukaDetailHari(2)" class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow cursor-pointer">
                 <div class="flex items-center gap-md">
                     <div class="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center text-primary">
                         <span id="fc-2-icon" class="material-symbols-outlined text-[32px]">sync</span>
@@ -180,20 +217,23 @@
                         <p id="fc-2-desc" class="font-body-md text-body-md text-on-surface-variant">--</p>
                     </div>
                 </div>
-                <div class="text-right">
-                    <div class="flex items-center justify-end gap-2">
-                        <span id="fc-2-temp-max" class="font-body-lg text-body-lg font-bold text-primary">--°</span>
-                        <span id="fc-2-temp-min" class="font-body-md text-body-md text-on-surface-variant">/ --°</span>
+                <div class="text-right flex items-center gap-3">
+                    <div>
+                        <div class="flex items-center justify-end gap-2">
+                            <span id="fc-2-temp-max" class="font-body-lg text-body-lg font-bold text-primary">--°</span>
+                            <span id="fc-2-temp-min" class="font-body-md text-body-md text-on-surface-variant">/ --°</span>
+                        </div>
+                        <div class="flex items-center justify-end gap-1 text-on-surface-variant mt-1">
+                            <span class="material-symbols-outlined text-[14px]">water_drop</span>
+                            <span id="fc-2-humid" class="font-label-caps text-label-caps">--%</span>
+                        </div>
                     </div>
-                    <div class="flex items-center justify-end gap-1 text-on-surface-variant mt-1">
-                        <span class="material-symbols-outlined text-[14px]">water_drop</span>
-                        <span id="fc-2-humid" class="font-label-caps text-label-caps">--%</span>
-                    </div>
+                    <span class="material-symbols-outlined text-gray-400 text-sm">chevron_right</span>
                 </div>
             </div>
             
-            <!-- Day 3 -->
-            <div class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+            <!-- Day 3 (Bisa Diklik) -->
+            <div onclick="bukaDetailHari(3)" class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow cursor-pointer">
                 <div class="flex items-center gap-md">
                     <div class="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center text-primary">
                         <span id="fc-3-icon" class="material-symbols-outlined text-[32px]">sync</span>
@@ -203,15 +243,18 @@
                         <p id="fc-3-desc" class="font-body-md text-body-md text-on-surface-variant">--</p>
                     </div>
                 </div>
-                <div class="text-right">
-                    <div class="flex items-center justify-end gap-2">
-                        <span id="fc-3-temp-max" class="font-body-lg text-body-lg font-bold text-primary">--°</span>
-                        <span id="fc-3-temp-min" class="font-body-md text-body-md text-on-surface-variant">/ --°</span>
+                <div class="text-right flex items-center gap-3">
+                    <div>
+                        <div class="flex items-center justify-end gap-2">
+                            <span id="fc-3-temp-max" class="font-body-lg text-body-lg font-bold text-primary">--°</span>
+                            <span id="fc-3-temp-min" class="font-body-md text-body-md text-on-surface-variant">/ --°</span>
+                        </div>
+                        <div class="flex items-center justify-end gap-1 text-on-surface-variant mt-1">
+                            <span class="material-symbols-outlined text-[14px]">water_drop</span>
+                            <span id="fc-3-humid" class="font-label-caps text-label-caps">--%</span>
+                        </div>
                     </div>
-                    <div class="flex items-center justify-end gap-1 text-on-surface-variant mt-1">
-                        <span class="material-symbols-outlined text-[14px]">water_drop</span>
-                        <span id="fc-3-humid" class="font-label-caps text-label-caps">--%</span>
-                    </div>
+                    <span class="material-symbols-outlined text-gray-400 text-sm">chevron_right</span>
                 </div>
             </div>
         </div>
@@ -238,13 +281,10 @@
 
 <div class="h-20"></div>
 
-<!-- LOGIKA INTEGRASI API JSON BMKG -->
+<!-- LOGIKA INTEGRASI API JSON BMKG & POPUP DETAIL -->
 <script>
-    // URL API BMKG Open Data JSON
-    // Kode adm4: 33.09.20.2001 (Jawa Tengah -> Boyolali -> Gladagsari -> Seboto)
     const TARGET_BMKG_URL = 'https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4=33.09.20.2001';
 
-    // Kamus Kode Ikon BMKG ke Material Icons
     const bmkgIconMap = {
         "Cerah": "wb_sunny",
         "Cerah Berawan": "partly_cloudy_day",
@@ -259,45 +299,37 @@
         "Hujan Petir": "thunderstorm"
     };
 
+    let globalGroupedData = {};
+    let globalSortedDates = [];
+
     async function fetchBMKGData() {
         try {
-            // BMKG API ini mendukung CORS langsung, jadi tidak perlu proxy.
             const response = await fetch(TARGET_BMKG_URL);
-            if (!response.ok) throw new Error("Gagal mengambil data dari BMKG. Kode: " + response.status);
+            if (!response.ok) throw new Error("Gagal mengambil data dari BMKG.");
             
             const rawData = await response.json();
             
-            // Mencari Array Data Cuaca secara dinamis untuk mengantisipasi struktur API berubah-ubah
             let weatherDataList = [];
-            function traverseJSON(obj) {
-                if (Array.isArray(obj) && obj.length > 0 && obj[0].weather_desc) {
-                    weatherDataList = obj; return true;
-                }
-                if (typeof obj === 'object' && obj !== null) {
-                    for (let key in obj) {
-                        if (traverseJSON(obj[key])) return true;
-                    }
-                }
-                return false;
-            }
-            traverseJSON(rawData);
-
-            if (weatherDataList.length === 0) {
-                throw new Error("Struktur JSON BMKG tidak mengandung 'weather_desc'.");
+            if (rawData.data && rawData.data[0] && rawData.data[0].cuaca) {
+                rawData.data[0].cuaca.forEach(hari => {
+                    weatherDataList = weatherDataList.concat(hari);
+                });
             }
 
-            // 1. UPDATE DATA HARI INI (Data paling awal di urutan BMKG = Saat Ini)
+            if (weatherDataList.length === 0) throw new Error("Data cuaca kosong.");
+
+            // 1. UPDATE DATA HARI INI
             const current = weatherDataList[0];
             const currentDesc = current.weather_desc || "Berawan";
             
             document.getElementById('current-icon').textContent = bmkgIconMap[currentDesc] || "cloud";
-            document.getElementById('current-icon').classList.remove('animate-pulse'); // Hentikan animasi loading
+            document.getElementById('current-icon').classList.remove('animate-pulse');
             document.getElementById('current-desc').textContent = currentDesc;
             document.getElementById('current-temp').textContent = current.t;
             document.getElementById('current-humid').textContent = current.hu + "%";
             document.getElementById('current-wind').textContent = current.ws + " km/j";
 
-            // Update Saran Budidaya dari AI
+            // AI Insight
             const aiInsight = document.getElementById('ai-insight');
             if (currentDesc.includes("Cerah")) {
                 aiInsight.textContent = "Kondisi cerah sangat baik untuk proses fotosintesis dan pemupukan. Pastikan jadwal penyiraman berjalan normal agar tanah kopi tidak kekeringan di siang hari.";
@@ -307,36 +339,30 @@
                 aiInsight.textContent = "Cuaca berawan cukup stabil. Kondisi ini ideal untuk melakukan inspeksi manual ke kebun, memangkas ranting kopi yang tidak produktif, dan perawatan rutin.";
             }
 
-            // 2. KELOMPOKKAN DATA BMKG BERDASARKAN HARI UNTUK 3 HARI KE DEPAN
-            // BMKG memberikan data per-3-jam (total 8 data per hari). Kita akan mengelompokkannya per tanggal.
-            const dailyData = {};
+            // 2. KELOMPOKKAN DATA PER TANGGAL (Untuk Popup & 3 Hari)
+            globalGroupedData = {};
             weatherDataList.forEach(item => {
                 if(!item.local_datetime) return;
-                const dateStr = item.local_datetime.split(" ")[0]; // Ambil porsi tanggalnya saja YYYY-MM-DD
+                const dateStr = item.local_datetime.split(" ")[0]; // YYYY-MM-DD
                 
-                if (!dailyData[dateStr]) {
-                    dailyData[dateStr] = { temps: [], humids: [], conditions: [] };
+                if (!globalGroupedData[dateStr]) {
+                    globalGroupedData[dateStr] = [];
                 }
-                dailyData[dateStr].temps.push(item.t);
-                dailyData[dateStr].humids.push(item.hu);
-                dailyData[dateStr].conditions.push(item.weather_desc);
+                globalGroupedData[dateStr].push(item);
             });
 
-            // Urutkan tanggal dari hari ini
-            const sortedDates = Object.keys(dailyData).sort();
+            globalSortedDates = Object.keys(globalGroupedData).sort();
             const daysLabel = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
             const monthsLabel = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 
-            // Ekstrak hari ke-1, 2, dan 3 setelah hari ini.
-            // Index 0 adalah hari ini. Index 1 besok, dst.
+            // 3. RENDER WIDGET 3 HARI KE DEPAN
             let widgetIndex = 1;
             for (let i = 1; i <= 3; i++) {
-                if (!sortedDates[i]) break; 
+                if (!globalSortedDates[i]) break; 
                 
-                const dataPerHari = dailyData[sortedDates[i]];
-                const dateObj = new Date(sortedDates[i]);
+                const listPerHari = globalGroupedData[globalSortedDates[i]];
+                const dateObj = new Date(globalSortedDates[i]);
                 
-                // Namai Hari
                 let dayName = "";
                 if (i === 1) dayName = "Besok";
                 else if (i === 2) dayName = "Lusa";
@@ -344,19 +370,20 @@
                 
                 document.getElementById(`fc-${widgetIndex}-name`).textContent = dayName;
 
-                // Suhu Maksimal & Minimal dalam hari tersebut
-                const tMax = Math.max(...dataPerHari.temps);
-                const tMin = Math.min(...dataPerHari.temps);
+                const temps = listPerHari.map(x => x.t);
+                const humids = listPerHari.map(x => x.hu);
+                const tMax = Math.max(...temps);
+                const tMin = Math.min(...temps);
+                
                 document.getElementById(`fc-${widgetIndex}-temp-max`).textContent = tMax + "°";
                 document.getElementById(`fc-${widgetIndex}-temp-min`).textContent = "/ " + tMin + "°";
 
-                // Kelembapan rata-rata dalam hari tersebut
-                const avgHumid = Math.round(dataPerHari.humids.reduce((a,b)=>a+b, 0) / dataPerHari.humids.length);
+                const avgHumid = Math.round(humids.reduce((a,b)=>a+b, 0) / humids.length);
                 document.getElementById(`fc-${widgetIndex}-humid`).textContent = avgHumid + "%";
 
-                // Kondisi Cuaca Dominan (Atau ambil data di siang hari, yg biasanya ada di index tengah)
-                const midIndex = Math.floor(dataPerHari.conditions.length / 2);
-                const dominanCond = dataPerHari.conditions[midIndex] || "Berawan";
+                const midItem = listPerHari[Math.floor(listPerHari.length / 2)] || listPerHari[0];
+                const dominanCond = midItem.weather_desc || "Berawan";
+                
                 document.getElementById(`fc-${widgetIndex}-desc`).textContent = dominanCond;
                 document.getElementById(`fc-${widgetIndex}-icon`).textContent = bmkgIconMap[dominanCond] || "cloud";
 
@@ -367,12 +394,88 @@
             console.error("Kesalahan API BMKG: ", error);
             document.getElementById('current-icon').textContent = "wifi_off";
             document.getElementById('current-icon').classList.remove('animate-pulse');
-            document.getElementById('current-desc').textContent = "Koneksi ke BMKG terputus.";
-            document.getElementById('ai-insight').textContent = "Prakiraan saat ini tidak dapat diakses.";
+            document.getElementById('current-desc').textContent = "Data gagal dimuat.";
         }
     }
 
-    // Eksekusi fungsi penarik data BMKG begitu halaman terbuka
+    // --- LOGIKA POPUP DETAIL PER 3 JAM ---
+    function bukaDetailHari(target) {
+        let dateKey = "";
+        let titleName = "";
+
+        if (target === 'hari_ini') {
+            dateKey = globalSortedDates[0]; // Hari ini
+            titleName = "Detail Cuaca Hari Ini (Per 3 Jam)";
+        } else {
+            // target adalah index 1, 2, atau 3
+            dateKey = globalSortedDates[target];
+            titleName = `Detail Cuaca: ${document.getElementById(`fc-${target}-name`).textContent}`;
+        }
+
+        if (!dateKey || !globalGroupedData[dateKey]) return;
+
+        document.getElementById('modal-title').textContent = titleName;
+        document.getElementById('modal-date').textContent = `Tanggal: ${dateKey}`;
+
+        const bodyContainer = document.getElementById('modal-body');
+        bodyContainer.innerHTML = ""; // Bersihkan list lama
+
+        globalGroupedData[dateKey].forEach(item => {
+            // item.local_datetime format: "2026-08-12 14:00:00" -> ambil jamnya "14:00"
+            const jamStr = item.local_datetime.split(" ")[1].substring(0, 5);
+            const desc = item.weather_desc || "Berawan";
+            const iconName = bmkgIconMap[desc] || "cloud";
+            
+            // Estimasi Curah Hujan (jika ada properti rain/ch, jika tidak tampilkan 0 mm)
+            const curahHujan = item.ch !== undefined ? item.ch + " mm" : "0.0 mm";
+            // Simulasi/Ambil UV Index jika disediakan BMKG, jika tidak berikan estimasi berdasarkan jam
+            const uvIndex = item.uv !== undefined ? item.uv : (parseInt(jamStr) >= 10 && parseInt(jamStr) <= 15 ? "Tinggi (7-9)" : "Rendah (1-2)");
+
+            const rowItem = document.createElement('div');
+            rowItem.className = "flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100 shadow-xs";
+            rowItem.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary/10 text-primary rounded-lg flex items-center justify-center font-bold text-sm">
+                        ${jamStr}
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[18px] text-primary">${iconName}</span>
+                            <p class="font-title-sm text-sm text-on-surface">${desc}</p>
+                        </div>
+                        <p class="text-[11px] text-on-surface-variant mt-0.5">Kelembapan: ${item.hu}% • Angin: ${item.ws} km/j</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="font-bold text-primary text-base">${item.t}°C</p>
+                    <p class="text-[11px] text-blue-600 font-medium">🌧️ ${curahHujan}</p>
+                    <p class="text-[10px] text-orange-600">☀️ UV: ${uvIndex}</p>
+                </div>
+            `;
+            bodyContainer.appendChild(rowItem);
+        });
+
+        // Munculkan Modal dengan Animasi
+        const modal = document.getElementById('weather-modal');
+        const content = document.getElementById('modal-content');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function tutupModal() {
+        const modal = document.getElementById('weather-modal');
+        const content = document.getElementById('modal-content');
+        modal.classList.add('opacity-0');
+        content.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    // Eksekusi saat halaman dimuat
     document.addEventListener("DOMContentLoaded", fetchBMKGData);
 
     // Animasi tombol dasar
