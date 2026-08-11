@@ -13,53 +13,31 @@
             theme: {
                 extend: {
                     "colors": {
-                        "on-tertiary-fixed-variant": "#930013",
-                        "on-secondary-fixed-variant": "#653e00",
-                        "inverse-on-surface": "#f0f1f2",
                         "outline": "#6c7a71",
                         "on-secondary": "#ffffff",
-                        "on-tertiary-fixed": "#410004",
                         "surface-bright": "#f8f9fa",
                         "surface": "#f8f9fa",
-                        "on-primary-fixed": "#002113",
                         "surface-container-high": "#e7e8e9",
                         "secondary-fixed": "#ffddb8",
                         "background": "#f8f9fa",
                         "surface-container-lowest": "#ffffff",
                         "surface-dim": "#d9dadb",
                         "surface-container-low": "#f3f4f5",
-                        "on-tertiary-container": "#79000e",
                         "tertiary": "#b91a24",
                         "surface-tint": "#006c49",
                         "on-primary": "#ffffff",
-                        "secondary-fixed-dim": "#ffb95f",
                         "on-error": "#ffffff",
                         "secondary-container": "#fea619",
                         "on-background": "#191c1d",
                         "surface-variant": "#e1e3e4",
                         "primary-container": "#10b981",
-                        "primary-fixed": "#6ffbbe",
-                        "surface-container-highest": "#e1e3e4",
-                        "inverse-primary": "#4edea3",
                         "error": "#ba1a1a",
-                        "on-primary-fixed-variant": "#005236",
-                        "primary-fixed-dim": "#4edea3",
-                        "on-primary-container": "#00422b",
-                        "inverse-surface": "#2e3132",
                         "surface-container": "#edeeef",
-                        "on-secondary-container": "#684000",
                         "on-surface": "#191c1d",
                         "on-surface-variant": "#3c4a42",
-                        "on-secondary-fixed": "#2a1700",
-                        "tertiary-fixed-dim": "#ffb3ad",
-                        "on-tertiary": "#ffffff",
                         "outline-variant": "#bbcabf",
                         "secondary": "#855300",
                         "primary": "#006c49",
-                        "error-container": "#ffdad6",
-                        "on-error-container": "#93000a",
-                        "tertiary-container": "#ff7a73",
-                        "tertiary-fixed": "#ffdad7"
                     },
                     "borderRadius": {
                         "DEFAULT": "0.25rem",
@@ -134,23 +112,23 @@
                         <h1 class="font-headline-md-mobile text-headline-md-mobile mt-base">Kebun Kopi Seboto</h1>
                         <div class="flex items-center gap-2 mt-base opacity-80">
                             <span class="material-symbols-outlined text-[18px] text-white">location_on</span>
-                            <p class="font-body-md text-body-md text-white">Boyolali, Jawa Tengah</p>
+                            <p class="font-body-md text-body-md text-white">Seboto, Boyolali, Jawa Tengah</p>
                         </div>
                     </div>
-                    <span id="current-icon" class="material-symbols-outlined text-[64px] text-white" style="font-variation-settings: 'FILL' 1;">sync</span>
+                    <span id="current-icon" class="material-symbols-outlined text-[64px] text-white animate-pulse" style="font-variation-settings: 'FILL' 1;">sync</span>
                 </div>
                 <div class="mt-xl flex items-baseline gap-2">
                     <span id="current-temp" class="font-display-lg text-display-lg text-[64px] leading-none">--</span>
                     <span class="font-display-lg text-display-lg text-[32px] leading-none">°C</span>
                 </div>
-                <p id="current-desc" class="font-title-sm text-title-sm mt-xs text-white">Memuat data BMKG...</p>
+                <p id="current-desc" class="font-title-sm text-title-sm mt-xs text-white">Menghubungkan API BMKG...</p>
                 <div class="grid grid-cols-2 gap-gutter mt-lg pt-lg border-t border-white/20">
                     <div class="text-center border-r border-white/20">
                         <p class="font-label-caps text-label-caps opacity-70 mb-1 text-white">Kelembapan</p>
                         <p id="current-humid" class="font-title-sm text-title-sm text-white">--%</p>
                     </div>
                     <div class="text-center">
-                        <p class="font-label-caps text-label-caps opacity-70 mb-1 text-white">Kecepatan Angin</p>
+                        <p class="font-label-caps text-label-caps opacity-70 mb-1 text-white">Angin</p>
                         <p id="current-wind" class="font-title-sm text-title-sm text-white">-- km/j</p>
                     </div>
                 </div>
@@ -162,9 +140,9 @@
     <section class="mb-lg">
         <div class="flex items-center justify-between mb-md">
             <h2 class="font-headline-md-mobile text-headline-md-mobile text-on-surface">Prakiraan 3 Hari</h2>
-            <div class="flex items-center gap-1 text-on-surface-variant">
-                <span class="material-symbols-outlined text-[14px]">info</span>
-                <span class="font-label-caps text-label-caps">Data Resmi BMKG</span>
+            <div class="flex items-center gap-1 text-on-surface-variant bg-gray-100 px-2 py-1 rounded-md">
+                <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                <span class="font-label-caps text-label-caps">API BMKG Official</span>
             </div>
         </div>
         <div class="space-y-md">
@@ -241,18 +219,18 @@
 
     <!-- Agricultural Insight Card -->
     <section class="mb-xl">
-        <div class="bg-primary-container/10 border border-primary-container p-md rounded-xl flex gap-md items-start">
+        <div class="bg-primary-container/10 border border-primary-container p-md rounded-xl flex gap-md items-start shadow-sm">
             <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">agriculture</span>
             <div>
-                <h3 class="font-title-sm text-title-sm text-on-primary-container">Saran Budidaya AI</h3>
-                <p id="ai-insight" class="font-body-md text-body-md text-on-surface-variant mt-1">Menganalisis cuaca untuk saran budidaya kopi terbaik hari ini...</p>
+                <h3 class="font-title-sm text-title-sm text-on-primary-container">Saran Budidaya AI Terkalibrasi BMKG</h3>
+                <p id="ai-insight" class="font-body-md text-body-md text-on-surface-variant mt-1">Menarik data dari BMKG untuk menyusun saran pertanian...</p>
             </div>
         </div>
     </section>
 </main>
 
 <!-- Fixed Bottom Action -->
-<footer class="fixed bottom-0 w-full p-md bg-surface/80 backdrop-blur-md border-t border-outline-variant/10">
+<footer class="fixed bottom-0 w-full p-md bg-surface/80 backdrop-blur-md border-t border-outline-variant/10 z-50">
     <a href="dashboard_petani.html" class="block text-center bg-primary text-on-primary font-semibold py-3 px-lg rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] active:scale-95 transition-transform duration-150 w-full">
         Kembali ke Beranda
     </a>
@@ -260,136 +238,144 @@
 
 <div class="h-20"></div>
 
-<!-- LOGIKA INTEGRASI API BMKG -->
+<!-- LOGIKA INTEGRASI API JSON BMKG -->
 <script>
-    // Kamus Kode Cuaca BMKG ke Teks dan Material Icon
-    const weatherCodes = {
-        "0": { text: "Cerah", icon: "wb_sunny" },
-        "1": { text: "Cerah Berawan", icon: "partly_cloudy_day" },
-        "2": { text: "Cerah Berawan", icon: "partly_cloudy_day" },
-        "3": { text: "Berawan", icon: "cloudy" },
-        "4": { text: "Berawan Tebal", icon: "cloudy" },
-        "5": { text: "Udara Kabur", icon: "foggy" },
-        "10": { text: "Asap", icon: "foggy" },
-        "45": { text: "Kabut", icon: "foggy" },
-        "60": { text: "Hujan Ringan", icon: "rainy" },
-        "61": { text: "Hujan Sedang", icon: "rainy" },
-        "62": { text: "Hujan Lebat", icon: "rainy" },
-        "95": { text: "Hujan Petir", icon: "thunderstorm" },
-        "97": { text: "Hujan Petir", icon: "thunderstorm" }
+    // URL API BMKG Open Data JSON
+    // Kode adm4: 33.09.20.2001 (Jawa Tengah -> Boyolali -> Gladagsari -> Seboto)
+    const TARGET_BMKG_URL = 'https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4=33.09.20.2001';
+
+    // Kamus Kode Ikon BMKG ke Material Icons
+    const bmkgIconMap = {
+        "Cerah": "wb_sunny",
+        "Cerah Berawan": "partly_cloudy_day",
+        "Berawan": "cloudy",
+        "Berawan Tebal": "cloudy",
+        "Udara Kabur": "foggy",
+        "Asap": "foggy",
+        "Kabut": "foggy",
+        "Hujan Ringan": "rainy",
+        "Hujan Sedang": "rainy",
+        "Hujan Lebat": "rainy",
+        "Hujan Petir": "thunderstorm"
     };
 
-    // Knots ke Km/h converter
-    function knotsToKmh(knots) {
-        return Math.round(knots * 1.852);
-    }
-
     async function fetchBMKGData() {
-        // Menggunakan CORS proxy gratis untuk menghindari blokir CORS di browser saat menarik data XML BMKG
-        const targetUrl = 'https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-JawaTengah.xml';
-        const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(targetUrl);
-
         try {
-            const response = await fetch(proxyUrl);
-            const data = await response.json();
+            // BMKG API ini mendukung CORS langsung, jadi tidak perlu proxy.
+            const response = await fetch(TARGET_BMKG_URL);
+            if (!response.ok) throw new Error("Gagal mengambil data dari BMKG. Kode: " + response.status);
             
-            // Parsing XML
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(data.contents, "text/xml");
-
-            // Cari area Boyolali
-            const areas = xmlDoc.getElementsByTagName('area');
-            let boyolaliNode = null;
-            for (let i = 0; i < areas.length; i++) {
-                if (areas[i].getAttribute('description') === 'Boyolali') {
-                    boyolaliNode = areas[i];
-                    break;
+            const rawData = await response.json();
+            
+            // Mencari Array Data Cuaca secara dinamis untuk mengantisipasi struktur API berubah-ubah
+            let weatherDataList = [];
+            function traverseJSON(obj) {
+                if (Array.isArray(obj) && obj.length > 0 && obj[0].weather_desc) {
+                    weatherDataList = obj; return true;
                 }
+                if (typeof obj === 'object' && obj !== null) {
+                    for (let key in obj) {
+                        if (traverseJSON(obj[key])) return true;
+                    }
+                }
+                return false;
+            }
+            traverseJSON(rawData);
+
+            if (weatherDataList.length === 0) {
+                throw new Error("Struktur JSON BMKG tidak mengandung 'weather_desc'.");
             }
 
-            if (!boyolaliNode) throw new Error("Area Boyolali tidak ditemukan di data BMKG.");
-
-            // Ambil Parameter Cuaca
-            const weatherParams = boyolaliNode.querySelector('parameter[id="weather"]');
-            const tempParams = boyolaliNode.querySelector('parameter[id="t"]');
-            const humidParams = boyolaliNode.querySelector('parameter[id="hu"]');
-            const windParams = boyolaliNode.querySelector('parameter[id="ws"]');
+            // 1. UPDATE DATA HARI INI (Data paling awal di urutan BMKG = Saat Ini)
+            const current = weatherDataList[0];
+            const currentDesc = current.weather_desc || "Berawan";
             
-            const tmaxParams = boyolaliNode.querySelector('parameter[id="tmax"]');
-            const tminParams = boyolaliNode.querySelector('parameter[id="tmin"]');
+            document.getElementById('current-icon').textContent = bmkgIconMap[currentDesc] || "cloud";
+            document.getElementById('current-icon').classList.remove('animate-pulse'); // Hentikan animasi loading
+            document.getElementById('current-desc').textContent = currentDesc;
+            document.getElementById('current-temp').textContent = current.t;
+            document.getElementById('current-humid').textContent = current.hu + "%";
+            document.getElementById('current-wind').textContent = current.ws + " km/j";
 
-            // Ekstrak Data Saat Ini (Node pertama biasanya merepresentasikan data terdekat)
-            const currentCode = weatherParams.getElementsByTagName('value')[0].textContent;
-            const currentTemp = tempParams.getElementsByTagName('value')[0].textContent;
-            const currentHumid = humidParams.getElementsByTagName('value')[0].textContent;
-            const currentWindKnots = windParams.getElementsByTagName('value')[0].textContent;
-
-            // Update UI Hari Ini
-            const weatherInfo = weatherCodes[currentCode] || { text: "Tidak Diketahui", icon: "cloud" };
-            document.getElementById('current-icon').textContent = weatherInfo.icon;
-            document.getElementById('current-desc').textContent = weatherInfo.text;
-            document.getElementById('current-temp').textContent = currentTemp;
-            document.getElementById('current-humid').textContent = currentHumid + "%";
-            document.getElementById('current-wind').textContent = knotsToKmh(currentWindKnots) + " km/j";
-
-            // Update Saran AI Berdasarkan Cuaca Hari Ini
+            // Update Saran Budidaya dari AI
             const aiInsight = document.getElementById('ai-insight');
-            if (currentCode === "0" || currentCode === "1" || currentCode === "2") {
+            if (currentDesc.includes("Cerah")) {
                 aiInsight.textContent = "Kondisi cerah sangat baik untuk proses fotosintesis dan pemupukan. Pastikan jadwal penyiraman berjalan normal agar tanah kopi tidak kekeringan di siang hari.";
-            } else if (currentCode === "60" || currentCode === "61" || currentCode === "62" || currentCode === "95") {
-                aiInsight.textContent = "Hujan diprediksi turun. Tunda pemupukan daun hari ini agar tidak luntur. Pastikan saluran drainase kebun (parit) bebas dari sumbatan.";
+            } else if (currentDesc.includes("Hujan")) {
+                aiInsight.textContent = "Hujan diprediksi turun. Tunda pemupukan daun hari ini agar tidak luntur tercuci air hujan. Pastikan saluran parit kebun bebas dari sumbatan.";
             } else {
-                aiInsight.textContent = "Cuaca berawan stabil. Ideal untuk melakukan inspeksi kebun, memangkas ranting kopi tua, dan melakukan perawatan rutin harian.";
+                aiInsight.textContent = "Cuaca berawan cukup stabil. Kondisi ini ideal untuk melakukan inspeksi manual ke kebun, memangkas ranting kopi yang tidak produktif, dan perawatan rutin.";
             }
 
-            // Ekstrak Prakiraan 3 Hari Ke Depan
-            // BMKG memberikan rentang data harian pada Tmax dan Tmin (Setiap 24 Jam)
-            const d = new Date();
-            const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-            const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+            // 2. KELOMPOKKAN DATA BMKG BERDASARKAN HARI UNTUK 3 HARI KE DEPAN
+            // BMKG memberikan data per-3-jam (total 8 data per hari). Kita akan mengelompokkannya per tanggal.
+            const dailyData = {};
+            weatherDataList.forEach(item => {
+                if(!item.local_datetime) return;
+                const dateStr = item.local_datetime.split(" ")[0]; // Ambil porsi tanggalnya saja YYYY-MM-DD
+                
+                if (!dailyData[dateStr]) {
+                    dailyData[dateStr] = { temps: [], humids: [], conditions: [] };
+                }
+                dailyData[dateStr].temps.push(item.t);
+                dailyData[dateStr].humids.push(item.hu);
+                dailyData[dateStr].conditions.push(item.weather_desc);
+            });
 
+            // Urutkan tanggal dari hari ini
+            const sortedDates = Object.keys(dailyData).sort();
+            const daysLabel = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+            const monthsLabel = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+
+            // Ekstrak hari ke-1, 2, dan 3 setelah hari ini.
+            // Index 0 adalah hari ini. Index 1 besok, dst.
+            let widgetIndex = 1;
             for (let i = 1; i <= 3; i++) {
-                // Kalkulasi Nama Hari
-                let futureDate = new Date();
-                futureDate.setDate(d.getDate() + i);
+                if (!sortedDates[i]) break; 
+                
+                const dataPerHari = dailyData[sortedDates[i]];
+                const dateObj = new Date(sortedDates[i]);
+                
+                // Namai Hari
                 let dayName = "";
                 if (i === 1) dayName = "Besok";
                 else if (i === 2) dayName = "Lusa";
-                else dayName = `${days[futureDate.getDay()]}, ${futureDate.getDate()} ${months[futureDate.getMonth()]}`;
-
-                document.getElementById(`fc-${i}-name`).textContent = dayName;
-
-                // Ambil Nilai Min Max Harian (Indeks 0 adalah hari ini, indeks 1 adalah besok, dst)
-                if (tmaxParams.getElementsByTagName('value')[i] && tminParams.getElementsByTagName('value')[i]) {
-                    document.getElementById(`fc-${i}-temp-max`).textContent = tmaxParams.getElementsByTagName('value')[i].textContent + "°";
-                    document.getElementById(`fc-${i}-temp-min`).textContent = "/ " + tminParams.getElementsByTagName('value')[i].textContent + "°";
-                }
-
-                // Ambil Data Cuaca & Kelembapan Harian (Ambil nilai siang hari sekitar jam 12, yaitu indeks lompatan 4 dari data per-6-jam)
-                // BMKG per 6 jam: 0, 6, 12, 18. Indeks hari +1 rata-rata ada di indeks 4, 5, 6, 7.
-                let indexSiang = i * 4 + 1; // Memperkirakan data jam 12 siang keesokan harinya
-                if(weatherParams.getElementsByTagName('value')[indexSiang]) {
-                    let code = weatherParams.getElementsByTagName('value')[indexSiang].textContent;
-                    let info = weatherCodes[code] || { text: "Berawan", icon: "cloud" };
-                    document.getElementById(`fc-${i}-desc`).textContent = info.text;
-                    document.getElementById(`fc-${i}-icon`).textContent = info.icon;
-                }
+                else dayName = `${daysLabel[dateObj.getDay()]}, ${dateObj.getDate()} ${monthsLabel[dateObj.getMonth()]}`;
                 
-                if(humidParams.getElementsByTagName('value')[indexSiang]) {
-                    document.getElementById(`fc-${i}-humid`).textContent = humidParams.getElementsByTagName('value')[indexSiang].textContent + "%";
-                }
+                document.getElementById(`fc-${widgetIndex}-name`).textContent = dayName;
+
+                // Suhu Maksimal & Minimal dalam hari tersebut
+                const tMax = Math.max(...dataPerHari.temps);
+                const tMin = Math.min(...dataPerHari.temps);
+                document.getElementById(`fc-${widgetIndex}-temp-max`).textContent = tMax + "°";
+                document.getElementById(`fc-${widgetIndex}-temp-min`).textContent = "/ " + tMin + "°";
+
+                // Kelembapan rata-rata dalam hari tersebut
+                const avgHumid = Math.round(dataPerHari.humids.reduce((a,b)=>a+b, 0) / dataPerHari.humids.length);
+                document.getElementById(`fc-${widgetIndex}-humid`).textContent = avgHumid + "%";
+
+                // Kondisi Cuaca Dominan (Atau ambil data di siang hari, yg biasanya ada di index tengah)
+                const midIndex = Math.floor(dataPerHari.conditions.length / 2);
+                const dominanCond = dataPerHari.conditions[midIndex] || "Berawan";
+                document.getElementById(`fc-${widgetIndex}-desc`).textContent = dominanCond;
+                document.getElementById(`fc-${widgetIndex}-icon`).textContent = bmkgIconMap[dominanCond] || "cloud";
+
+                widgetIndex++;
             }
 
         } catch (error) {
-            console.error("Gagal mengambil data BMKG: ", error);
-            document.getElementById('current-desc').textContent = "Gagal memuat data BMKG.";
+            console.error("Kesalahan API BMKG: ", error);
+            document.getElementById('current-icon').textContent = "wifi_off";
+            document.getElementById('current-icon').classList.remove('animate-pulse');
+            document.getElementById('current-desc').textContent = "Koneksi ke BMKG terputus.";
+            document.getElementById('ai-insight').textContent = "Prakiraan saat ini tidak dapat diakses.";
         }
     }
 
-    // Panggil fungsi saat halaman dimuat
+    // Eksekusi fungsi penarik data BMKG begitu halaman terbuka
     document.addEventListener("DOMContentLoaded", fetchBMKGData);
 
-    // Animasi tombol
+    // Animasi tombol dasar
     document.querySelectorAll('button, a').forEach(btn => {
         btn.addEventListener('touchstart', () => { btn.style.opacity = '0.8'; });
         btn.addEventListener('touchend', () => { btn.style.opacity = '1'; });
