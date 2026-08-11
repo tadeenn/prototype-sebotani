@@ -215,10 +215,9 @@
             });
         });
     </script>
-
-    <!-- INTEGRASI REAL-TIME WEBSOCKET & POPUP LOGIC UNTUK KELEMBAPAN -->
+<!-- INTEGRASI REAL-TIME WEBSOCKET & POPUP LOGIC UNTUK KELEMBAPAN -->
     <script>
-        // Logika untuk menampilkan dan menyembunyikan Popup
+        // 1. Logika untuk menampilkan dan menyembunyikan Popup
         function tampilkanPopup() {
             const popup = document.getElementById('connection-popup');
             const popupContent = document.getElementById('popup-content');
@@ -240,28 +239,51 @@
             setTimeout(() => {
                 popup.classList.add('hidden');
             }, 300);
+            
+            // Coba hubungkan ulang mesin setelah popup ditutup (Opsional, mereset timer)
+            aturUlangWaktuTunggu();
         }
 
         window.addEventListener('offline', tampilkanPopup);
 
-        // URL WebSocket yang diminta
-        const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
-        const socket = new WebSocket(wsUrl);
+        // 2. Variabel Timer untuk mendeteksi mesin mati
+        let mesinTimeout;
+        const BATAS_WAKTU_TUNGGU = 15000; // 15 detik (15000 milidetik)
 
         function resetKeNol() {
             document.getElementById('moisture-value').innerText = '0%';
             document.getElementById('moisture-bar').style.width = '0%';
-            document.getElementById('moisture-status').innerText = 'Tidak Terhubung';
+            document.getElementById('moisture-status').innerText = 'Tidak Terhubung / Data Kosong';
         }
+
+        // Fungsi ini bertugas menghitung mundur. Jika mesin tidak mengirim data selama 15 detik, popup muncul.
+        function aturUlangWaktuTunggu() {
+            clearTimeout(mesinTimeout); // Hapus hitungan mundur sebelumnya
+            
+            mesinTimeout = setTimeout(() => {
+                console.warn("Mesin tidak merespons selama 15 detik.");
+                resetKeNol();
+                tampilkanPopup();
+            }, BATAS_WAKTU_TUNGGU);
+        }
+
+        // 3. Konfigurasi WebSocket
+        const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
+        const socket = new WebSocket(wsUrl);
+
+        // Mulai hitung mundur sejak pertama kali website dibuka
+        aturUlangWaktuTunggu(); 
 
         socket.onclose = () => {
             console.warn("Koneksi API terputus.");
+            clearTimeout(mesinTimeout); // Hentikan timer jika koneksi benar-benar putus
             resetKeNol();
             tampilkanPopup();
         };
 
         socket.onerror = (error) => {
             console.error("Kesalahan jaringan API:", error);
+            clearTimeout(mesinTimeout);
             resetKeNol();
             tampilkanPopup();
         };
@@ -272,23 +294,22 @@
                 
                 if (data.type === 'telemetry' && data.payload && data.payload.payload) {
                     
-                    // Mengambil nilai soil_moisture dari payload
                     const nilaiMoisture = data.payload.payload.soil_moisture; 
 
                     if (nilaiMoisture !== undefined && nilaiMoisture !== null && nilaiMoisture !== "") {
+                        // KARENA DATA MASUK, MESIN TERBUKTI HIDUP!
+                        // Kita reset waktu tunggunya kembali ke 15 detik
+                        aturUlangWaktuTunggu(); 
+
                         const currentMoisture = parseFloat(nilaiMoisture);
                         
                         if(isNaN(currentMoisture)) return; 
 
-                        // Update Angka
-                        // Karena kelembapan biasanya berupa integer, menggunakan Math.round
                         document.getElementById('moisture-value').innerText = Math.round(currentMoisture) + '%';
                         
-                        // Update Bar (Persentase langsung)
                         let percent = Math.max(0, Math.min(100, currentMoisture)); 
                         document.getElementById('moisture-bar').style.width = `${percent}%`;
 
-                        // Update Status
                         const statusText = document.getElementById('moisture-status');
                         if (currentMoisture < 40) {
                             statusText.innerText = 'Kering';
