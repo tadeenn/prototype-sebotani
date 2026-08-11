@@ -1,12 +1,14 @@
-<!DOCTYPE html><html class="light" lang="id" style=""><head>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>SEBOTANI - Tanah &amp; pH</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
-<script id="tailwind-config">
+<!DOCTYPE html>
+<html class="light" lang="id" style="">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>SEBOTANI - Tanah &amp; pH</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -101,7 +103,7 @@
             },
         }
     </script>
-<style>
+    <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
@@ -126,65 +128,78 @@
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
-<!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 bg-primary shadow-sm flex justify-between items-center px-margin-mobile h-14">
-<div class="flex items-center w-full justify-between"><a href="dashboard_petani.html" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors active:scale-95 duration-150"><span class="material-symbols-outlined text-white">arrow_back</span></a><div class="flex flex-col items-center"><span class="font-headline-md-mobile text-headline-md-mobile text-white">Tanah &amp; pH</span></div><div class="flex items-center justify-center w-10 h-10"><img alt="SEBOTANI" src="https://prototype-sebotani.vercel.app/sebotani-logo.png"></div></div>
-</header>
-<!-- Main Content Canvas -->
-<main class="flex-grow pt-20 pb-24 px-margin-mobile md:px-margin-desktop max-w-2xl mx-auto w-full">
-<!-- pH Gauge Card -->
-<div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-lg flex flex-col items-center mb-md border border-outline-variant/30">
+    <!-- TopAppBar -->
+    <header class="fixed top-0 w-full z-50 bg-primary shadow-sm flex justify-between items-center px-margin-mobile h-14">
+        <div class="flex items-center w-full justify-between">
+            <a href="dashboard_petani.html" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors active:scale-95 duration-150">
+                <span class="material-symbols-outlined text-white">arrow_back</span>
+            </a>
+            <div class="flex flex-col items-center">
+                <span class="font-headline-md-mobile text-headline-md-mobile text-white">Tanah &amp; pH</span>
+            </div>
+            <div class="flex items-center justify-center w-10 h-10">
+                <img alt="SEBOTANI" src="https://prototype-sebotani.vercel.app/sebotani-logo.png">
+            </div>
+        </div>
+    </header>
 
-<div class="flex flex-col items-center my-md"><div class="flex items-center gap-md">
-    
-    <span class="font-display-lg text-[64px] leading-tight font-bold text-primary">6.1</span>
-</div>
-<p class="font-body-lg text-body-lg text-secondary font-semibold">Sedikit Asam</p></div>
-<!-- pH Scale Visualization -->
-<div class="w-full mt-xl relative px-xs">
-<div class="flex justify-between w-full mb-xs font-label-caps text-label-caps text-on-surface-variant">
-<span class="">4</span>
-<span class="relative -left-2">7</span>
-<span class="">10</span>
-</div>
-<div class="w-full h-4 rounded-full ph-gradient relative shadow-inner overflow-visible">
-<!-- Gauge Marker -->
-<div class="absolute top-full mt-1 flex flex-col items-center transition-all duration-700 ease-out" style="left: 35%;">
-<div class="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[10px] border-b-on-surface"></div>
-</div>
-<!-- Center Marker line (pH 7) -->
-<div class="absolute left-1/2 top-0 w-0.5 h-full bg-white/50 transform -translate-x-1/2"></div>
-</div>
-</div>
-</div>
-<!-- Suggestions Bento Card -->
-<div class="bg-[#e7f5ed] rounded-xl p-lg flex items-start gap-md border border-primary-container/20">
-<div class="bg-primary-container/20 p-xs rounded-lg flex items-center justify-center">
-<span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">eco</span>
-</div>
-<div class="flex flex-col">
-<h3 class="font-title-sm text-title-sm text-on-primary-container">Saran</h3>
-<p class="font-body-md text-body-md text-on-surface-variant mt-xs leading-relaxed">
+    <!-- Main Content Canvas -->
+    <main class="flex-grow pt-20 pb-24 px-margin-mobile md:px-margin-desktop max-w-2xl mx-auto w-full">
+        <!-- pH Gauge Card -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-lg flex flex-col items-center mb-md border border-outline-variant/30">
+            <div class="flex flex-col items-center my-md">
+                <div class="flex items-center gap-md">
+                    <span id="ph-value" class="font-display-lg text-[64px] leading-tight font-bold text-primary">0.0</span>
+                </div>
+                <p id="ph-status" class="font-body-lg text-body-lg text-secondary font-semibold">Menghubungkan...</p>
+            </div>
+            
+            <!-- pH Scale Visualization -->
+            <div class="w-full mt-xl relative px-xs">
+                <div class="flex justify-between w-full mb-xs font-label-caps text-label-caps text-on-surface-variant">
+                    <span class="">4</span>
+                    <span class="relative -left-2">7</span>
+                    <span class="">10</span>
+                </div>
+                <div class="w-full h-4 rounded-full ph-gradient relative shadow-inner overflow-visible">
+                    <div id="ph-gauge" class="absolute top-full mt-1 flex flex-col items-center transition-all duration-700 ease-out" style="left: 0%;">
+                        <div class="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[10px] border-b-on-surface"></div>
+                    </div>
+                    <!-- Center Marker line (pH 7) -->
+                    <div class="absolute left-1/2 top-0 w-0.5 h-full bg-white/50 transform -translate-x-1/2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggestions Bento Card -->
+        <div class="bg-[#e7f5ed] rounded-xl p-lg flex items-start gap-md border border-primary-container/20">
+            <div class="bg-primary-container/20 p-xs rounded-lg flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">eco</span>
+            </div>
+            <div class="flex flex-col">
+                <h3 class="font-title-sm text-title-sm text-on-primary-container">Saran</h3>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-xs leading-relaxed">
                     pH tanah masih baik untuk tanaman. Pertahankan pH <span class="font-bold text-primary">6.5 - 7.5</span> untuk hasil panen yang optimal.
                 </p>
-</div>
-</div>
-<!-- Atmospheric Visual Element (Background subtle) -->
-<div class="mt-xl opacity-30 pointer-events-none">
-<img class="w-full h-32 object-cover rounded-2xl grayscale" data-alt="A macro close-up photography of rich dark fertile soil with tiny green coffee sprouts emerging. The lighting is soft morning sunlight creating a serene agricultural atmosphere. Shallow depth of field with focus on the texture of the soil and the vibrant green leaves. Clean minimalist composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGx8EQnPcFqnpRTkyYw5xf-KEyvbdvkSa3z0oYhKxagrD4coA2QgQNtE6bAssr6fA1gaQ4OCbHa0weMvjb4e36JCTLpz0eIMtPkiJhaDIzSQirZbxU06rUX4219IqdfUGly3tL0VJXVGRmm0U8KFGlda8VyX0iLPefxN5yu5k7AnuEVSxrKtBpid_qdhPPaPElIDgQDm3oQeCA19wY6EkSXKP6Vpoblep_uE6Y4N4ryBELRcTo1Mhatk75MMD9SJzeNKN7tKoQrHM">
-</div><div class="flex justify-center mt-xl">
-    <a href="dashboard_petani.html" class="bg-primary text-on-primary font-semibold py-3 px-lg rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] active:scale-95 transition-transform duration-150 w-full">
-        Kembali ke Beranda
-    </a>
-</div>
-</main>
-<!-- BottomNavBar (Mobile Only Layout Logic) -->
+            </div>
+        </div>
 
-<!-- FAB Interaction Script -->
-<script>
+        <!-- Atmospheric Visual Element (Background subtle) -->
+        <div class="mt-xl opacity-30 pointer-events-none">
+            <img class="w-full h-32 object-cover rounded-2xl grayscale" data-alt="A macro close-up photography of rich dark fertile soil with tiny green coffee sprouts emerging." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGx8EQnPcFqnpRTkyYw5xf-KEyvbdvkSa3z0oYhKxagrD4coA2QgQNtE6bAssr6fA1gaQ4OCbHa0weMvjb4e36JCTLpz0eIMtPkiJhaDIzSQirZbxU06rUX4219IqdfUGly3tL0VJXVGRmm0U8KFGlda8VyX0iLPefxN5yu5k7AnuEVSxrKtBpid_qdhPPaPElIDgQDm3oQeCA19wY6EkSXKP6Vpoblep_uE6Y4N4ryBELRcTo1Mhatk75MMD9SJzeNKN7tKoQrHM">
+        </div>
+        
+        <div class="flex justify-center mt-xl">
+            <a href="dashboard_petani.html" class="bg-primary text-on-primary font-semibold py-3 px-lg rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] active:scale-95 transition-transform duration-150 w-full text-center">
+                Kembali ke Beranda
+            </a>
+        </div>
+    </main>
+
+    <!-- FAB Interaction Script -->
+    <script>
         document.querySelectorAll('a, button').forEach(el => {
             el.addEventListener('click', (e) => {
-                // Micro-interaction logic for ripples or state changes
                 const ripple = document.createElement('div');
                 ripple.className = 'absolute bg-white/20 rounded-full scale-0 animate-ping pointer-events-none';
                 ripple.style.width = '20px';
@@ -195,10 +210,74 @@
             });
         });
     </script>
+<!-- INTEGRASI REAL-TIME WEBSOCKET (API) -->
+    <script>
+        // MASUKKAN URL WSS YANG BERHASIL TERHUBUNG DI SINI
+        const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
+        const socket = new WebSocket(wsUrl);
 
+        function resetKeNol() {
+            document.getElementById('ph-value').innerText = '0.0';
+            document.getElementById('ph-gauge').style.left = '0%';
+            document.getElementById('ph-status').innerText = 'Tidak Terhubung / Tidak Ada Data';
+        }
 
+        socket.onclose = () => {
+            console.warn("Koneksi API terputus.");
+            resetKeNol();
+        };
 
+        socket.onerror = (error) => {
+            console.error("Kesalahan jaringan API:", error);
+            resetKeNol();
+        };
 
+        // Pemicu 3: Ketika pesan diterima
+        socket.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                
+                // Cek pesan yang masuk di console untuk memastikan
+                console.log("Pesan masuk:", data);
+                
+                // Pastikan ini adalah pesan 'telemetry' dan memiliki struktur yang benar
+                if (data.type === 'telemetry' && data.payload && data.payload.payload) {
+                    
+                    const nilaiPh = data.payload.payload.soil_ph; 
 
+                    // Jika soil_ph benar-benar ada di dalam pesan ini
+                    if (nilaiPh !== undefined && nilaiPh !== null && nilaiPh !== "") {
+                        const currentPh = parseFloat(nilaiPh);
+                        
+                        // Abaikan jika bukan angka
+                        if(isNaN(currentPh)) return; 
 
-</body></html>
+                        // A. Update Angka Utama di UI
+                        document.getElementById('ph-value').innerText = currentPh.toFixed(1);
+                        
+                        // B. Kalkulasi persentase pergerakan panah
+                        let percent = ((currentPh - 4) / 6) * 100;
+                        percent = Math.max(0, Math.min(100, percent)); 
+                        document.getElementById('ph-gauge').style.left = `${percent}%`;
+
+                        // C. Update Deskripsi Teks
+                        const statusText = document.getElementById('ph-status');
+                        if (currentPh < 6.5) {
+                            statusText.innerText = 'Asam';
+                        } else if (currentPh > 7.5) {
+                            statusText.innerText = 'Basa';
+                        } else {
+                            statusText.innerText = 'Netral / Ideal';
+                        }
+                    }
+                    // KITA MENGHAPUS 'else { resetKeNol(); }' DI SINI
+                    // Jadi jika data yang masuk adalah pesan lain, UI tidak akan ter-reset ke 0
+                }
+            } catch (err) {
+                // Abaikan error jika server mengirim pesan berupa teks biasa (bukan JSON)
+                console.log("Mengabaikan pesan non-JSON dari server.");
+            }
+        };
+    </script>
+</body>
+</html>
