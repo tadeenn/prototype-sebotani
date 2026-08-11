@@ -1,3 +1,10 @@
+Kesalahan pada kode Anda terjadi karena **ada dua blok `<script>` terpisah** di bagian paling bawah yang sama-sama mencoba membuat variabel `wsUrl` dan `socket`. Hal inilah yang memicu *error* `Identifier 'wsUrl' has already been declared` pada konsol Anda.
+
+Selain itu, skrip untuk efek animasi tombol (*FAB Interaction Script*) tidak sengaja terhapus dan hanya menyisakan baris komentarnya saja.
+
+Berikut adalah kode yang sudah diperbaiki dan dibersihkan. Saya telah menggabungkan skrip WebSocket menjadi satu blok yang benar dan mengembalikan skrip animasi tombol Anda:
+
+```html
 <!DOCTYPE html>
 <html class="light" lang="id" style="">
 <head>
@@ -149,10 +156,8 @@
         <div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-lg flex flex-col items-center mb-md border border-outline-variant/30">
             <div class="flex flex-col items-center my-md">
                 <div class="flex items-center gap-md">
-                    <!-- ID 'ph-value' ditambahkan di sini -->
                     <span id="ph-value" class="font-display-lg text-[64px] leading-tight font-bold text-primary">6.1</span>
                 </div>
-                <!-- ID 'ph-status' ditambahkan di sini -->
                 <p id="ph-status" class="font-body-lg text-body-lg text-secondary font-semibold">Sedikit Asam</p>
             </div>
             
@@ -164,7 +169,6 @@
                     <span class="">10</span>
                 </div>
                 <div class="w-full h-4 rounded-full ph-gradient relative shadow-inner overflow-visible">
-                    <!-- ID 'ph-gauge' ditambahkan di sini -->
                     <div id="ph-gauge" class="absolute top-full mt-1 flex flex-col items-center transition-all duration-700 ease-out" style="left: 35%;">
                         <div class="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[10px] border-b-on-surface"></div>
                     </div>
@@ -200,10 +204,26 @@
     </main>
 
     <!-- FAB Interaction Script -->
-<!-- INTEGRASI REAL-TIME WEBSOCKET (API) -->
     <script>
-        // 1. Ganti link di bawah dengan endpoint WebSocket (wss://) yang Anda temukan di Network tab
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const ripple = document.createElement('div');
+                ripple.className = 'absolute bg-white/20 rounded-full scale-0 animate-ping pointer-events-none';
+                ripple.style.width = '20px';
+                ripple.style.height = '20px';
+                el.classList.add('relative', 'overflow-hidden');
+                el.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+
+    <!-- INTEGRASI REAL-TIME WEBSOCKET (API) -->
+    <script>
+        // PENTING: URL di bawah ini sepertinya masih URL REST API statis (karena menyebabkan Error Connection di console Anda).
+        // Pastikan Anda mengubahnya dengan URL khusus WebSocket yang benar (cari request dengan status 101 di tab Network).
         const wsUrl = 'wss://console.flux.id/api/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
+        
         const socket = new WebSocket(wsUrl);
 
         // Fungsi untuk mereset tampilan ke angka 0 saat terjadi masalah
@@ -264,53 +284,11 @@
                 }
             } catch (err) {
                 console.error("Gagal membaca struktur data dari API:", err);
-                // Jika format JSON dari server rusak/tidak bisa dibaca
                 resetKeNol();
-            }
-        };
-    </script>
-
-    <!-- INTEGRASI REAL-TIME WEBSOCKET (API) -->
-    <script>
-        // 1. Ganti link di bawah dengan endpoint WebSocket (wss://) yang Anda temukan di Network tab
-        const wsUrl = 'wss://console.flux.id/api/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
-        const socket = new WebSocket(wsUrl);
-
-        socket.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                
-                // Pastikan key 'ph' sesuai dengan nama key data asli yang dikirim dari server Anda
-                // Bisa saja namanya 'soil_ph', 'nilai_ph', dll.
-                if (data.ph !== undefined) {
-                    const currentPh = parseFloat(data.ph);
-                    
-                    // A. Update Angka Utama di UI
-                    document.getElementById('ph-value').innerText = currentPh.toFixed(1);
-                    
-                    // B. Kalkulasi persentase pergerakan panah (Skala UI dari 4 s.d 10 -> Total jangkauan: 6)
-                    let percent = ((currentPh - 4) / 6) * 100;
-                    
-                    // Mencegah panah keluar dari batas bar (0% - 100%)
-                    percent = Math.max(0, Math.min(100, percent));
-                    
-                    // Menggerakkan panah secara halus menggunakan CSS transition bawaan UI Anda
-                    document.getElementById('ph-gauge').style.left = `${percent}%`;
-
-                    // C. Update Deskripsi Teks di bawah angka (Opsional)
-                    const statusText = document.getElementById('ph-status');
-                    if (currentPh < 6.5) {
-                        statusText.innerText = 'Asam';
-                    } else if (currentPh > 7.5) {
-                        statusText.innerText = 'Basa';
-                    } else {
-                        statusText.innerText = 'Netral / Ideal';
-                    }
-                }
-            } catch (err) {
-                console.error("Gagal membaca data dari server", err);
             }
         };
     </script>
 </body>
 </html>
+
+```
