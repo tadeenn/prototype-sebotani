@@ -1,10 +1,3 @@
-Kesalahan pada kode Anda terjadi karena **ada dua blok `<script>` terpisah** di bagian paling bawah yang sama-sama mencoba membuat variabel `wsUrl` dan `socket`. Hal inilah yang memicu *error* `Identifier 'wsUrl' has already been declared` pada konsol Anda.
-
-Selain itu, skrip untuk efek animasi tombol (*FAB Interaction Script*) tidak sengaja terhapus dan hanya menyisakan baris komentarnya saja.
-
-Berikut adalah kode yang sudah diperbaiki dan dibersihkan. Saya telah menggabungkan skrip WebSocket menjadi satu blok yang benar dan mengembalikan skrip animasi tombol Anda:
-
-```html
 <!DOCTYPE html>
 <html class="light" lang="id" style="">
 <head>
@@ -290,5 +283,3 @@ Berikut adalah kode yang sudah diperbaiki dan dibersihkan. Saya telah menggabung
     </script>
 </body>
 </html>
-
-```
