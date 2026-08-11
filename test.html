@@ -200,19 +200,74 @@
     </main>
 
     <!-- FAB Interaction Script -->
+<!-- INTEGRASI REAL-TIME WEBSOCKET (API) -->
     <script>
-        document.querySelectorAll('a, button').forEach(el => {
-            el.addEventListener('click', (e) => {
-                // Micro-interaction logic for ripples or state changes
-                const ripple = document.createElement('div');
-                ripple.className = 'absolute bg-white/20 rounded-full scale-0 animate-ping pointer-events-none';
-                ripple.style.width = '20px';
-                ripple.style.height = '20px';
-                el.classList.add('relative', 'overflow-hidden');
-                el.appendChild(ripple);
-                setTimeout(() => ripple.remove(), 600);
-            });
-        });
+        // 1. Ganti link di bawah dengan endpoint WebSocket (wss://) yang Anda temukan di Network tab
+        const wsUrl = 'wss://console.flux.id/api/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
+        const socket = new WebSocket(wsUrl);
+
+        // Fungsi untuk mereset tampilan ke angka 0 saat terjadi masalah
+        function resetKeNol() {
+            document.getElementById('ph-value').innerText = '0.0';
+            document.getElementById('ph-gauge').style.left = '0%';
+            document.getElementById('ph-status').innerText = 'Tidak Terhubung / Tidak Ada Data';
+        }
+
+        // Pemicu 1: Ketika koneksi API terputus (disconnect)
+        socket.onclose = () => {
+            console.warn("Koneksi API terputus.");
+            resetKeNol();
+        };
+
+        // Pemicu 2: Ketika terjadi error pada jaringan WebSocket
+        socket.onerror = (error) => {
+            console.error("Kesalahan jaringan API:", error);
+            resetKeNol();
+        };
+
+        // Pemicu 3: Ketika pesan diterima, namun harus dicek isinya
+        socket.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                
+                // Memastikan data 'ph' benar-benar ada dan tidak kosong (null/undefined)
+                if (data.ph !== undefined && data.ph !== null && data.ph !== "") {
+                    const currentPh = parseFloat(data.ph);
+                    
+                    // Jika data yang dikirim ternyata bukan angka (NaN)
+                    if(isNaN(currentPh)) {
+                        resetKeNol();
+                        return;
+                    }
+
+                    // A. Update Angka Utama di UI
+                    document.getElementById('ph-value').innerText = currentPh.toFixed(1);
+                    
+                    // B. Kalkulasi persentase pergerakan panah (Skala UI dari 4 s.d 10)
+                    let percent = ((currentPh - 4) / 6) * 100;
+                    percent = Math.max(0, Math.min(100, percent)); // Mencegah panah keluar batas
+                    
+                    document.getElementById('ph-gauge').style.left = `${percent}%`;
+
+                    // C. Update Deskripsi Teks di bawah angka
+                    const statusText = document.getElementById('ph-status');
+                    if (currentPh < 6.5) {
+                        statusText.innerText = 'Asam';
+                    } else if (currentPh > 7.5) {
+                        statusText.innerText = 'Basa';
+                    } else {
+                        statusText.innerText = 'Netral / Ideal';
+                    }
+                } else {
+                    // Jika parameter 'ph' tidak ditemukan di dalam respons API
+                    resetKeNol();
+                }
+            } catch (err) {
+                console.error("Gagal membaca struktur data dari API:", err);
+                // Jika format JSON dari server rusak/tidak bisa dibaca
+                resetKeNol();
+            }
+        };
     </script>
 
     <!-- INTEGRASI REAL-TIME WEBSOCKET (API) -->
