@@ -1,12 +1,14 @@
-<!DOCTYPE html><html class="light" lang="id" style=""><head>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>SEBOTANI - Tanah &amp; pH</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
-<script id="tailwind-config">
+<!DOCTYPE html>
+<html class="light" lang="id" style="">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>SEBOTANI - Suhu Udara</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -101,18 +103,9 @@
             },
         }
     </script>
-<style>
+    <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .ph-gradient {
-            background: linear-gradient(to right, 
-                #ef4444 0%, /* 4 - Red */
-                #f97316 20%, /* 5.2 - Orange */
-                #eab308 50%, /* 7 - Greenish Yellow */
-                #22c55e 70%, /* 8.2 - Green */
-                #ef4444 100% /* 10 - Red back */
-            );
         }
         body {
             background-color: #f8f9fa;
@@ -125,35 +118,101 @@
         }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
-<!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 bg-primary shadow-sm flex justify-between items-center px-margin-mobile h-14"><div class="flex items-center w-full justify-between"><a href="dashboard_petani.html" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors active:scale-95 duration-150"><span class="material-symbols-outlined text-white">arrow_back</span></a><div class="flex flex-col items-center"><span class="font-headline-md-mobile text-headline-md-mobile text-white">Suhu Udara</span></div><div class="flex items-center justify-center w-10 h-10"><img alt="SEBOTANI Logo" src="https://prototype-sebotani.vercel.app/sebotani-logo.png"></div></div></header>
-<!-- Main Content Canvas -->
-<main class="flex-grow pt-20 pb-24 px-margin-mobile md:px-margin-desktop max-w-2xl mx-auto w-full">
-<!-- pH Gauge Card -->
-<div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-lg flex flex-col items-center mb-md border border-outline-variant/30"><div class="flex items-center gap-xl py-md w-full justify-center"><div class="relative flex flex-col items-center"><div class="w-6 h-48 bg-surface-container rounded-full relative overflow-hidden border border-outline-variant/30 shadow-inner"><div class="absolute bottom-0 left-0 w-full bg-primary transition-all duration-700 ease-out" style="height: 70%;"></div></div><div class="w-10 h-10 bg-primary rounded-full -mt-4 border-4 border-surface-container-lowest shadow-md"></div></div><div class="flex flex-col gap-xs"><div class="flex flex-col"><span class="font-display-lg text-[64px] leading-tight font-bold text-on-surface">28°C</span><p class="font-title-sm text-primary font-semibold">Sejuk</p><p class="font-label-caps text-on-surface-variant mt-xs">Temperatur</p></div><div class="flex flex-col gap-base mt-md font-label-caps text-on-surface-variant"><div class="flex items-center gap-sm"><span class="w-8">40°C</span><div class="h-[1px] w-4 bg-outline-variant"></div></div><div class="flex items-center gap-sm"><span class="w-8">20°C</span><div class="h-[1px] w-4 bg-outline-variant"></div></div><div class="flex items-center gap-sm"><span class="w-8">0°C</span><div class="h-[1px] w-4 bg-outline-variant"></div></div></div></div></div></div>
-<!-- Suggestions Bento Card -->
-<div class="bg-[#e7f5ed] rounded-xl p-lg flex items-start gap-md border border-primary-container/20">
-<div class="bg-primary-container/20 p-xs rounded-lg flex items-center justify-center">
-<span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">thermostat</span>
-</div>
-<div class="flex flex-col"><h3 class="font-title-sm text-title-sm text-on-primary-container">Saran</h3><p class="font-body-md text-body-md text-on-surface-variant mt-xs leading-relaxed">Suhu udara saat ini sangat ideal untuk penyerbukan bunga kopi. Pastikan sirkulasi udara di kebun tetap lancar.</p></div>
-</div>
-<!-- Atmospheric Visual Element (Background subtle) -->
-<div class="mt-xl opacity-30 pointer-events-none">
-<img class="w-full h-32 object-cover rounded-2xl grayscale" data-alt="A serene morning view of a coffee plantation with mist rolling over the hills, representing ideal air temperature and humidity for coffee growth. Soft sunlight filtering through the leaves." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGx8EQnPcFqnpRTkyYw5xf-KEyvbdvkSa3z0oYhKxagrD4coA2QgQNtE6bAssr6fA1gaQ4OCbHa0weMvjb4e36JCTLpz0eIMtPkiJhaDIzSQirZbxU06rUX4219IqdfUGly3tL0VJXVGRmm0U8KFGlda8VyX0iLPefxN5yu5k7AnuEVSxrKtBpid_qdhPPaPElIDgQDm3oQeCA19wY6EkSXKP6Vpoblep_uE6Y4N4ryBELRcTo1Mhatk75MMD9SJzeNKN7tKoQrHM">
-</div><div class="flex justify-center mt-xl">
-<a href="dashboard_petani.html" class="bg-primary text-on-primary font-semibold py-3 px-lg rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] active:scale-95 transition-transform duration-150 w-full">
-        Kembali ke Beranda
-    </a>
-</div>
-</main>
-<!-- BottomNavBar (Mobile Only Layout Logic) -->
-<!-- FAB Interaction Script -->
-<script>
+<body class="flex flex-col min-h-screen relative">
+    
+    <!-- POPUP KONEKSI TERPUTUS -->
+    <div id="connection-popup" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm">
+        <div id="popup-content" class="bg-surface rounded-2xl shadow-xl p-lg max-w-sm w-[90%] flex flex-col items-center text-center transform scale-95 transition-transform duration-300 border border-outline-variant/30">
+            <span class="material-symbols-outlined text-error text-[56px] mb-md" style="font-variation-settings: 'FILL' 1;">wifi_off</span>
+            <h3 class="font-title-sm text-title-sm text-on-surface mb-xs font-bold">Koneksi Terputus</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant mb-lg leading-relaxed">
+                coba cek koneksi atau cek mesin SEBOTANI
+            </p>
+            <button onclick="tutupPopup()" class="bg-primary text-on-primary font-semibold py-3 px-lg rounded-xl shadow-sm active:scale-95 transition-transform duration-150 w-full">
+                Mengerti
+            </button>
+        </div>
+    </div>
+
+    <!-- TopAppBar -->
+    <header class="fixed top-0 w-full z-50 bg-primary shadow-sm flex justify-between items-center px-margin-mobile h-14">
+        <div class="flex items-center w-full justify-between">
+            <a href="dashboard_petani.html" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors active:scale-95 duration-150">
+                <span class="material-symbols-outlined text-white">arrow_back</span>
+            </a>
+            <div class="flex flex-col items-center">
+                <span class="font-headline-md-mobile text-headline-md-mobile text-white">Suhu Udara</span>
+            </div>
+            <div class="flex items-center justify-center w-10 h-10">
+                <img alt="SEBOTANI Logo" src="https://prototype-sebotani.vercel.app/sebotani-logo.png">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Canvas -->
+    <main class="flex-grow pt-20 pb-24 px-margin-mobile md:px-margin-desktop max-w-2xl mx-auto w-full">
+        <!-- Temperature Gauge Card -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-lg flex flex-col items-center mb-md border border-outline-variant/30">
+            <div class="flex items-center gap-xl py-md w-full justify-center">
+                
+                <!-- Thermometer Visual -->
+                <div class="relative flex flex-col items-center">
+                    <div class="w-6 h-48 bg-surface-container rounded-full relative overflow-hidden border border-outline-variant/30 shadow-inner">
+                        <!-- ID temp-bar ditambahkan di sini -->
+                        <div id="temp-bar" class="absolute bottom-0 left-0 w-full bg-primary transition-all duration-700 ease-out" style="height: 0%;"></div>
+                    </div>
+                    <!-- Warna dasar thermometer -->
+                    <div id="temp-bulb" class="w-10 h-10 bg-primary rounded-full -mt-4 border-4 border-surface-container-lowest shadow-md transition-colors duration-700 ease-out"></div>
+                </div>
+                
+                <!-- Data Display -->
+                <div class="flex flex-col gap-xs">
+                    <div class="flex flex-col">
+                        <!-- ID temp-value ditambahkan di sini -->
+                        <span id="temp-value" class="font-display-lg text-[64px] leading-tight font-bold text-on-surface">0°C</span>
+                        <!-- ID temp-status ditambahkan di sini -->
+                        <p id="temp-status" class="font-title-sm text-primary font-semibold">Menghubungkan...</p>
+                        <p class="font-label-caps text-on-surface-variant mt-xs">Temperatur</p>
+                    </div>
+                    
+                    <div class="flex flex-col gap-base mt-md font-label-caps text-on-surface-variant">
+                        <div class="flex items-center gap-sm"><span class="w-8">40°C</span><div class="h-[1px] w-4 bg-outline-variant"></div></div>
+                        <div class="flex items-center gap-sm"><span class="w-8">20°C</span><div class="h-[1px] w-4 bg-outline-variant"></div></div>
+                        <div class="flex items-center gap-sm"><span class="w-8">0°C</span><div class="h-[1px] w-4 bg-outline-variant"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggestions Bento Card -->
+        <div class="bg-[#e7f5ed] rounded-xl p-lg flex items-start gap-md border border-primary-container/20">
+            <div class="bg-primary-container/20 p-xs rounded-lg flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">thermostat</span>
+            </div>
+            <div class="flex flex-col">
+                <h3 class="font-title-sm text-title-sm text-on-primary-container">Saran</h3>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-xs leading-relaxed">
+                    Suhu udara saat ini sangat ideal untuk penyerbukan bunga kopi. Pastikan sirkulasi udara di kebun tetap lancar.
+                </p>
+            </div>
+        </div>
+
+        <!-- Atmospheric Visual Element (Background subtle) -->
+        <div class="mt-xl opacity-30 pointer-events-none">
+            <img class="w-full h-32 object-cover rounded-2xl grayscale" data-alt="A serene morning view of a coffee plantation with mist rolling over the hills, representing ideal air temperature and humidity for coffee growth. Soft sunlight filtering through the leaves." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGx8EQnPcFqnpRTkyYw5xf-KEyvbdvkSa3z0oYhKxagrD4coA2QgQNtE6bAssr6fA1gaQ4OCbHa0weMvjb4e36JCTLpz0eIMtPkiJhaDIzSQirZbxU06rUX4219IqdfUGly3tL0VJXVGRmm0U8KFGlda8VyX0iLPefxN5yu5k7AnuEVSxrKtBpid_qdhPPaPElIDgQDm3oQeCA19wY6EkSXKP6Vpoblep_uE6Y4N4ryBELRcTo1Mhatk75MMD9SJzeNKN7tKoQrHM">
+        </div>
+        
+        <div class="flex justify-center mt-xl">
+            <a href="dashboard_petani.html" class="bg-primary text-on-primary font-semibold py-3 px-lg rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] active:scale-95 transition-transform duration-150 w-full text-center">
+                Kembali ke Beranda
+            </a>
+        </div>
+    </main>
+
+    <!-- FAB Interaction Script -->
+    <script>
         document.querySelectorAll('a, button').forEach(el => {
             el.addEventListener('click', (e) => {
-                // Micro-interaction logic for ripples or state changes
                 const ripple = document.createElement('div');
                 ripple.className = 'absolute bg-white/20 rounded-full scale-0 animate-ping pointer-events-none';
                 ripple.style.width = '20px';
@@ -165,9 +224,138 @@
         });
     </script>
 
+    <!-- INTEGRASI REAL-TIME WEBSOCKET & POPUP LOGIC UNTUK SUHU -->
+    <script>
+        // 1. Logika untuk menampilkan dan menyembunyikan Popup
+        function tampilkanPopup() {
+            const popup = document.getElementById('connection-popup');
+            const popupContent = document.getElementById('popup-content');
+            
+            popup.classList.remove('hidden');
+            void popup.offsetWidth; 
+            
+            popup.classList.remove('opacity-0');
+            popupContent.classList.remove('scale-95');
+        }
 
+        function tutupPopup() {
+            const popup = document.getElementById('connection-popup');
+            const popupContent = document.getElementById('popup-content');
+            
+            popup.classList.add('opacity-0');
+            popupContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                popup.classList.add('hidden');
+            }, 300);
+            
+            aturUlangWaktuTunggu();
+        }
 
+        window.addEventListener('offline', tampilkanPopup);
 
+        // 2. Variabel Timer untuk mendeteksi mesin mati
+        let mesinTimeout;
+        const BATAS_WAKTU_TUNGGU = 15000; // 15 detik
 
+        function resetKeNol() {
+            document.getElementById('temp-value').innerText = '0°C';
+            document.getElementById('temp-bar').style.height = '0%';
+            document.getElementById('temp-status').innerText = 'Tidak Terhubung';
+            
+            // Ubah warna bar dan bulb ke warna netral/abu-abu saat terputus
+            document.getElementById('temp-bar').style.backgroundColor = '#9ca3af'; 
+            document.getElementById('temp-bulb').style.backgroundColor = '#9ca3af'; 
+            document.getElementById('temp-status').style.color = '#9ca3af'; 
+        }
 
-</body></html>
+        function aturUlangWaktuTunggu() {
+            clearTimeout(mesinTimeout); 
+            
+            mesinTimeout = setTimeout(() => {
+                console.warn("Mesin tidak merespons selama 15 detik.");
+                resetKeNol();
+                tampilkanPopup();
+            }, BATAS_WAKTU_TUNGGU);
+        }
+
+        // 3. Konfigurasi WebSocket
+        const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
+        const socket = new WebSocket(wsUrl);
+
+        aturUlangWaktuTunggu(); 
+
+        socket.onclose = () => {
+            console.warn("Koneksi API terputus.");
+            clearTimeout(mesinTimeout); 
+            resetKeNol();
+            tampilkanPopup();
+        };
+
+        socket.onerror = (error) => {
+            console.error("Kesalahan jaringan API:", error);
+            clearTimeout(mesinTimeout);
+            resetKeNol();
+            tampilkanPopup();
+        };
+
+        socket.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                
+                if (data.type === 'telemetry' && data.payload && data.payload.payload) {
+                    
+                    // Mengambil nilai suhu (perhatikan ejaan 'temprature' sesuai output mesin)
+                    const nilaiSuhu = data.payload.payload.soil_temprature; 
+
+                    if (nilaiSuhu !== undefined && nilaiSuhu !== null && nilaiSuhu !== "") {
+                        aturUlangWaktuTunggu(); 
+
+                        const currentTemp = parseFloat(nilaiSuhu);
+                        
+                        if(isNaN(currentTemp)) return; 
+
+                        // Update Angka
+                        document.getElementById('temp-value').innerText = currentTemp.toFixed(1) + '°C';
+                        
+                        // Update Bar (Asumsi tinggi maksimal bar mewakili 40°C)
+                        // Kalkulasi persentase tinggi: (Suhu saat ini / 40) * 100
+                        let percent = (currentTemp / 40) * 100;
+                        percent = Math.max(0, Math.min(100, percent)); 
+                        document.getElementById('temp-bar').style.height = `${percent}%`;
+
+                        // Update Status dan Warna
+                        const statusText = document.getElementById('temp-status');
+                        const tempBar = document.getElementById('temp-bar');
+                        const tempBulb = document.getElementById('temp-bulb');
+                        
+                        // Logika perubahan warna berdasarkan suhu (opsional tapi bagus untuk visual)
+                        let colorHex = '#006c49'; // Warna default (primary/sejuk)
+                        
+                        if (currentTemp < 20) {
+                            statusText.innerText = 'Dingin';
+                            colorHex = '#2563eb'; // Biru
+                        } else if (currentTemp > 35) {
+                            statusText.innerText = 'Sangat Panas';
+                            colorHex = '#dc2626'; // Merah
+                        } else if (currentTemp > 30) {
+                            statusText.innerText = 'Hangat';
+                            colorHex = '#ea580c'; // Oranye
+                        } else {
+                            statusText.innerText = 'Sejuk / Optimal';
+                            colorHex = '#006c49'; // Hijau (Primary)
+                        }
+
+                        // Terapkan warna ke elemen
+                        statusText.style.color = colorHex;
+                        tempBar.style.backgroundColor = colorHex;
+                        tempBulb.style.backgroundColor = colorHex;
+                    }
+                }
+            } catch (err) {
+                console.log("Mengabaikan pesan non-JSON dari server.");
+            }
+        };
+    </script>
+</body>
+</html>
