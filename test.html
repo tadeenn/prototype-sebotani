@@ -237,16 +237,17 @@
             console.error("Kesalahan jaringan API:", error);
             resetKeNol();
         };
-
-        // Pemicu 3: Ketika pesan diterima, namun harus dicek isinya
+// Pemicu 3: Ketika pesan diterima, namun harus dicek isinya
         socket.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
-
-                console.log("Data asli dari server:", data);
-                // Memastikan data 'ph' benar-benar ada dan tidak kosong (null/undefined)
-                if (data.ph !== undefined && data.ph !== null && data.ph !== "") {
-                    const currentPh = parseFloat(data.ph);
+                
+                // Cek apakah data memiliki 'payload' dan di dalam payload ada data 'ph'
+                // CATATAN: Jika nama datanya bukan 'ph', ganti kata 'ph' di bawah ini
+                if (data.payload && data.payload.ph !== undefined && data.payload.ph !== null && data.payload.ph !== "") {
+                    
+                    // Mengambil nilai pH dari dalam bungkusan payload
+                    const currentPh = parseFloat(data.payload.ph);
                     
                     // Jika data yang dikirim ternyata bukan angka (NaN)
                     if(isNaN(currentPh)) {
@@ -273,7 +274,7 @@
                         statusText.innerText = 'Netral / Ideal';
                     }
                 } else {
-                    // Jika parameter 'ph' tidak ditemukan di dalam respons API
+                    // Jika tidak ada 'payload' atau tidak ada 'ph' di dalamnya
                     resetKeNol();
                 }
             } catch (err) {
