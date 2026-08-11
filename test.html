@@ -210,11 +210,10 @@
             });
         });
     </script>
-
-    <!-- INTEGRASI REAL-TIME WEBSOCKET (API) -->
+<!-- INTEGRASI REAL-TIME WEBSOCKET (API) -->
     <script>
         // MASUKKAN URL WSS YANG BERHASIL TERHUBUNG DI SINI
-        const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
+        const wsUrl = 'wss://console.flux.id/api/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
         const socket = new WebSocket(wsUrl);
 
         // Fungsi untuk mereset tampilan ke angka 0 saat terjadi masalah
@@ -224,29 +223,25 @@
             document.getElementById('ph-status').innerText = 'Tidak Terhubung / Tidak Ada Data';
         }
 
-        // Pemicu 1: Ketika koneksi API terputus (disconnect)
         socket.onclose = () => {
             console.warn("Koneksi API terputus.");
             resetKeNol();
         };
 
-        // Pemicu 2: Ketika terjadi error pada jaringan WebSocket
         socket.onerror = (error) => {
             console.error("Kesalahan jaringan API:", error);
             resetKeNol();
         };
 
-// Pemicu 3: Ketika pesan diterima, membongkar payload dari server
+        // Pemicu 3: Ketika pesan diterima, membongkar payload dari server
         socket.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
                 
-                // Cek apakah ada objek 'payload', dan di dalamnya ada 'payload' lagi
+                // Cek apakah ada objek 'payload' ganda berdasarkan struktur gambar
                 if (data.payload && data.payload.payload) {
                     
-                    // Mengambil nilai dari dalam payload yang bersarang (nested)
-                    // PERHATIAN: Saya berasumsi namanya 'soil_ph' berdasarkan pola data Anda. 
-                    // Jika ternyata namanya hanya 'ph', ubah menjadi data.payload.payload.ph
+                    // Mengambil nilai soil_ph
                     const nilaiPh = data.payload.payload.soil_ph; 
 
                     if (nilaiPh !== undefined && nilaiPh !== null && nilaiPh !== "") {
@@ -262,7 +257,7 @@
                         
                         // B. Kalkulasi persentase pergerakan panah (Skala UI dari 4 s.d 10)
                         let percent = ((currentPh - 4) / 6) * 100;
-                        percent = Math.max(0, Math.min(100, percent)); // Mencegah panah keluar batas
+                        percent = Math.max(0, Math.min(100, percent)); 
                         
                         document.getElementById('ph-gauge').style.left = `${percent}%`;
 
@@ -276,11 +271,9 @@
                             statusText.innerText = 'Netral / Ideal';
                         }
                     } else {
-                        // Jika parameter pH tidak ditemukan di dalam payload kedua
                         resetKeNol();
                     }
                 } else {
-                    // Jika tidak ada 'payload' ganda
                     resetKeNol();
                 }
             } catch (err) {
