@@ -236,44 +236,51 @@
             resetKeNol();
         };
 
-        // Pemicu 3: Ketika pesan diterima, membongkar payload dari server
+// Pemicu 3: Ketika pesan diterima, membongkar payload dari server
         socket.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
                 
-                // Cek isi asli data (bisa dilihat di Inspect Element -> Console)
-                console.log("Data masuk:", data);
-                
-                // Cek apakah ada objek 'payload' dan nilai 'ph' di dalamnya
-                // Jika nama datanya bukan 'ph' (misal: soil_ph), ubah 'data.payload.ph' menjadi 'data.payload.soil_ph'
-                if (data.payload && data.payload.ph !== undefined && data.payload.ph !== null && data.payload.ph !== "") {
+                // Cek apakah ada objek 'payload', dan di dalamnya ada 'payload' lagi
+                if (data.payload && data.payload.payload) {
                     
-                    const currentPh = parseFloat(data.payload.ph);
-                    
-                    if(isNaN(currentPh)) {
-                        resetKeNol();
-                        return;
-                    }
+                    // Mengambil nilai dari dalam payload yang bersarang (nested)
+                    // PERHATIAN: Saya berasumsi namanya 'soil_ph' berdasarkan pola data Anda. 
+                    // Jika ternyata namanya hanya 'ph', ubah menjadi data.payload.payload.ph
+                    const nilaiPh = data.payload.payload.soil_ph; 
 
-                    // A. Update Angka Utama di UI
-                    document.getElementById('ph-value').innerText = currentPh.toFixed(1);
-                    
-                    // B. Kalkulasi persentase pergerakan panah (Skala UI dari 4 s.d 10)
-                    let percent = ((currentPh - 4) / 6) * 100;
-                    percent = Math.max(0, Math.min(100, percent)); // Mencegah panah keluar batas
-                    
-                    document.getElementById('ph-gauge').style.left = `${percent}%`;
+                    if (nilaiPh !== undefined && nilaiPh !== null && nilaiPh !== "") {
+                        const currentPh = parseFloat(nilaiPh);
+                        
+                        if(isNaN(currentPh)) {
+                            resetKeNol();
+                            return;
+                        }
 
-                    // C. Update Deskripsi Teks di bawah angka
-                    const statusText = document.getElementById('ph-status');
-                    if (currentPh < 6.5) {
-                        statusText.innerText = 'Asam';
-                    } else if (currentPh > 7.5) {
-                        statusText.innerText = 'Basa';
+                        // A. Update Angka Utama di UI
+                        document.getElementById('ph-value').innerText = currentPh.toFixed(1);
+                        
+                        // B. Kalkulasi persentase pergerakan panah (Skala UI dari 4 s.d 10)
+                        let percent = ((currentPh - 4) / 6) * 100;
+                        percent = Math.max(0, Math.min(100, percent)); // Mencegah panah keluar batas
+                        
+                        document.getElementById('ph-gauge').style.left = `${percent}%`;
+
+                        // C. Update Deskripsi Teks di bawah angka
+                        const statusText = document.getElementById('ph-status');
+                        if (currentPh < 6.5) {
+                            statusText.innerText = 'Asam';
+                        } else if (currentPh > 7.5) {
+                            statusText.innerText = 'Basa';
+                        } else {
+                            statusText.innerText = 'Netral / Ideal';
+                        }
                     } else {
-                        statusText.innerText = 'Netral / Ideal';
+                        // Jika parameter pH tidak ditemukan di dalam payload kedua
+                        resetKeNol();
                     }
                 } else {
+                    // Jika tidak ada 'payload' ganda
                     resetKeNol();
                 }
             } catch (err) {
