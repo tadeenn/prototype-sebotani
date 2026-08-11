@@ -1,236 +1,389 @@
-<!DOCTYPE html><html lang="id" style=""><head>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;family=Be+Vietnam+Pro:wght@400;500;700&amp;family=JetBrains+Mono:wght@600&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<script id="tailwind-config">
+<!DOCTYPE html>
+<html class="light" lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>SEBOTANI - Analisis & Rekomendasi</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    
+    <!-- Pustaka Chart.js untuk Grafik -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     "colors": {
-                        "on-tertiary-fixed": "#161d19",
-                        "primary": "#24622e",
-                        "surface-container": "#eeeee9",
-                        "surface-tint": "#2e6b36",
-                        "tertiary-container": "#69706b",
-                        "surface-container-highest": "#e3e3de",
-                        "on-tertiary-fixed-variant": "#414844",
-                        "on-secondary-fixed": "#2f1500",
-                        "surface-container-high": "#e8e8e3",
-                        "on-error-container": "#93000a",
-                        "background": "#fafaf4",
-                        "surface-variant": "#e3e3de",
-                        "secondary-container": "#fda559",
-                        "secondary-fixed-dim": "#ffb77e",
-                        "surface-container-lowest": "#ffffff",
-                        "on-surface-variant": "#41493f",
-                        "on-secondary-fixed-variant": "#6e3900",
+                        "primary": "#006c49",
                         "on-primary": "#ffffff",
-                        "on-secondary-container": "#723b00",
-                        "secondary": "#904d02",
-                        "on-primary-container": "#cdffca",
-                        "on-tertiary": "#ffffff",
-                        "primary-container": "#3e7b44",
-                        "outline": "#71796e",
-                        "surface": "#fafaf4",
-                        "inverse-surface": "#2f312e",
-                        "tertiary-fixed-dim": "#c1c8c2",
-                        "on-background": "#1a1c19",
-                        "tertiary-fixed": "#dde4de",
-                        "surface-dim": "#dadad5",
-                        "primary-fixed-dim": "#95d695",
-                        "inverse-on-surface": "#f1f1ec",
-                        "on-error": "#ffffff",
-                        "surface-bright": "#fafaf4",
-                        "inverse-primary": "#95d695",
-                        "error-container": "#ffdad6",
-                        "surface-container-low": "#f4f4ee",
-                        "outline-variant": "#c0c9bc",
-                        "on-primary-fixed": "#002106",
-                        "secondary-fixed": "#ffdcc3",
-                        "on-secondary": "#ffffff",
-                        "on-primary-fixed-variant": "#125220",
-                        "on-tertiary-container": "#edf4ed",
-                        "on-surface": "#1a1c19",
-                        "tertiary": "#515853",
-                        "primary-fixed": "#b0f3b0",
-                        "error": "#ba1a1a"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
+                        "primary-container": "#10b981",
+                        "on-primary-container": "#00422b",
+                        "error": "#ba1a1a",
+                        "surface": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "surface-variant": "#e1e3e4",
+                        "on-surface-variant": "#3c4a42",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#bbcabf",
+                        "secondary": "#855300",
+                        // Warna khusus grafik
+                        "chart-ph": "#eab308",
+                        "chart-moist": "#3b82f6",
+                        "chart-temp": "#ef4444"
                     },
                     "spacing": {
-                        "xs": "4px",
-                        "container-padding": "16px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px",
                         "xl": "32px",
-                        "card-gap": "12px",
-                        "unit": "4px",
-                        "sm": "8px",
                         "lg": "24px",
-                        "md": "16px"
-                    },
-                    "fontFamily": {
-                        "display-lg": ["Manrope"],
-                        "headline-sm": ["Manrope"],
-                        "label-caps": ["JetBrains Mono"],
-                        "body-lg": ["Be Vietnam Pro"],
-                        "headline-md-mobile": ["Manrope"],
-                        "body-md": ["Be Vietnam Pro"],
-                        "headline-md": ["Manrope"],
-                        "data-display": ["Manrope"]
-                    },
-                    "fontSize": {
-                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                        "label-caps": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
-                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                        "data-display": ["48px", {"lineHeight": "48px", "fontWeight": "700"}]
                     }
-                }
-            }
+                },
+            },
         }
     </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .graph-line {
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            animation: dash 3s linear forwards;
-        }
-        @keyframes dash {
-            to { stroke-dashoffset: 0; }
-        }
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { background-color: #f8f9fa; color: #191c1d; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        /* Menyembunyikan scrollbar pada deretan tombol waktu */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-background text-on-background min-h-screen font-body-md flex flex-col">
-<!-- Header (TopAppBar) -->
-<header class="bg-primary flex justify-between items-center px-md py-sm w-full sticky top-0 z-50 shadow-md">
-<button class="text-on-primary p-xs active:scale-95 transition-transform">
-<span class="material-symbols-outlined">arrow_back</span>
-</button>
-<h1 class="font-headline-md-mobile text-headline-md-mobile font-bold text-on-primary">Analisis Rekomendasi</h1>
-<div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center p-1">
-<img class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBddXfbBPrq_MhRtEeYQ5knLHbsEqkYw_Uhj_7GT4F17FjZ_PPaYCYKvUcCtSxp2o1L1WmW-LSwa30QKRcgw1peHlFvJw6UFTkjwEdCYmjdpyJ3T4ZS_zCjbgNw1S6bBMcKzXsoMapapK1zgPWz-I5sUN8wY4R-xbzK49w0Pccs-ZVq_N1SVrrAsBPfb66eDKMWwnX8ahzicoc7NOnk_X3ioEmft9BNoI-JigAItFQfBF59twYbFLPGKGps3XCdUJZ6yrA" alt="Sebotani Logo">
-</div>
-</header>
-<!-- Content Canvas -->
-<main class="flex-1 px-container-padding py-md space-y-md">
-<!-- Welcome Section -->
-<div class="text-center mb-md">
-<h2 class="font-headline-sm text-headline-sm text-on-surface">Analisis Kesehatan Tanaman Anda</h2>
-</div>
-<!-- Weekly Check Card -->
-<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-[0px_4px_20px_rgba(0,0,0,0.04)] flex gap-md items-start">
-<div class="w-16 h-16 bg-surface-container rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden">
-<img class="w-full h-full object-cover" data-alt="A detailed digital illustration showing a healthy coffee plant in a pot with various soil sensors and digital measurement icons floating around it. The visual style is modern, technical, and organic, using a palette of deep greens and earthy browns to represent precision agriculture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgGq0lh9u90y21WYcVHVZT3D0Hg-8LmvmQxKPxLgAQ-jkr4RhXcugNQ7X1WMp4Go3bIph1D4vJ5jxRrranGaI_XdUvS-atIMC7zLiUJAxUYEmCPKi1ifH6-xIfYf7M1cbHPT4eSBZWWahNA-puen8KBlEMcWebVFuO5thp_LVGjkiAVFWW3g8nAhfDLqt8_hGMycKKTKbZKP6SMM_bs3Fa7jBgRFFz-W8Kold_JLfvKrCo9RMGCwLrgw">
-</div>
-<div class="flex-1">
-<h3 class="font-body-lg text-body-lg font-bold text-on-surface mb-xs leading-tight">Cek Kondisi Tanaman Seminggu Terakhir</h3>
-<p class="text-on-surface-variant text-body-md">Sistem akan menganalisis data sensor 7 hari ke belakang untuk memberikan instruksi perawatan yang tepat.</p>
-</div>
-</div>
-<!-- Action Button -->
-<button class="w-full bg-primary-container text-on-primary py-md rounded-lg font-bold flex items-center justify-center gap-sm shadow-sm active:scale-[0.98] transition-all">
-<span class="material-symbols-outlined">analytics</span>
-<span class="">Mulai Analisis Tanaman Anda</span>
-</button>
-<!-- Condition Summary Bento Grid -->
-<div class="grid grid-cols-1 gap-md">
-<!-- Summary Card -->
-<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
-<div class="flex items-center gap-sm mb-md">
-<span class="material-symbols-outlined text-primary">monitoring</span>
-<h4 class="font-headline-sm text-headline-sm">Ringkasan Kondisi Lahan</h4>
-</div>
-<div class="grid grid-cols-2 gap-sm mb-lg">
-<div class="bg-surface-container-low p-sm rounded-lg border-l-4 border-secondary">
-<div class="flex items-center gap-xs text-secondary mb-xs">
-<span class="material-symbols-outlined text-[18px]">opacity</span>
-<span class="font-label-caps text-label-caps">KELEMBAPAN</span>
-</div>
-<div class="flex items-baseline gap-xs">
-<span class="text-headline-md font-bold">42%</span>
-<span class="material-symbols-outlined text-error text-[16px]">warning</span>
-</div>
-<p class="text-[10px] text-on-surface-variant italic">(Terlalu Kering)</p>
-</div>
-<div class="bg-surface-container-low p-sm rounded-lg border-l-4 border-error">
-<div class="flex items-center gap-xs text-error mb-xs">
-<span class="material-symbols-outlined text-[18px]">science</span>
-<span class="font-label-caps text-label-caps">PH TANAH</span>
-</div>
-<div class="flex items-baseline gap-xs">
-<span class="text-headline-md font-bold">5.1</span>
-<span class="material-symbols-outlined text-error text-[16px]">error</span>
-</div>
-<p class="text-[10px] text-on-surface-variant italic">(Sangat Asam)</p>
-</div>
-</div>
-<!-- Sparkline Placeholder -->
-<div class="h-32 w-full relative">
-<svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 40">
-<path class="graph-line" d="M0,30 Q10,15 20,25 T40,20 T60,30 T80,10 T100,5" fill="none" stroke="#3E7B44" stroke-width="2"></path>
-<path class="graph-line" d="M0,25 Q10,22 20,28 T40,24 T60,26 T80,28 T100,30" fill="none" stroke="#904D02" stroke-width="2"></path>
-</svg>
-<div class="flex justify-between mt-sm text-[10px] text-outline">
-<span class="">Min</span><span class="">Sel</span><span class="">Rab</span><span class="">Kam</span><span class="">Jum</span><span class="">Sab</span><span class="">Min</span>
-</div>
-</div>
-</div>
-<!-- Recommendation Card -->
-<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm border-l-8 border-primary">
-<div class="flex items-center gap-sm mb-md">
-<span class="material-symbols-outlined text-primary">eco</span>
-<h4 class="font-headline-sm text-headline-sm">Langkah Harus Diapain</h4>
-</div>
-<!-- Step 1: Irrigation -->
-<div class="mb-lg">
-<h5 class="font-bold text-on-surface mb-xs border-b border-outline-variant pb-xs">Irigasi Tambahan</h5>
-<p class="text-body-md text-on-surface-variant">Lahan terlalu kering selama 4 hari berturut-turut. Aktifkan sistem irigasi otomatis selama 15 menit setiap jam 08.00 pagi.</p>
-</div>
-<!-- Step 2: Fertilizer -->
-<div>
-<h5 class="font-bold text-on-surface mb-xs border-b border-outline-variant pb-xs">Rekomendasi Pupuk</h5>
-<p class="text-body-md text-on-surface-variant mb-md">Tanah Anda terlalu asam (pH 5.1). Taburkan Kapur Dolomit untuk menaikkan pH, lalu gunakan pupuk kandang.</p>
-<div class="grid grid-cols-2 gap-sm">
-<div class="bg-surface-container-high p-sm rounded-lg flex items-center gap-sm">
-<div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-<span class="material-symbols-outlined text-primary text-[20px]">layers</span>
-</div>
-<div>
-<p class="font-bold text-[10px]">Kapur Dolomit</p>
-<p class="text-[10px] text-on-surface-variant">200g per pohon</p>
-</div>
-</div>
-<div class="bg-surface-container-high p-sm rounded-lg flex items-center gap-sm">
-<div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-<span class="material-symbols-outlined text-primary text-[20px]">paid</span>
-</div>
-<div>
-<p class="font-bold text-[10px]">Biaya Rata-rata</p>
-<p class="text-[10px] text-on-surface-variant">Rp 12.500/btg</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</main><div class="px-container-padding mb-lg"><button class="w-full bg-primary text-on-primary py-md font-bold text-headline-sm shadow-md active:scale-[0.98] transition-all rounded-lg">Kembali ke Beranda</button></div>
-<!-- FAB -->
+<body class="flex flex-col min-h-screen relative">
+    
+    <!-- POPUP KONEKSI TERPUTUS -->
+    <div id="connection-popup" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm">
+        <div id="popup-content" class="bg-surface rounded-2xl shadow-xl p-6 max-w-sm w-[90%] flex flex-col items-center text-center transform scale-95 transition-transform duration-300 border border-outline-variant/30">
+            <span class="material-symbols-outlined text-error text-[56px] mb-4">wifi_off</span>
+            <h3 class="text-[18px] font-bold text-on-surface mb-2">Koneksi Terputus</h3>
+            <p class="text-[14px] text-on-surface-variant mb-6 leading-relaxed">
+                Coba cek koneksi internet Anda atau cek mesin SEBOTANI.
+            </p>
+            <button onclick="tutupPopup()" class="bg-primary text-on-primary font-semibold py-3 px-6 rounded-xl shadow-sm active:scale-95 transition-transform duration-150 w-full">
+                Mengerti
+            </button>
+        </div>
+    </div>
 
-<!-- Bottom Navigation Shell -->
+    <!-- TopAppBar (Desain disamakan dengan halaman lain) -->
+    <header class="fixed top-0 w-full z-50 bg-primary shadow-sm flex justify-between items-center px-margin-mobile h-14">
+        <div class="flex items-center w-full justify-between">
+            <a href="dashboard_petani.html" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors active:scale-95 duration-150">
+                <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+            </a>
+            <div class="flex flex-col items-center">
+                <span class="text-[18px] md:text-[20px] font-semibold text-white">Analisis & Rekomendasi</span>
+            </div>
+            <div class="flex items-center justify-center w-10 h-10">
+                <img alt="SEBOTANI Logo" src="https://prototype-sebotani.vercel.app/sebotani-logo.png">
+            </div>
+        </div>
+    </header>
 
+    <!-- Main Content Canvas -->
+    <main class="flex-grow pt-20 pb-24 px-margin-mobile md:px-margin-desktop max-w-2xl mx-auto w-full">
+        
+        <!-- Live Data Overview -->
+        <div class="grid grid-cols-3 gap-3 mb-6">
+            <div class="bg-surface-container-lowest rounded-xl p-3 border border-outline-variant/30 text-center shadow-[0px_4px_12px_rgba(0,0,0,0.05)]">
+                <p class="text-[12px] text-on-surface-variant font-semibold mb-1">pH Tanah</p>
+                <p id="live-ph" class="text-2xl font-bold text-chart-ph">0.0</p>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl p-3 border border-outline-variant/30 text-center shadow-[0px_4px_12px_rgba(0,0,0,0.05)]">
+                <p class="text-[12px] text-on-surface-variant font-semibold mb-1">Kelembapan</p>
+                <p id="live-moist" class="text-2xl font-bold text-chart-moist">0%</p>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl p-3 border border-outline-variant/30 text-center shadow-[0px_4px_12px_rgba(0,0,0,0.05)]">
+                <p class="text-[12px] text-on-surface-variant font-semibold mb-1">Suhu Udara</p>
+                <p id="live-temp" class="text-2xl font-bold text-chart-temp">0°C</p>
+            </div>
+        </div>
 
+        <!-- Chart Card -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-4 flex flex-col mb-6 border border-outline-variant/30">
+            <h2 class="text-[16px] font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">monitoring</span> Grafik Historis
+            </h2>
+            
+            <!-- Filter Waktu -->
+            <div class="flex overflow-x-auto hide-scrollbar gap-2 mb-4 pb-1" id="filter-waktu">
+                <button onclick="ubahWaktu('1j')" class="waktu-btn bg-primary text-white text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Jam</button>
+                <button onclick="ubahWaktu('6j')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">6 Jam</button>
+                <button onclick="ubahWaktu('12j')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">12 Jam</button>
+                <button onclick="ubahWaktu('1h')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Hari</button>
+                <button onclick="ubahWaktu('3h')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">3 Hari</button>
+                <button onclick="ubahWaktu('1m')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Minggu</button>
+                <button onclick="ubahWaktu('1bln')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Bulan</button>
+                <button onclick="ubahWaktu('3bln')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">3 Bulan</button>
+                <button onclick="ubahWaktu('6bln')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">6 Bulan</button>
+                <button onclick="ubahWaktu('1t')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Tahun</button>
+            </div>
 
-</body></html>
+            <!-- Canvas Grafik Simpel -->
+            <div class="w-full h-[280px] relative border border-gray-100 rounded-lg p-2 bg-gray-50/30">
+                <canvas id="sebotaniChart"></canvas>
+            </div>
+        </div>
+
+        <!-- AI Recommendation Card -->
+        <div class="bg-[#eef2ff] rounded-xl p-5 flex flex-col border border-indigo-200 shadow-sm relative overflow-hidden">
+            <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[120px] text-indigo-500/10" style="font-variation-settings: 'FILL' 1;">psychology</span>
+            
+            <div class="flex items-center gap-3 mb-3 relative z-10">
+                <div class="bg-indigo-500 p-2 rounded-lg flex items-center justify-center shadow-md">
+                    <span class="material-symbols-outlined text-white text-[20px]">smart_toy</span>
+                </div>
+                <h3 class="text-[18px] font-bold text-indigo-900">Saran AI Sebotani</h3>
+                <span class="relative flex h-3 w-3 ml-auto">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+                </span>
+            </div>
+            <div class="relative z-10 bg-white/60 backdrop-blur-sm p-4 rounded-xl border border-white/50">
+                <p id="ai-text" class="text-[14px] text-indigo-950 leading-relaxed font-medium">
+                    Menunggu aliran data untuk melakukan analisis...
+                </p>
+            </div>
+        </div>
+
+        <!-- Tombol Kembali ke Beranda (Konsisten dengan halaman lain) -->
+        <div class="flex justify-center mt-xl">
+            <a href="dashboard_petani.html" class="bg-primary text-on-primary font-semibold py-3 px-lg rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] active:scale-95 transition-transform duration-150 w-full text-center">
+                Kembali ke Beranda
+            </a>
+        </div>
+    </main>
+
+    <!-- UI Interactions Script -->
+    <script>
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const ripple = document.createElement('div');
+                ripple.className = 'absolute bg-black/10 rounded-full scale-0 animate-ping pointer-events-none';
+                ripple.style.width = '20px';
+                ripple.style.height = '20px';
+                el.classList.add('relative', 'overflow-hidden');
+                el.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+
+    <!-- CHART.JS LOGIC & GENERATOR WAKTU -->
+    <script>
+        const ctx = document.getElementById('sebotaniChart').getContext('2d');
+        let sebotaniChart;
+
+        const config = {
+            type: 'line',
+            data: {
+                labels: [], 
+                datasets: [
+                    { label: 'pH Tanah', borderColor: '#eab308', backgroundColor: '#eab308', data: [], yAxisID: 'yPH', tension: 0.4, borderWidth: 2, pointRadius: 0 },
+                    { label: 'Kelembapan (%)', borderColor: '#3b82f6', backgroundColor: '#3b82f6', data: [], yAxisID: 'yPersen', tension: 0.4, borderWidth: 2, pointRadius: 0 },
+                    { label: 'Suhu (°C)', borderColor: '#ef4444', backgroundColor: '#ef4444', data: [], yAxisID: 'yPersen', tension: 0.4, borderWidth: 2, borderDash: [5, 5], pointRadius: 0 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, usePointStyle: true, font: { size: 10 } } }
+                },
+                scales: {
+                    x: { ticks: { maxTicksLimit: 6, font: { size: 10 } }, grid: { display: false } },
+                    yPH: { type: 'linear', position: 'left', min: 0, max: 14, title: { display: true, text: 'pH Tanah' } },
+                    yPersen: { type: 'linear', position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, title: { display: true, text: '% / °C' } }
+                }
+            }
+        };
+
+        sebotaniChart = new Chart(ctx, config);
+
+        // BATAS TANGGAL AKTIVASI DATABASE (2 Bulan yang lalu)
+        const TANGGAL_AKTIVASI_DATABASE = new Date();
+        TANGGAL_AKTIVASI_DATABASE.setMonth(TANGGAL_AKTIVASI_DATABASE.getMonth() - 2);
+
+        function ubahWaktu(rentang) {
+            document.querySelectorAll('.waktu-btn').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white');
+                btn.classList.add('bg-gray-100', 'text-gray-600');
+            });
+            event.target.classList.remove('bg-gray-100', 'text-gray-600');
+            event.target.classList.add('bg-primary', 'text-white');
+
+            let points = 20;
+            let labels = [];
+            let dataPh = [], dataMoist = [], dataTemp = [];
+            
+            let now = new Date();
+            let currentPh = 6.5; 
+            let currentMoist = 70; 
+            let currentTemp = 26; 
+
+            for(let i = points; i >= 0; i--) {
+                let timePoint = new Date(now.getTime());
+                
+                if(rentang === '1j') timePoint.setMinutes(now.getMinutes() - (i * 3));
+                else if(rentang === '6j') timePoint.setMinutes(now.getMinutes() - (i * 18));
+                else if(rentang === '12j') timePoint.setMinutes(now.getMinutes() - (i * 36));
+                else if(rentang === '1h') timePoint.setHours(now.getHours() - Math.floor(i * 1.2));
+                else if(rentang === '3h') timePoint.setHours(now.getHours() - (i * 3.6));
+                else if(rentang === '1m') timePoint.setHours(now.getHours() - (i * 8.4));
+                else if(rentang === '1bln') timePoint.setDate(now.getDate() - Math.floor(i * 1.5));
+                else if(rentang === '3bln') timePoint.setDate(now.getDate() - (i * 4.5));
+                else if(rentang === '6bln') timePoint.setDate(now.getDate() - (i * 9));
+                else if(rentang === '1t') timePoint.setDate(now.getDate() - (i * 18));
+
+                // Lewati penggambaran grafik jika melampaui tanggal awal pemasangan database
+                if (timePoint < TANGGAL_AKTIVASI_DATABASE) {
+                    continue; 
+                }
+
+                let timeStr = "";
+                if (['1j', '6j', '12j', '1h'].includes(rentang)) {
+                    timeStr = timePoint.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+                } else if (['3h', '1m', '1bln'].includes(rentang)) {
+                    timeStr = timePoint.toLocaleDateString('id-ID', {day: 'numeric', month: 'short'}) + ", " + timePoint.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+                } else {
+                    timeStr = timePoint.toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: '2-digit'});
+                }
+                labels.push(timeStr);
+
+                currentPh = Math.max(4, Math.min(9, currentPh + (Math.random() - 0.5) * 0.3));
+                currentMoist = Math.max(40, Math.min(90, currentMoist + (Math.random() - 0.5) * 5));
+                currentTemp = Math.max(18, Math.min(35, currentTemp + (Math.random() - 0.5) * 2));
+
+                dataPh.push(currentPh);
+                dataMoist.push(currentMoist);
+                dataTemp.push(currentTemp);
+            }
+
+            sebotaniChart.data.labels = labels;
+            sebotaniChart.data.datasets[0].data = dataPh;
+            sebotaniChart.data.datasets[1].data = dataMoist;
+            sebotaniChart.data.datasets[2].data = dataTemp;
+            sebotaniChart.update();
+        }
+
+        ubahWaktu('1j');
+        document.querySelectorAll('.waktu-btn')[0].classList.add('bg-primary', 'text-white');
+        document.querySelectorAll('.waktu-btn')[0].classList.remove('bg-gray-100', 'text-gray-600');
+    </script>
+
+    <!-- AI LOGIC, WEBSOCKET REALTIME & POPUP -->
+    <script>
+        function prosesAnalisisAI(ph, moisture, temp) {
+            let masalah = [];
+            let saran = [];
+
+            if (ph < 6.0) { masalah.push("pH terlalu asam (" + ph + ")"); saran.push("Taburkan kapur dolomit pertanian untuk menetralkan keasaman tanah."); }
+            else if (ph > 7.5) { masalah.push("pH terlalu basa (" + ph + ")"); saran.push("Tambahkan bahan organik atau sulfur pertanian untuk menurunkan pH."); }
+
+            if (moisture < 50) { masalah.push("tanah sangat kering (" + moisture + "%)"); saran.push("Segera lakukan penyiraman intensif. Pertimbangkan penggunaan mulsa organik untuk menahan air."); }
+            else if (moisture > 85) { masalah.push("tanah terlalu basah/tergenang (" + moisture + "%)"); saran.push("Kurangi penyiraman dan segera perbaiki saluran drainase kebun agar akar kopi tidak membusuk."); }
+
+            if (temp < 18) { masalah.push("suhu udara terlalu dingin (" + temp + "°C)"); saran.push("Kurangi kanopi pohon peneduh sementara agar sinar matahari pagi bisa masuk memanaskan kebun."); }
+            else if (temp > 32) { masalah.push("suhu udara terlalu panas (" + temp + "°C)"); saran.push("Tingkatkan frekuensi pengkabutan/penyiraman ringan, dan pastikan pohon penaung tumbuh dengan baik."); }
+
+            const aiTextElement = document.getElementById('ai-text');
+
+            if (masalah.length === 0) {
+                aiTextElement.innerHTML = "🌱 <strong>Kondisi Ideal!</strong> Saat ini pH, kelembapan, dan suhu kebun Anda berada pada rentang yang sangat optimal untuk pertumbuhan. Pertahankan rutinitas perawatan dan pemupukan Anda.";
+            } else {
+                let kalimatMasalah = masalah.join(", ");
+                let kalimatSaran = saran.map(s => "<li>" + s + "</li>").join("");
+                
+                aiTextElement.innerHTML = `⚠️ <strong>Perhatian:</strong> Sistem mendeteksi bahwa <strong>${kalimatMasalah}</strong>.<br><br>
+                <strong>Tindakan yang direkomendasikan:</strong>
+                <ul class="list-disc pl-5 mt-1 space-y-1">${kalimatSaran}</ul>`;
+            }
+        }
+
+        function tampilkanPopup() {
+            const popup = document.getElementById('connection-popup');
+            const popupContent = document.getElementById('popup-content');
+            popup.classList.remove('hidden');
+            void popup.offsetWidth; 
+            popup.classList.remove('opacity-0');
+            popupContent.classList.remove('scale-95');
+        }
+
+        function tutupPopup() {
+            const popup = document.getElementById('connection-popup');
+            const popupContent = document.getElementById('popup-content');
+            popup.classList.add('opacity-0');
+            popupContent.classList.add('scale-95');
+            setTimeout(() => { popup.classList.add('hidden'); }, 300);
+            aturUlangWaktuTunggu();
+        }
+        window.addEventListener('offline', tampilkanPopup);
+
+        let mesinTimeout;
+        const BATAS_WAKTU_TUNGGU = 15000;
+
+        function aturUlangWaktuTunggu() {
+            clearTimeout(mesinTimeout); 
+            mesinTimeout = setTimeout(() => {
+                console.warn("Mesin tidak merespons selama 15 detik.");
+                tampilkanPopup();
+            }, BATAS_WAKTU_TUNGGU);
+        }
+
+        const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
+        const socket = new WebSocket(wsUrl);
+
+        socket.onopen = () => {
+            console.log("✅ BERHASIL TERHUBUNG KE API SEBOTANI!");
+            aturUlangWaktuTunggu();
+        }
+
+        socket.onclose = () => { clearTimeout(mesinTimeout); tampilkanPopup(); };
+        socket.onerror = (error) => { clearTimeout(mesinTimeout); tampilkanPopup(); };
+
+        socket.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                console.log("Data Live Masuk:", data);
+                
+                if (data.type === 'telemetry' && data.payload && data.payload.payload) {
+                    aturUlangWaktuTunggu(); 
+
+                    const p = data.payload.payload;
+                    const cPh = p.soil_ph !== undefined ? parseFloat(p.soil_ph) : NaN;
+                    const cMoist = p.soil_moisture !== undefined ? parseFloat(p.soil_moisture) : NaN;
+                    const cTemp = p.soil_temprature !== undefined ? parseFloat(p.soil_temprature) : NaN;
+
+                    if(!isNaN(cPh)) document.getElementById('live-ph').innerText = cPh.toFixed(1);
+                    if(!isNaN(cMoist)) document.getElementById('live-moist').innerText = Math.round(cMoist) + '%';
+                    if(!isNaN(cTemp)) document.getElementById('live-temp').innerText = cTemp.toFixed(1) + '°C';
+
+                    if(!isNaN(cPh) && !isNaN(cMoist) && !isNaN(cTemp)) {
+                        prosesAnalisisAI(cPh, cMoist, cTemp);
+                        
+                        const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                        sebotaniChart.data.labels.push(now);
+                        sebotaniChart.data.datasets[0].data.push(cPh);
+                        sebotaniChart.data.datasets[1].data.push(cMoist);
+                        sebotaniChart.data.datasets[2].data.push(cTemp);
+
+                        if (sebotaniChart.data.labels.length > 20) {
+                            sebotaniChart.data.labels.shift();
+                            sebotaniChart.data.datasets[0].data.shift();
+                            sebotaniChart.data.datasets[1].data.shift();
+                            sebotaniChart.data.datasets[2].data.shift();
+                        }
+                        sebotaniChart.update('none');
+                    }
+                }
+            } catch (err) {
+                // Abaikan pesan error non-json
+            }
+        };
+    </script>
+</body>
+</html>
