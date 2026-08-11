@@ -286,31 +286,72 @@
                 <strong>Rekomendasi Tindakan:</strong><ul class="list-disc pl-5 mt-1">${saran.map(s => `<li>${s}</li>`).join("")}</ul>`;
             }
         }
+// 5. WEBSOCKET REAL-TIME DATA & POPUP
+        let mesinTimeout;
+        const BATAS_WAKTU_TUNGGU = 15000; // 15 detik
 
-        // 5. WEBSOCKET REAL-TIME DATA
-        function tampilkanPopup() { document.getElementById('connection-popup').classList.remove('hidden'); }
-        function tutupPopup() { document.getElementById('connection-popup').classList.add('hidden'); }
+        function tampilkanPopup() { 
+            const popup = document.getElementById('connection-popup');
+            popup.classList.remove('hidden'); 
+            void popup.offsetWidth; // Trigger reflow
+            popup.classList.remove('opacity-0');
+        }
+        
+        function tutupPopup() { 
+            const popup = document.getElementById('connection-popup');
+            popup.classList.add('opacity-0');
+            setTimeout(() => { popup.classList.add('hidden'); }, 300);
+            aturUlangWaktuTunggu();
+        }
 
+        // Fungsi deteksi mesin mati (Watchdog Timer)
+        function aturUlangWaktuTunggu() {
+            clearTimeout(mesinTimeout); 
+            mesinTimeout = setTimeout(() => {
+                console.warn("Mesin SEBOTANI tidak merespons selama 15 detik.");
+                tampilkanPopup();
+            }, BATAS_WAKTU_TUNGGU);
+        }
+
+        window.addEventListener('offline', tampilkanPopup);
+
+        // Inisialisasi API WebSocket
         const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
         const socket = new WebSocket(wsUrl);
 
-        socket.onclose = () => { tampilkanPopup(); };
-        socket.onerror = () => { tampilkanPopup(); };
+        // Bukti koneksi berhasil
+        socket.onopen = () => {
+            console.log("✅ BERHASIL TERHUBUNG KE API SEBOTANI!");
+            aturUlangWaktuTunggu(); 
+        };
+
+        socket.onclose = () => { clearTimeout(mesinTimeout); tampilkanPopup(); };
+        socket.onerror = () => { clearTimeout(mesinTimeout); tampilkanPopup(); };
 
         socket.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
-                if (data.type === 'telemetry' && data.payload && data.payload.payload) {
-                    const p = data.payload.payload;
-                    const cPh = parseFloat(p.soil_ph);
-                    const cMoist = parseFloat(p.soil_moisture);
-                    const cTemp = parseFloat(p.soil_temprature);
+                
+                // Menampilkan aliran data di Console (F12) untuk verifikasi
+                console.log("Data Live Masuk:", data);
 
+                if (data.type === 'telemetry' && data.payload && data.payload.payload) {
+                    // Mesin hidup dan mengirim data, reset timer!
+                    aturUlangWaktuTunggu(); 
+
+                    const p = data.payload.payload;
+                    const cPh = p.soil_ph !== undefined ? parseFloat(p.soil_ph) : NaN;
+                    const cMoist = p.soil_moisture !== undefined ? parseFloat(p.soil_moisture) : NaN;
+                    const cTemp = p.soil_temprature !== undefined ? parseFloat(p.soil_temprature) : NaN;
+
+                    // 1. UPDATE ANGKA KOTAK DI ATAS
                     if(!isNaN(cPh)) document.getElementById('live-ph').innerText = cPh.toFixed(1);
                     if(!isNaN(cMoist)) document.getElementById('live-moist').innerText = Math.round(cMoist) + '%';
                     if(!isNaN(cTemp)) document.getElementById('live-temp').innerText = cTemp.toFixed(1) + '°C';
 
+                    // 2. UPDATE GRAFIK & AI JIKA KETIGA DATA VALID
                     if(!isNaN(cPh) && !isNaN(cMoist) && !isNaN(cTemp)) {
+                        
                         prosesAnalisisAI(cPh, cMoist, cTemp);
                         
                         // Menambahkan data baru ke ujung kanan grafik secara live
@@ -321,6 +362,7 @@
                         simpleChart.data.datasets[1].data.push(cMoist);
                         simpleChart.data.datasets[2].data.push(cTemp);
                         
+                        // Batasi jumlah titik agar grafik tidak kepenuhan (maks 20 titik)
                         if (simpleChart.data.labels.length > 20) {
                             simpleChart.data.labels.shift();
                             simpleChart.data.datasets[0].data.shift();
@@ -330,7 +372,9 @@
                         simpleChart.update('none'); 
                     }
                 }
-            } catch (err) {}
+            } catch (err) {
+                // Abaikan jika pesan bukan JSON
+            }
         };
     </script>
 </body>
