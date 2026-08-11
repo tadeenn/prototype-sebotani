@@ -149,9 +149,9 @@
         <div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-lg flex flex-col items-center mb-md border border-outline-variant/30">
             <div class="flex flex-col items-center my-md">
                 <div class="flex items-center gap-md">
-                    <span id="ph-value" class="font-display-lg text-[64px] leading-tight font-bold text-primary">6.1</span>
+                    <span id="ph-value" class="font-display-lg text-[64px] leading-tight font-bold text-primary">0.0</span>
                 </div>
-                <p id="ph-status" class="font-body-lg text-body-lg text-secondary font-semibold">Sedikit Asam</p>
+                <p id="ph-status" class="font-body-lg text-body-lg text-secondary font-semibold">Menghubungkan...</p>
             </div>
             
             <!-- pH Scale Visualization -->
@@ -162,7 +162,7 @@
                     <span class="">10</span>
                 </div>
                 <div class="w-full h-4 rounded-full ph-gradient relative shadow-inner overflow-visible">
-                    <div id="ph-gauge" class="absolute top-full mt-1 flex flex-col items-center transition-all duration-700 ease-out" style="left: 35%;">
+                    <div id="ph-gauge" class="absolute top-full mt-1 flex flex-col items-center transition-all duration-700 ease-out" style="left: 0%;">
                         <div class="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[10px] border-b-on-surface"></div>
                     </div>
                     <!-- Center Marker line (pH 7) -->
@@ -213,10 +213,8 @@
 
     <!-- INTEGRASI REAL-TIME WEBSOCKET (API) -->
     <script>
-        // PENTING: URL di bawah ini sepertinya masih URL REST API statis (karena menyebabkan Error Connection di console Anda).
-        // Pastikan Anda mengubahnya dengan URL khusus WebSocket yang benar (cari request dengan status 101 di tab Network).
-        const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
-        
+        // MASUKKAN URL WSS YANG BERHASIL TERHUBUNG DI SINI
+        const wsUrl = 'wss://console.flux.id/api/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
         const socket = new WebSocket(wsUrl);
 
         // Fungsi untuk mereset tampilan ke angka 0 saat terjadi masalah
@@ -237,19 +235,21 @@
             console.error("Kesalahan jaringan API:", error);
             resetKeNol();
         };
-// Pemicu 3: Ketika pesan diterima, namun harus dicek isinya
+
+        // Pemicu 3: Ketika pesan diterima, membongkar payload dari server
         socket.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
                 
-                // Cek apakah data memiliki 'payload' dan di dalam payload ada data 'ph'
-                // CATATAN: Jika nama datanya bukan 'ph', ganti kata 'ph' di bawah ini
+                // Cek isi asli data (bisa dilihat di Inspect Element -> Console)
+                console.log("Data masuk:", data);
+                
+                // Cek apakah ada objek 'payload' dan nilai 'ph' di dalamnya
+                // Jika nama datanya bukan 'ph' (misal: soil_ph), ubah 'data.payload.ph' menjadi 'data.payload.soil_ph'
                 if (data.payload && data.payload.ph !== undefined && data.payload.ph !== null && data.payload.ph !== "") {
                     
-                    // Mengambil nilai pH dari dalam bungkusan payload
                     const currentPh = parseFloat(data.payload.ph);
                     
-                    // Jika data yang dikirim ternyata bukan angka (NaN)
                     if(isNaN(currentPh)) {
                         resetKeNol();
                         return;
@@ -274,7 +274,6 @@
                         statusText.innerText = 'Netral / Ideal';
                     }
                 } else {
-                    // Jika tidak ada 'payload' atau tidak ada 'ph' di dalamnya
                     resetKeNol();
                 }
             } catch (err) {
