@@ -162,9 +162,9 @@
 <div class="h-px flex-1 bg-outline-variant"></div>
 </div>
 
-<!-- Container Riwayat Dinamis (Otomatis mencatat relay & sensor) -->
+<!-- Container Riwayat Dinamis (Awalnya Kosong, Terisi Otomatis dari Mesin) -->
 <div id="dynamic-history-container" class="flex flex-col gap-md">
-    <!-- Item riwayat akan dimasukkan secara otomatis oleh JavaScript -->
+    <!-- Kosong secara default -->
 </div>
 
 <!-- Illustration for decorative purpose -->
@@ -208,26 +208,28 @@
 </a>
 </nav>
 
-<!-- SCRIPT INTEGRASI WEBSOCKET & PENYIMPANAN RIWAYAT -->
+<!-- SCRIPT INTEGRASI WEBSOCKET & PEMBERSIHAN RIWAYAT -->
 <script>
     // 1. Set Tanggal Hari Ini pada Header Timeline
     const sekarang = new Date();
     const opsiTgl = { day: 'numeric', month: 'long', year: 'numeric' };
     document.getElementById('current-date-label').innerText = sekarang.toLocaleDateString('id-ID', opsiTgl);
 
-    // 2. Ambil Riwayat dari localStorage (atau buat data awal jika kosong)
-    let riwayatAktivitas = JSON.parse(localStorage.getItem('sebotani_riwayat_aktivitas')) || [
-        { id: 3, judul: "Penyemprotan Otomatis", desc: "Sistem fertigasi cerdas telah menyelesaikan siklus penyemprotan nutrisi pada Blok A.", ikon: "cloud_done", waktu: "14:00", tipe: "primary" },
-        { id: 2, judul: "Penyiraman Air", desc: "Penyiraman rutin berdasarkan deteksi kelembapan tanah di area pembibitan.", ikon: "water_drop", waktu: "08:00", tipe: "primary" },
-        { id: 1, judul: "Update Data Sensor", desc: "Sinkronisasi parameter tanah berhasil diperbarui.", ikon: "analytics", waktu: "07:00", tipe: "secondary", ph: "6.5", moist: "70%" }
-    ];
+    // 2. Kosongkan riwayat awal (Dikosongkan sesuai permintaan agar bersih dari uji coba)
+    let riwayatAktivitas = JSON.parse(localStorage.getItem('sebotani_riwayat_aktivitas')) || [];
 
     function renderRiwayat() {
         const container = document.getElementById('dynamic-history-container');
         container.innerHTML = "";
 
         if (riwayatAktivitas.length === 0) {
-            container.innerHTML = `<p class="text-center text-xs text-outline py-4">Belum ada riwayat aktivitas tercatat hari ini.</p>`;
+            container.innerHTML = `
+                <div class="bg-surface-container-lowest p-lg rounded-2xl border border-outline-variant/20 text-center space-y-2 shadow-sm">
+                    <span class="material-symbols-outlined text-outline text-4xl">history_toggle_off</span>
+                    <p class="font-title-sm text-on-surface text-sm">Belum ada riwayat aktivitas</p>
+                    <p class="text-xs text-on-surface-variant">Aktivitas penyemprotan air, pupuk, atau sinkronisasi sensor akan muncul di sini secara otomatis.</p>
+                </div>
+            `;
             return;
         }
 
@@ -235,7 +237,6 @@
             const card = document.createElement('div');
             
             if (item.tipe === 'secondary') {
-                // Bento-style Data Card untuk Sensor
                 card.className = "bg-surface-container-lowest p-md shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-primary/10 hover:shadow-lg transition-all duration-300 rounded-2xl";
                 card.innerHTML = `
                     <div class="flex gap-md">
@@ -265,7 +266,6 @@
                     </div>
                 `;
             } else {
-                // Standar Card Aktivitas Relay / Penyemprotan
                 card.className = "bg-surface-container-lowest p-md shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-surface-variant/20 hover:shadow-lg transition-all duration-300 group rounded-2xl";
                 card.innerHTML = `
                     <div class="flex gap-md">
@@ -290,7 +290,6 @@
         });
     }
 
-    // Fungsi untuk merekam aktivitas baru dari halaman penjadwalan atau WebSocket
     function tambahRiwayatBaru(judul, desc, ikon, tipe = 'primary', ph = null, moist = null) {
         const waktuStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
         const itemBaru = {
@@ -304,8 +303,8 @@
             moist: moist
         };
 
-        riwayatAktivitas.unshift(itemBaru); // Masukkan ke urutan paling atas
-        if (riwayatAktivitas.length > 20) riwayatAktivitas.pop(); // Batasi maksimal 20 riwayat terakhir
+        riwayatAktivitas.unshift(itemBaru);
+        if (riwayatAktivitas.length > 20) riwayatAktivitas.pop();
         localStorage.setItem('sebotani_riwayat_aktivitas', JSON.stringify(riwayatAktivitas));
         renderRiwayat();
     }
@@ -321,19 +320,7 @@
             try {
                 const data = JSON.parse(event.data);
                 
-                // Jika menerima telemetri atau status relay dari mesin
-                if (data.type === 'telemetry' && data.payload && data.payload.payload) {
-                    const p = data.payload.payload;
-                    
-                    // Contoh pencatatan otomatis periodik data sensor jika berubah signifikan
-                    if (p.soil_ph !== undefined && p.soil_moisture !== undefined) {
-                        // Cek apakah update sensor terakhir sudah lebih dari 30 menit yang lalu agar tidak spam
-                        const jamSekarang = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                        // Kita simpan status pembaharuan sensor
-                    }
-                }
-
-                // Jika mesin mengirimkan laporan eksekusi relay
+                // Merekam perintah eksekusi relay dari mesin
                 if (data.type === 'command_ack' || (data.payload && data.payload.relay)) {
                     const relayNum = data.payload.relay;
                     const durasi = data.payload.duration || 10;
@@ -341,7 +328,7 @@
                     const ikonRelay = relayNum === 1 ? "water_drop" : "compost";
                     
                     tambahRiwayatBaru(
-                        `Aktivasi Relay Otomatis/Manual`, 
+                        `Aktivasi Relay Mesin`, 
                         `Mesin mengeksekusi ${namaOutput} selama ${durasi} detik.`, 
                         ikonRelay, 
                         'primary'
@@ -355,23 +342,19 @@
         };
     }
 
-    // Mendengarkan event kustom dari halaman penjadwalan (jika tombol trigger manual ditekan di tab yang sama)
+    // Mendengarkan event dari halaman penjadwalan
     window.addEventListener('storage', (e) => {
-        if (e.key === 'sebotani_ trigger_log') {
-            const logData = JSON.parse(e.newValue);
-            if (logData) {
-                tambahRiwayatBaru(logData.judul, logData.desc, logData.ikon, 'primary');
-            }
+        if (e.key === 'sebotani_riwayat_aktivitas') {
+            riwayatAktivitas = JSON.parse(e.newValue) || [];
+            renderRiwayat();
         }
     });
 
-    // Inisialisasi saat halaman dimuat
     document.addEventListener("DOMContentLoaded", () => {
         renderRiwayat();
         hubungkanWebSocketRiwayat();
     });
 
-    // Micro-interactions and scroll behavior
     document.querySelectorAll('button, a').forEach(el => {
         el.addEventListener('touchstart', () => {}, {passive: true});
     });
