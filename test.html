@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="id" class="light" style="">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEBOTANI - Beranda Petani</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=block" rel="stylesheet">
+    <title>Prakiraan Cuaca - SEBOTANI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
     try{
@@ -14,53 +13,53 @@
             theme: {
                 extend: {
                     "colors": {
-                        "secondary-fixed": "#ffddb8",
-                        "tertiary": "#b91a24",
-                        "on-secondary-container": "#684000",
-                        "on-background": "#191c1d",
                         "on-tertiary-fixed-variant": "#930013",
-                        "secondary-container": "#fea619",
-                        "on-primary": "#ffffff",
-                        "inverse-on-surface": "#f0f1f2",
-                        "on-primary-fixed-variant": "#005236",
-                        "surface-container": "#edeeef",
-                        "outline-variant": "#bbcabf",
-                        "surface-bright": "#f8f9fa",
-                        "surface": "#f8f9fa",
-                        "primary-container": "#10b981",
-                        "on-primary-fixed": "#002113",
                         "on-secondary-fixed-variant": "#653e00",
-                        "on-surface-variant": "#3c4a42",
-                        "primary-fixed": "#6ffbbe",
-                        "error-container": "#ffdad6",
-                        "surface-container-low": "#f3f4f5",
-                        "tertiary-fixed": "#ffdad7",
+                        "inverse-on-surface": "#f0f1f2",
+                        "outline": "#6c7a71",
                         "on-secondary": "#ffffff",
                         "on-tertiary-fixed": "#410004",
-                        "on-secondary-fixed": "#2a1700",
-                        "outline": "#6c7a71",
-                        "surface-container-highest": "#e1e3e4",
-                        "tertiary-fixed-dim": "#ffb3ad",
+                        "surface-bright": "#f8f9fa",
+                        "surface": "#f8f9fa",
+                        "on-primary-fixed": "#002113",
+                        "surface-container-high": "#e7e8e9",
+                        "secondary-fixed": "#ffddb8",
+                        "background": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary-container": "#79000e",
+                        "tertiary": "#b91a24",
                         "surface-tint": "#006c49",
-                        "secondary": "#855300",
-                        "on-surface": "#191c1d",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#fea619",
+                        "on-background": "#191c1d",
+                        "surface-variant": "#e1e3e4",
+                        "primary-container": "#10b981",
+                        "primary-fixed": "#6ffbbe",
+                        "surface-container-highest": "#e1e3e4",
+                        "inverse-primary": "#4edea3",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#005236",
+                        "primary-fixed-dim": "#4edea3",
                         "on-primary-container": "#00422b",
                         "inverse-surface": "#2e3132",
-                        "tertiary-container": "#ff7a73",
+                        "surface-container": "#edeeef",
+                        "on-secondary-container": "#684000",
+                        "on-surface": "#191c1d",
+                        "on-surface-variant": "#3c4a42",
+                        "on-secondary-fixed": "#2a1700",
+                        "tertiary-fixed-dim": "#ffb3ad",
                         "on-tertiary": "#ffffff",
-                        "inverse-primary": "#4edea3",
-                        "secondary-fixed-dim": "#ffb95f",
-                        "primary-fixed-dim": "#4edea3",
-                        "surface-variant": "#e1e3e4",
-                        "background": "#f8f9fa",
-                        "error": "#ba1a1a",
-                        "surface-container-lowest": "#ffffff",
-                        "on-error-container": "#93000a",
-                        "on-error": "#ffffff",
+                        "outline-variant": "#bbcabf",
+                        "secondary": "#855300",
                         "primary": "#006c49",
-                        "surface-dim": "#d9dadb",
-                        "on-tertiary-container": "#79000e",
-                        "surface-container-high": "#e7e8e9"
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#ff7a73",
+                        "tertiary-fixed": "#ffdad7"
                     },
                     "borderRadius": {
                         "DEFAULT": "0.25rem",
@@ -69,335 +68,332 @@
                         "full": "9999px"
                     },
                     "spacing": {
+                        "margin-desktop": "40px",
                         "base": "4px",
-                        "xs": "8px",
-                        "gutter": "16px",
-                        "sm": "12px",
-                        "margin-mobile": "16px",
                         "md": "16px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "xs": "8px",
+                        "sm": "12px",
                         "xl": "32px",
-                        "lg": "24px",
-                        "margin-desktop": "40px"
+                        "lg": "24px"
                     },
                     "fontFamily": {
-                        "headline-md": ["Inter"],
-                        "display-lg": ["Inter"],
-                        "body-md": ["Inter"],
-                        "title-sm": ["Inter"],
-                        "data-mono": ["Inter"],
                         "label-caps": ["Inter"],
+                        "display-lg": ["Inter"],
                         "body-lg": ["Inter"],
-                        "headline-md-mobile": ["Inter"]
+                        "title-sm": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"]
                     },
                     "fontSize": {
-                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
-                        "data-mono": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
                         "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
                         "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                        "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "data-mono": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
                     }
                 }
-            }
+            },
         }
     }catch(_e){}
     </script>
-    <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .ripple {
-            position: absolute; background: rgba(255, 255, 255, 0.3); border-radius: 50%;
-            transform: scale(0); animation: ripple-animation 0.6s linear; pointer-events: none;
-        }
-        @keyframes ripple-animation {
-            to { transform: scale(4); opacity: 0; }
-        }
-    </style>
 </head>
-<body class="font-body-md text-on-surface mb-20 bg-background">
-    
-    <!-- Top AppBar -->
-    <header class="bg-surface dark:bg-on-background shadow-sm fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-14">
-        <div class="flex items-center gap-sm">
-            <a href="index.html" class="flex items-center gap-sm">
-                <img alt="SEBOTANI Logo" class="h-8 w-8 object-contain" src="https://prototype-sebotani.vercel.app/sebotani-logo.png">
-                <span class="font-headline-md-mobile text-headline-md-mobile font-bold text-primary">SEBOTANI</span>
-            </a>
-        </div>
-        <div class="flex items-center gap-md">
-            <a href="#" class="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold border-2 border-primary overflow-hidden">
-                <img class="h-full w-full object-cover" data-alt="Petani profil" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBtI-4XMdIo4mlw9wny-Ocv0WcfvHVXquvS-PPewRNANRFzmM0fkI_9ZUAYgI-moj26Pt0Ikbozx2Qibeje6CXpjQFPUhGi8w77kqXg1tTJqgR6q6gr-M1X6TLrRqUVtMdwcOlHOByTbR32gNTMDRZB2A_P8wE5IquMCVpI_jsLGyXKAiBk0VSP3OZ9E7X-88_Tkjkwb8His9dtxnJcHQ6AvM0d97J6NtPK1k0yQsdqC66xfdMzyka3ryy2Vq-MY7nj4y8_CwX_rQ">
-            </a>
-        </div>
-    </header>
+<body class="bg-background text-on-surface min-h-screen flex flex-col">
 
-    <!-- Main Content Area -->
-    <main class="pt-20 px-margin-mobile max-w-2xl mx-auto space-y-lg">
-        
-        <!-- Welcome Section -->
-        <section class="animate-fade-in">
-            <h1 class="font-headline-md-mobile text-headline-md-mobile text-primary font-bold text-center">Beranda Petani</h1>
-            <p class="font-body-md text-on-surface-variant text-center">Pantau kebun dengan mudah dan presisi.</p>
-        </section>
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-primary shadow-sm flex justify-between items-center px-margin-mobile h-14">
+    <div class="flex items-center w-full justify-between">
+        <a href="dashboard_petani.html" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors active:scale-95 duration-150">
+            <span class="material-symbols-outlined text-white">arrow_back</span>
+        </a>
+        <div class="flex flex-col items-center">
+            <span class="font-headline-md-mobile text-headline-md-mobile text-white">Prakiraan Cuaca</span>
+        </div>
+        <div class="flex items-center justify-center w-10 h-10">
+            <img alt="SEBOTANI" class="h-8 w-8 object-contain" src="https://prototype-sebotani.vercel.app/sebotani-logo.png">
+        </div>
+    </div>
+</header>
 
-        <!-- Weather Card -->
-        <div class="bg-surface-container-lowest rounded-xl shadow-sm p-lg flex items-center gap-lg border border-outline-variant/30">
-            <div class="bg-secondary-container/10 p-sm rounded-full flex items-center justify-center">
-                <span class="material-symbols-outlined text-secondary text-5xl" style="font-variation-settings: 'FILL' 1;">wb_sunny</span>
+<!-- Main Content -->
+<main class="flex-grow pt-20 pb-24 px-margin-mobile max-w-2xl mx-auto w-full">
+    <!-- Current Weather Hero Card -->
+    <section class="mb-lg">
+        <div class="weather-gradient rounded-xl p-lg text-white shadow-lg relative overflow-hidden" style="background: linear-gradient(135deg, rgb(0, 108, 73) 0%, rgb(16, 185, 129) 100%);">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+            <div class="relative z-10">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="font-label-caps text-label-caps opacity-90 uppercase tracking-widest">Cuaca Terkini</p>
+                        <h1 class="font-headline-md-mobile text-headline-md-mobile mt-base">Kebun Kopi Seboto</h1>
+                        <div class="flex items-center gap-2 mt-base opacity-80">
+                            <span class="material-symbols-outlined text-[18px] text-white">location_on</span>
+                            <p class="font-body-md text-body-md text-white">Boyolali, Jawa Tengah</p>
+                        </div>
+                    </div>
+                    <span id="current-icon" class="material-symbols-outlined text-[64px] text-white" style="font-variation-settings: 'FILL' 1;">sync</span>
+                </div>
+                <div class="mt-xl flex items-baseline gap-2">
+                    <span id="current-temp" class="font-display-lg text-display-lg text-[64px] leading-none">--</span>
+                    <span class="font-display-lg text-display-lg text-[32px] leading-none">°C</span>
+                </div>
+                <p id="current-desc" class="font-title-sm text-title-sm mt-xs text-white">Memuat data BMKG...</p>
+                <div class="grid grid-cols-2 gap-gutter mt-lg pt-lg border-t border-white/20">
+                    <div class="text-center border-r border-white/20">
+                        <p class="font-label-caps text-label-caps opacity-70 mb-1 text-white">Kelembapan</p>
+                        <p id="current-humid" class="font-title-sm text-title-sm text-white">--%</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="font-label-caps text-label-caps opacity-70 mb-1 text-white">Kecepatan Angin</p>
+                        <p id="current-wind" class="font-title-sm text-title-sm text-white">-- km/j</p>
+                    </div>
+                </div>
             </div>
-            <div class="flex flex-col">
-                <span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Hari ini</span>
-                <!-- ID Waktu Ditambahkan di sini -->
-                <span id="current-date" class="font-title-sm text-title-sm text-on-surface">Memuat waktu...</span>
-                <span class="font-body-md text-on-surface-variant">Cerah • Berawan Sebagian</span>
+        </div>
+    </section>
+
+    <!-- 3-Day Forecast Section -->
+    <section class="mb-lg">
+        <div class="flex items-center justify-between mb-md">
+            <h2 class="font-headline-md-mobile text-headline-md-mobile text-on-surface">Prakiraan 3 Hari</h2>
+            <div class="flex items-center gap-1 text-on-surface-variant">
+                <span class="material-symbols-outlined text-[14px]">info</span>
+                <span class="font-label-caps text-label-caps">Data Resmi BMKG</span>
             </div>
         </div>
-
-        <!-- IoT Data Grid -->
-        <div class="grid grid-cols-2 gap-md">
+        <div class="space-y-md">
+            <!-- Day 1 (Besok) -->
+            <div class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center gap-md">
+                    <div class="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center text-primary">
+                        <span id="fc-1-icon" class="material-symbols-outlined text-[32px]">sync</span>
+                    </div>
+                    <div>
+                        <p id="fc-1-name" class="font-title-sm text-title-sm">Besok</p>
+                        <p id="fc-1-desc" class="font-body-md text-body-md text-on-surface-variant">--</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <span id="fc-1-temp-max" class="font-body-lg text-body-lg font-bold text-primary">--°</span>
+                        <span id="fc-1-temp-min" class="font-body-md text-body-md text-on-surface-variant">/ --°</span>
+                    </div>
+                    <div class="flex items-center justify-end gap-1 text-on-surface-variant mt-1">
+                        <span class="material-symbols-outlined text-[14px]">water_drop</span>
+                        <span id="fc-1-humid" class="font-label-caps text-label-caps">--%</span>
+                    </div>
+                </div>
+            </div>
             
-            <!-- pH Tanah Card -->
-            <a href="ph_tanah.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm relative overflow-hidden">
-                <div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center group-hover:bg-primary-container/40 transition-colors">
-                    <span class="material-symbols-outlined text-primary text-3xl">potted_plant</span>
+            <!-- Day 2 (Lusa) -->
+            <div class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center gap-md">
+                    <div class="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center text-primary">
+                        <span id="fc-2-icon" class="material-symbols-outlined text-[32px]">sync</span>
+                    </div>
+                    <div>
+                        <p id="fc-2-name" class="font-title-sm text-title-sm">Lusa</p>
+                        <p id="fc-2-desc" class="font-body-md text-body-md text-on-surface-variant">--</p>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="font-title-sm text-title-sm text-on-surface">pH Tanah</h3>
-                    <p id="dash-ph" class="text-primary font-data-mono">--</p>
-                    <span id="dash-ph-status" class="inline-block px-xs py-0.5 rounded-full bg-primary-container/30 text-[10px] font-bold text-on-primary-container uppercase">Menunggu</span>
+                <div class="text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <span id="fc-2-temp-max" class="font-body-lg text-body-lg font-bold text-primary">--°</span>
+                        <span id="fc-2-temp-min" class="font-body-md text-body-md text-on-surface-variant">/ --°</span>
+                    </div>
+                    <div class="flex items-center justify-end gap-1 text-on-surface-variant mt-1">
+                        <span class="material-symbols-outlined text-[14px]">water_drop</span>
+                        <span id="fc-2-humid" class="font-label-caps text-label-caps">--%</span>
+                    </div>
                 </div>
-            </a>
-
-            <!-- Kelembapan Tanah Card -->
-            <a href="kelembapan.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm relative overflow-hidden">
-                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                    <span class="material-symbols-outlined text-blue-600 text-3xl" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+            </div>
+            
+            <!-- Day 3 -->
+            <div class="bg-surface-container-lowest border border-outline-variant/30 p-md rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center gap-md">
+                    <div class="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center text-primary">
+                        <span id="fc-3-icon" class="material-symbols-outlined text-[32px]">sync</span>
+                    </div>
+                    <div>
+                        <p id="fc-3-name" class="font-title-sm text-title-sm">--</p>
+                        <p id="fc-3-desc" class="font-body-md text-body-md text-on-surface-variant">--</p>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="font-title-sm text-title-sm text-on-surface">Kelembapan</h3>
-                    <p id="dash-moist" class="text-blue-600 font-data-mono">--%</p>
-                    <span id="dash-moist-status" class="inline-block px-xs py-0.5 rounded-full bg-blue-100 text-[10px] font-bold text-blue-800 uppercase">Menunggu</span>
+                <div class="text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <span id="fc-3-temp-max" class="font-body-lg text-body-lg font-bold text-primary">--°</span>
+                        <span id="fc-3-temp-min" class="font-body-md text-body-md text-on-surface-variant">/ --°</span>
+                    </div>
+                    <div class="flex items-center justify-end gap-1 text-on-surface-variant mt-1">
+                        <span class="material-symbols-outlined text-[14px]">water_drop</span>
+                        <span id="fc-3-humid" class="font-label-caps text-label-caps">--%</span>
+                    </div>
                 </div>
-            </a>
-
-            <!-- Suhu Udara Card -->
-            <a href="suhu.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm relative overflow-hidden">
-                <div class="w-12 h-12 rounded-full bg-secondary-container/10 flex items-center justify-center group-hover:bg-secondary-container/20 transition-colors">
-                    <span class="material-symbols-outlined text-secondary text-3xl">thermostat</span>
-                </div>
-                <div>
-                    <h3 class="font-title-sm text-title-sm text-on-surface">Suhu Udara</h3>
-                    <p id="dash-temp" class="text-secondary font-data-mono">--°C</p>
-                    <span id="dash-temp-status" class="inline-block px-xs py-0.5 rounded-full bg-secondary-container/10 text-[10px] font-bold text-on-secondary-container uppercase">Menunggu</span>
-                </div>
-            </a>
-
-            <!-- Jadwal Card -->
-            <a href="penjadwalan.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm">
-                <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center group-hover:bg-purple-200 transition-colors">
-                    <span class="material-symbols-outlined text-purple-600 text-3xl">calendar_month</span>
-                </div>
-                <div>
-                    <h3 class="font-title-sm text-title-sm text-on-surface">Jadwal Rawat</h3>
-                    <p class="text-purple-600 font-data-mono">14:00</p>
-                    <span class="inline-block px-xs py-0.5 rounded-full bg-purple-100 text-[10px] font-bold text-purple-800 uppercase">AIR & pupuk</span>
-                </div>
-            </a>
-
-            <!-- Prakiraan Cuaca Card -->
-            <a href="cuaca.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm">
-                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                    <span class="material-symbols-outlined text-blue-600 text-3xl">cloud</span>
-                </div>
-                <div>
-                    <h3 class="font-title-sm text-title-sm text-on-surface">Cuaca Sekitar</h3>
-                    <p class="text-blue-600 font-data-mono">Hujan</p>
-                    <span class="inline-block px-xs py-0.5 rounded-full bg-blue-100 text-[10px] font-bold text-blue-800 uppercase">Sore Hari</span>
-                </div>
-            </a>
-
-            <!-- Analisis Rekomendasi Card -->
-            <a href="analisis_rekomendasi.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm">
-                <div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center group-hover:bg-primary-container/40 transition-colors">
-                    <span class="material-symbols-outlined text-primary text-3xl">analytics</span>
-                </div>
-                <div>
-                    <h3 class="font-title-sm text-title-sm text-on-surface">Analisis & AI</h3>
-                    <p class="text-primary font-data-mono">Pantau</p>
-                    <span class="inline-block px-xs py-0.5 rounded-full bg-primary-container/30 text-[10px] font-bold text-on-primary-container uppercase">Data Grafik</span>
-                </div>
-            </a>
+            </div>
         </div>
+    </section>
 
-        <!-- Banner Section: Saran Hari Ini -->
-        <section class="relative overflow-hidden bg-primary-container rounded-2xl shadow-lg flex items-center min-h-[140px] px-lg py-md group">
-            <div class="absolute right-0 top-0 h-full w-1/2 opacity-20 pointer-events-none"></div>
-            <div class="relative z-10 flex-1 pr-32">
-                <h2 class="font-title-sm text-on-primary-container mb-xs">Saran Hari Ini</h2>
-                <p class="font-body-md text-on-primary-container/90 leading-relaxed">
-                    Periksa kelembapan tanah dan cukupkan air untuk tanaman Anda guna memastikan pertumbuhan optimal.
-                </p>
+    <!-- Agricultural Insight Card -->
+    <section class="mb-xl">
+        <div class="bg-primary-container/10 border border-primary-container p-md rounded-xl flex gap-md items-start">
+            <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">agriculture</span>
+            <div>
+                <h3 class="font-title-sm text-title-sm text-on-primary-container">Saran Budidaya AI</h3>
+                <p id="ai-insight" class="font-body-md text-body-md text-on-surface-variant mt-1">Menganalisis cuaca untuk saran budidaya kopi terbaik hari ini...</p>
             </div>
-            <div class="absolute right-0 bottom-0 h-full w-32 flex items-end justify-center pointer-events-none">
-                <img class="h-32 w-auto object-cover rounded-lg transform group-hover:scale-110 transition-transform duration-500 origin-bottom" alt="Petani kopi" src="https://prototype-sebotani.vercel.app/Gemini_Generated_Image_wqko77wqko77wqko.png">
-            </div>
-        </section>
+        </div>
+    </section>
+</main>
 
-        <!-- Quick Stats Terintegrasi API NPK -->
-        <section class="bg-surface-container-low rounded-xl p-md">
-            <div class="flex items-center justify-between mb-sm">
-                <h3 class="font-label-caps text-label-caps text-on-surface-variant">Statistik Nutrisi Tanah (Live)</h3>
-                <span class="material-symbols-outlined text-primary text-sm animate-pulse">sensors</span>
-            </div>
-            <div class="flex gap-md overflow-x-auto pb-xs no-scrollbar">
-                <div class="flex-shrink-0 bg-surface-container-lowest px-md py-xs rounded-lg border border-outline-variant/10 min-w-[110px]">
-                    <p class="text-[10px] text-outline uppercase font-bold">Nitrogen (N)</p>
-                    <p id="stat-n" class="font-title-sm text-primary">-- <span class="text-xs">mg/kg</span></p>
-                </div>
-                <div class="flex-shrink-0 bg-surface-container-lowest px-md py-xs rounded-lg border border-outline-variant/10 min-w-[110px]">
-                    <p class="text-[10px] text-outline uppercase font-bold">Fosfor (P)</p>
-                    <p id="stat-p" class="font-title-sm text-blue-600">-- <span class="text-xs">mg/kg</span></p>
-                </div>
-                <div class="flex-shrink-0 bg-surface-container-lowest px-md py-xs rounded-lg border border-outline-variant/10 min-w-[110px]">
-                    <p class="text-[10px] text-outline uppercase font-bold">Kalium (K)</p>
-                    <p id="stat-k" class="font-title-sm text-error">-- <span class="text-xs">mg/kg</span></p>
-                </div>
-            </div>
-        </section>
-    </main>
+<!-- Fixed Bottom Action -->
+<footer class="fixed bottom-0 w-full p-md bg-surface/80 backdrop-blur-md border-t border-outline-variant/10">
+    <a href="dashboard_petani.html" class="block text-center bg-primary text-on-primary font-semibold py-3 px-lg rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] active:scale-95 transition-transform duration-150 w-full">
+        Kembali ke Beranda
+    </a>
+</footer>
 
-    <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-surface dark:bg-on-background px-base pb-safe border-t border-outline-variant shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
-        <a class="flex flex-col items-center justify-center text-primary font-bold group" href="index.html">
-            <div class="bg-primary/10 rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
-                <span class="material-symbols-outlined fill-icon">home</span>
-            </div>
-            <span class="font-label-caps text-[10px]">Beranda</span>
-        </a>
-        <a class="flex flex-col items-center justify-center text-on-surface-variant group" href="riwayat.html">
-            <div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
-                <span class="material-symbols-outlined">history</span>
-            </div>
-            <span class="font-label-caps text-[10px]">Riwayat</span>
-        </a>
-        <a class="flex flex-col items-center justify-center text-on-surface-variant group" href="bantuan.html">
-            <div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
-                <span class="material-symbols-outlined">help_outline</span>
-            </div>
-            <span class="font-label-caps text-[10px]">Bantuan</span>
-        </a>
-        <a class="flex flex-col items-center justify-center text-on-surface-variant group" href="profil.html">
-            <div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
-                <span class="material-symbols-outlined">account_circle</span>
-            </div>
-            <span class="font-label-caps text-[10px]">Profil</span>
-        </a>
-    </nav>
+<div class="h-20"></div>
 
-    <!-- KUMPULAN SCRIPT JS -->
-    <script>
-        // 1. Logika Waktu Real-Time (Jam & Tanggal)
-        function perbaruiJam() {
-            const sekarang = new Date();
-            const opsiTanggal = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-            const opsiWaktu = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+<!-- LOGIKA INTEGRASI API BMKG -->
+<script>
+    // Kamus Kode Cuaca BMKG ke Teks dan Material Icon
+    const weatherCodes = {
+        "0": { text: "Cerah", icon: "wb_sunny" },
+        "1": { text: "Cerah Berawan", icon: "partly_cloudy_day" },
+        "2": { text: "Cerah Berawan", icon: "partly_cloudy_day" },
+        "3": { text: "Berawan", icon: "cloudy" },
+        "4": { text: "Berawan Tebal", icon: "cloudy" },
+        "5": { text: "Udara Kabur", icon: "foggy" },
+        "10": { text: "Asap", icon: "foggy" },
+        "45": { text: "Kabut", icon: "foggy" },
+        "60": { text: "Hujan Ringan", icon: "rainy" },
+        "61": { text: "Hujan Sedang", icon: "rainy" },
+        "62": { text: "Hujan Lebat", icon: "rainy" },
+        "95": { text: "Hujan Petir", icon: "thunderstorm" },
+        "97": { text: "Hujan Petir", icon: "thunderstorm" }
+    };
+
+    // Knots ke Km/h converter
+    function knotsToKmh(knots) {
+        return Math.round(knots * 1.852);
+    }
+
+    async function fetchBMKGData() {
+        // Menggunakan CORS proxy gratis untuk menghindari blokir CORS di browser saat menarik data XML BMKG
+        const targetUrl = 'https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-JawaTengah.xml';
+        const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(targetUrl);
+
+        try {
+            const response = await fetch(proxyUrl);
+            const data = await response.json();
             
-            const formatTanggal = sekarang.toLocaleDateString('id-ID', opsiTanggal);
-            const formatWaktu = sekarang.toLocaleTimeString('id-ID', opsiWaktu);
-            
-            document.getElementById('current-date').innerText = formatTanggal + " • " + formatWaktu;
-        }
-        setInterval(perbaruiJam, 1000);
-        perbaruiJam();
+            // Parsing XML
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(data.contents, "text/xml");
 
-        // 2. Interaksi UI & Scroll
-        document.querySelectorAll('button').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                let ripple = document.createElement('div');
-                ripple.classList.add('ripple');
-                this.appendChild(ripple);
-                setTimeout(() => { ripple.remove(); }, 600);
-            });
-        });
-
-        let lastScrollTop = 0;
-        const nav = document.querySelector('nav');
-        window.addEventListener('scroll', function() {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrollTop > lastScrollTop && scrollTop > 100) {
-                nav.style.transform = 'translateY(100%)';
-                nav.style.transition = 'transform 0.3s ease-in-out';
-            } else {
-                nav.style.transform = 'translateY(0)';
-            }
-            lastScrollTop = scrollTop;
-        });
-
-        // 3. INTEGRASI WEBSOCKET API SEBOTANI
-        const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
-        const socket = new WebSocket(wsUrl);
-
-        function perbaruiStatusUI(elementId, nilai, batasBawah, batasAtas, labelStatus) {
-            const elemen = document.getElementById(elementId);
-            if (nilai < batasBawah) {
-                elemen.innerText = labelStatus[0]; // Terlalu rendah
-            } else if (nilai > batasAtas) {
-                elemen.innerText = labelStatus[2]; // Terlalu tinggi
-            } else {
-                elemen.innerText = labelStatus[1]; // Optimal
-            }
-        }
-
-        socket.onopen = () => console.log("Beranda: API Terhubung!");
-
-        socket.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                
-                if (data.type === 'telemetry' && data.payload && data.payload.payload) {
-                    const p = data.payload.payload;
-                    
-                    // Update 3 Aspek Utama
-                    if (p.soil_ph !== undefined) {
-                        const ph = parseFloat(p.soil_ph);
-                        document.getElementById('dash-ph').innerText = ph.toFixed(1);
-                        perbaruiStatusUI('dash-ph-status', ph, 6.0, 7.5, ['Asam', 'Optimal', 'Basa']);
-                    }
-                    
-                    if (p.soil_moisture !== undefined) {
-                        const moist = parseFloat(p.soil_moisture);
-                        document.getElementById('dash-moist').innerText = Math.round(moist) + '%';
-                        perbaruiStatusUI('dash-moist-status', moist, 50, 85, ['Kering', 'Cukup', 'Basah']);
-                    }
-                    
-                    if (p.soil_temprature !== undefined) {
-                        const temp = parseFloat(p.soil_temprature);
-                        document.getElementById('dash-temp').innerText = temp.toFixed(1) + '°C';
-                        perbaruiStatusUI('dash-temp-status', temp, 20, 32, ['Dingin', 'Normal', 'Panas']);
-                    }
-
-                    // Update Statistik Terakhir (Nutrisi NPK)
-                    if (p.soil_nitrogen !== undefined) {
-                        document.getElementById('stat-n').innerHTML = Math.round(p.soil_nitrogen) + ' <span class="text-xs">mg/kg</span>';
-                    }
-                    if (p.soil_phosphorus !== undefined) {
-                        document.getElementById('stat-p').innerHTML = Math.round(p.soil_phosphorus) + ' <span class="text-xs">mg/kg</span>';
-                    }
-                    if (p.soil_potassium !== undefined) {
-                        document.getElementById('stat-k').innerHTML = Math.round(p.soil_potassium) + ' <span class="text-xs">mg/kg</span>';
-                    }
+            // Cari area Boyolali
+            const areas = xmlDoc.getElementsByTagName('area');
+            let boyolaliNode = null;
+            for (let i = 0; i < areas.length; i++) {
+                if (areas[i].getAttribute('description') === 'Boyolali') {
+                    boyolaliNode = areas[i];
+                    break;
                 }
-            } catch (err) {
-                // Abaikan log non-JSON
             }
-        };
-    </script>
+
+            if (!boyolaliNode) throw new Error("Area Boyolali tidak ditemukan di data BMKG.");
+
+            // Ambil Parameter Cuaca
+            const weatherParams = boyolaliNode.querySelector('parameter[id="weather"]');
+            const tempParams = boyolaliNode.querySelector('parameter[id="t"]');
+            const humidParams = boyolaliNode.querySelector('parameter[id="hu"]');
+            const windParams = boyolaliNode.querySelector('parameter[id="ws"]');
+            
+            const tmaxParams = boyolaliNode.querySelector('parameter[id="tmax"]');
+            const tminParams = boyolaliNode.querySelector('parameter[id="tmin"]');
+
+            // Ekstrak Data Saat Ini (Node pertama biasanya merepresentasikan data terdekat)
+            const currentCode = weatherParams.getElementsByTagName('value')[0].textContent;
+            const currentTemp = tempParams.getElementsByTagName('value')[0].textContent;
+            const currentHumid = humidParams.getElementsByTagName('value')[0].textContent;
+            const currentWindKnots = windParams.getElementsByTagName('value')[0].textContent;
+
+            // Update UI Hari Ini
+            const weatherInfo = weatherCodes[currentCode] || { text: "Tidak Diketahui", icon: "cloud" };
+            document.getElementById('current-icon').textContent = weatherInfo.icon;
+            document.getElementById('current-desc').textContent = weatherInfo.text;
+            document.getElementById('current-temp').textContent = currentTemp;
+            document.getElementById('current-humid').textContent = currentHumid + "%";
+            document.getElementById('current-wind').textContent = knotsToKmh(currentWindKnots) + " km/j";
+
+            // Update Saran AI Berdasarkan Cuaca Hari Ini
+            const aiInsight = document.getElementById('ai-insight');
+            if (currentCode === "0" || currentCode === "1" || currentCode === "2") {
+                aiInsight.textContent = "Kondisi cerah sangat baik untuk proses fotosintesis dan pemupukan. Pastikan jadwal penyiraman berjalan normal agar tanah kopi tidak kekeringan di siang hari.";
+            } else if (currentCode === "60" || currentCode === "61" || currentCode === "62" || currentCode === "95") {
+                aiInsight.textContent = "Hujan diprediksi turun. Tunda pemupukan daun hari ini agar tidak luntur. Pastikan saluran drainase kebun (parit) bebas dari sumbatan.";
+            } else {
+                aiInsight.textContent = "Cuaca berawan stabil. Ideal untuk melakukan inspeksi kebun, memangkas ranting kopi tua, dan melakukan perawatan rutin harian.";
+            }
+
+            // Ekstrak Prakiraan 3 Hari Ke Depan
+            // BMKG memberikan rentang data harian pada Tmax dan Tmin (Setiap 24 Jam)
+            const d = new Date();
+            const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+            const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+
+            for (let i = 1; i <= 3; i++) {
+                // Kalkulasi Nama Hari
+                let futureDate = new Date();
+                futureDate.setDate(d.getDate() + i);
+                let dayName = "";
+                if (i === 1) dayName = "Besok";
+                else if (i === 2) dayName = "Lusa";
+                else dayName = `${days[futureDate.getDay()]}, ${futureDate.getDate()} ${months[futureDate.getMonth()]}`;
+
+                document.getElementById(`fc-${i}-name`).textContent = dayName;
+
+                // Ambil Nilai Min Max Harian (Indeks 0 adalah hari ini, indeks 1 adalah besok, dst)
+                if (tmaxParams.getElementsByTagName('value')[i] && tminParams.getElementsByTagName('value')[i]) {
+                    document.getElementById(`fc-${i}-temp-max`).textContent = tmaxParams.getElementsByTagName('value')[i].textContent + "°";
+                    document.getElementById(`fc-${i}-temp-min`).textContent = "/ " + tminParams.getElementsByTagName('value')[i].textContent + "°";
+                }
+
+                // Ambil Data Cuaca & Kelembapan Harian (Ambil nilai siang hari sekitar jam 12, yaitu indeks lompatan 4 dari data per-6-jam)
+                // BMKG per 6 jam: 0, 6, 12, 18. Indeks hari +1 rata-rata ada di indeks 4, 5, 6, 7.
+                let indexSiang = i * 4 + 1; // Memperkirakan data jam 12 siang keesokan harinya
+                if(weatherParams.getElementsByTagName('value')[indexSiang]) {
+                    let code = weatherParams.getElementsByTagName('value')[indexSiang].textContent;
+                    let info = weatherCodes[code] || { text: "Berawan", icon: "cloud" };
+                    document.getElementById(`fc-${i}-desc`).textContent = info.text;
+                    document.getElementById(`fc-${i}-icon`).textContent = info.icon;
+                }
+                
+                if(humidParams.getElementsByTagName('value')[indexSiang]) {
+                    document.getElementById(`fc-${i}-humid`).textContent = humidParams.getElementsByTagName('value')[indexSiang].textContent + "%";
+                }
+            }
+
+        } catch (error) {
+            console.error("Gagal mengambil data BMKG: ", error);
+            document.getElementById('current-desc').textContent = "Gagal memuat data BMKG.";
+        }
+    }
+
+    // Panggil fungsi saat halaman dimuat
+    document.addEventListener("DOMContentLoaded", fetchBMKGData);
+
+    // Animasi tombol
+    document.querySelectorAll('button, a').forEach(btn => {
+        btn.addEventListener('touchstart', () => { btn.style.opacity = '0.8'; });
+        btn.addEventListener('touchend', () => { btn.style.opacity = '1'; });
+    });
+</script>
 </body>
 </html>
