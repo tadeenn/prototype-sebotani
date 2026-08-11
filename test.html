@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>SEBOTANI - Kelembapan Tanah</title>
+    <title>SEBOTANI - Suhu Udara</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
@@ -141,37 +141,45 @@
                 <span class="material-symbols-outlined text-white">arrow_back</span>
             </a>
             <div class="flex flex-col items-center">
-                <span class="font-headline-md-mobile text-headline-md-mobile text-white">Kelembapan Tanah</span>
+                <span class="font-headline-md-mobile text-headline-md-mobile text-white">Suhu Udara</span>
             </div>
             <div class="flex items-center justify-center w-10 h-10">
-                <img alt="SEBOTANI" src="https://prototype-sebotani.vercel.app/sebotani-logo.png">
+                <img alt="SEBOTANI Logo" src="https://prototype-sebotani.vercel.app/sebotani-logo.png">
             </div>
         </div>
     </header>
 
     <!-- Main Content Canvas -->
     <main class="flex-grow pt-20 pb-24 px-margin-mobile md:px-margin-desktop max-w-2xl mx-auto w-full">
-        <!-- Moisture Gauge Card -->
+        <!-- Temperature Gauge Card -->
         <div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-lg flex flex-col items-center mb-md border border-outline-variant/30">
-            <div class="flex items-center justify-center gap-md my-md">
-                <span class="material-symbols-outlined text-primary text-[120px]">water_drop</span>
-                <div class="flex flex-col items-start">
-                    <!-- ID ditambahkan di sini -->
-                    <span id="moisture-value" class="font-display-lg text-[64px] leading-tight font-bold text-[#1e3a8a]">0%</span>
-                    <p id="moisture-status" class="font-body-lg text-body-lg text-[#1d4ed8] font-semibold">Menghubungkan...</p>
+            <div class="flex items-center gap-xl py-md w-full justify-center">
+                
+                <!-- Thermometer Visual -->
+                <div class="relative flex flex-col items-center">
+                    <div class="w-6 h-48 bg-surface-container rounded-full relative overflow-hidden border border-outline-variant/30 shadow-inner">
+                        <!-- ID temp-bar ditambahkan di sini -->
+                        <div id="temp-bar" class="absolute bottom-0 left-0 w-full bg-primary transition-all duration-700 ease-out" style="height: 0%;"></div>
+                    </div>
+                    <!-- Warna dasar thermometer -->
+                    <div id="temp-bulb" class="w-10 h-10 bg-primary rounded-full -mt-4 border-4 border-surface-container-lowest shadow-md transition-colors duration-700 ease-out"></div>
                 </div>
-            </div>
-            
-            <!-- Moisture Scale Visualization -->
-            <div class="w-full mt-xl relative px-xs">
-                <div class="flex justify-between w-full mb-xs font-label-caps text-label-caps text-on-surface-variant">
-                    <span class="">0%</span>
-                    <span class="">50%</span>
-                    <span class="">100%</span>
-                </div>
-                <div class="w-full h-4 rounded-full bg-surface-container shadow-inner relative overflow-hidden">
-                    <!-- ID ditambahkan di sini -->
-                    <div id="moisture-bar" class="absolute left-0 top-0 h-full transition-all duration-700 ease-out bg-[#1e3a8a]" style="width: 0%;"></div>
+                
+                <!-- Data Display -->
+                <div class="flex flex-col gap-xs">
+                    <div class="flex flex-col">
+                        <!-- ID temp-value ditambahkan di sini -->
+                        <span id="temp-value" class="font-display-lg text-[64px] leading-tight font-bold text-on-surface">0°C</span>
+                        <!-- ID temp-status ditambahkan di sini -->
+                        <p id="temp-status" class="font-title-sm text-primary font-semibold">Menghubungkan...</p>
+                        <p class="font-label-caps text-on-surface-variant mt-xs">Temperatur</p>
+                    </div>
+                    
+                    <div class="flex flex-col gap-base mt-md font-label-caps text-on-surface-variant">
+                        <div class="flex items-center gap-sm"><span class="w-8">40°C</span><div class="h-[1px] w-4 bg-outline-variant"></div></div>
+                        <div class="flex items-center gap-sm"><span class="w-8">20°C</span><div class="h-[1px] w-4 bg-outline-variant"></div></div>
+                        <div class="flex items-center gap-sm"><span class="w-8">0°C</span><div class="h-[1px] w-4 bg-outline-variant"></div></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -179,19 +187,19 @@
         <!-- Suggestions Bento Card -->
         <div class="bg-[#e7f5ed] rounded-xl p-lg flex items-start gap-md border border-primary-container/20">
             <div class="bg-primary-container/20 p-xs rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">eco</span>
+                <span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">thermostat</span>
             </div>
             <div class="flex flex-col">
                 <h3 class="font-title-sm text-title-sm text-on-primary-container">Saran</h3>
                 <p class="font-body-md text-body-md text-on-surface-variant mt-xs leading-relaxed">
-                    Kelembapan tanah saat ini ideal untuk pertumbuhan tanaman kopi. Pertahankan di angka <span class="font-bold text-primary">60% - 80%</span>.
+                    Suhu udara saat ini sangat ideal untuk penyerbukan bunga kopi. Pastikan sirkulasi udara di kebun tetap lancar.
                 </p>
             </div>
         </div>
 
         <!-- Atmospheric Visual Element (Background subtle) -->
         <div class="mt-xl opacity-30 pointer-events-none">
-            <img class="w-full h-32 object-cover rounded-2xl grayscale" data-alt="A macro close-up photography of rich dark fertile soil with tiny green coffee sprouts emerging." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGx8EQnPcFqnpRTkyYw5xf-KEyvbdvkSa3z0oYhKxagrD4coA2QgQNtE6bAssr6fA1gaQ4OCbHa0weMvjb4e36JCTLpz0eIMtPkiJhaDIzSQirZbxU06rUX4219IqdfUGly3tL0VJXVGRmm0U8KFGlda8VyX0iLPefxN5yu5k7AnuEVSxrKtBpid_qdhPPaPElIDgQDm3oQeCA19wY6EkSXKP6Vpoblep_uE6Y4N4ryBELRcTo1Mhatk75MMD9SJzeNKN7tKoQrHM">
+            <img class="w-full h-32 object-cover rounded-2xl grayscale" data-alt="A serene morning view of a coffee plantation with mist rolling over the hills, representing ideal air temperature and humidity for coffee growth. Soft sunlight filtering through the leaves." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGx8EQnPcFqnpRTkyYw5xf-KEyvbdvkSa3z0oYhKxagrD4coA2QgQNtE6bAssr6fA1gaQ4OCbHa0weMvjb4e36JCTLpz0eIMtPkiJhaDIzSQirZbxU06rUX4219IqdfUGly3tL0VJXVGRmm0U8KFGlda8VyX0iLPefxN5yu5k7AnuEVSxrKtBpid_qdhPPaPElIDgQDm3oQeCA19wY6EkSXKP6Vpoblep_uE6Y4N4ryBELRcTo1Mhatk75MMD9SJzeNKN7tKoQrHM">
         </div>
         
         <div class="flex justify-center mt-xl">
@@ -215,7 +223,8 @@
             });
         });
     </script>
-<!-- INTEGRASI REAL-TIME WEBSOCKET & POPUP LOGIC UNTUK KELEMBAPAN -->
+
+    <!-- INTEGRASI REAL-TIME WEBSOCKET & POPUP LOGIC UNTUK SUHU -->
     <script>
         // 1. Logika untuk menampilkan dan menyembunyikan Popup
         function tampilkanPopup() {
@@ -240,7 +249,6 @@
                 popup.classList.add('hidden');
             }, 300);
             
-            // Coba hubungkan ulang mesin setelah popup ditutup (Opsional, mereset timer)
             aturUlangWaktuTunggu();
         }
 
@@ -248,17 +256,21 @@
 
         // 2. Variabel Timer untuk mendeteksi mesin mati
         let mesinTimeout;
-        const BATAS_WAKTU_TUNGGU = 15000; // 15 detik (15000 milidetik)
+        const BATAS_WAKTU_TUNGGU = 15000; // 15 detik
 
         function resetKeNol() {
-            document.getElementById('moisture-value').innerText = '0%';
-            document.getElementById('moisture-bar').style.width = '0%';
-            document.getElementById('moisture-status').innerText = 'Tidak Terhubung / Data Kosong';
+            document.getElementById('temp-value').innerText = '0°C';
+            document.getElementById('temp-bar').style.height = '0%';
+            document.getElementById('temp-status').innerText = 'Tidak Terhubung';
+            
+            // Ubah warna bar dan bulb ke warna netral/abu-abu saat terputus
+            document.getElementById('temp-bar').style.backgroundColor = '#9ca3af'; 
+            document.getElementById('temp-bulb').style.backgroundColor = '#9ca3af'; 
+            document.getElementById('temp-status').style.color = '#9ca3af'; 
         }
 
-        // Fungsi ini bertugas menghitung mundur. Jika mesin tidak mengirim data selama 15 detik, popup muncul.
         function aturUlangWaktuTunggu() {
-            clearTimeout(mesinTimeout); // Hapus hitungan mundur sebelumnya
+            clearTimeout(mesinTimeout); 
             
             mesinTimeout = setTimeout(() => {
                 console.warn("Mesin tidak merespons selama 15 detik.");
@@ -271,12 +283,11 @@
         const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
         const socket = new WebSocket(wsUrl);
 
-        // Mulai hitung mundur sejak pertama kali website dibuka
         aturUlangWaktuTunggu(); 
 
         socket.onclose = () => {
             console.warn("Koneksi API terputus.");
-            clearTimeout(mesinTimeout); // Hentikan timer jika koneksi benar-benar putus
+            clearTimeout(mesinTimeout); 
             resetKeNol();
             tampilkanPopup();
         };
@@ -294,30 +305,51 @@
                 
                 if (data.type === 'telemetry' && data.payload && data.payload.payload) {
                     
-                    const nilaiMoisture = data.payload.payload.soil_moisture; 
+                    // Mengambil nilai suhu (perhatikan ejaan 'temprature' sesuai output mesin)
+                    const nilaiSuhu = data.payload.payload.soil_temprature; 
 
-                    if (nilaiMoisture !== undefined && nilaiMoisture !== null && nilaiMoisture !== "") {
-                        // KARENA DATA MASUK, MESIN TERBUKTI HIDUP!
-                        // Kita reset waktu tunggunya kembali ke 15 detik
+                    if (nilaiSuhu !== undefined && nilaiSuhu !== null && nilaiSuhu !== "") {
                         aturUlangWaktuTunggu(); 
 
-                        const currentMoisture = parseFloat(nilaiMoisture);
+                        const currentTemp = parseFloat(nilaiSuhu);
                         
-                        if(isNaN(currentMoisture)) return; 
+                        if(isNaN(currentTemp)) return; 
 
-                        document.getElementById('moisture-value').innerText = Math.round(currentMoisture) + '%';
+                        // Update Angka
+                        document.getElementById('temp-value').innerText = currentTemp.toFixed(1) + '°C';
                         
-                        let percent = Math.max(0, Math.min(100, currentMoisture)); 
-                        document.getElementById('moisture-bar').style.width = `${percent}%`;
+                        // Update Bar (Asumsi tinggi maksimal bar mewakili 40°C)
+                        // Kalkulasi persentase tinggi: (Suhu saat ini / 40) * 100
+                        let percent = (currentTemp / 40) * 100;
+                        percent = Math.max(0, Math.min(100, percent)); 
+                        document.getElementById('temp-bar').style.height = `${percent}%`;
 
-                        const statusText = document.getElementById('moisture-status');
-                        if (currentMoisture < 40) {
-                            statusText.innerText = 'Kering';
-                        } else if (currentMoisture > 85) {
-                            statusText.innerText = 'Terlalu Basah';
+                        // Update Status dan Warna
+                        const statusText = document.getElementById('temp-status');
+                        const tempBar = document.getElementById('temp-bar');
+                        const tempBulb = document.getElementById('temp-bulb');
+                        
+                        // Logika perubahan warna berdasarkan suhu (opsional tapi bagus untuk visual)
+                        let colorHex = '#006c49'; // Warna default (primary/sejuk)
+                        
+                        if (currentTemp < 20) {
+                            statusText.innerText = 'Dingin';
+                            colorHex = '#2563eb'; // Biru
+                        } else if (currentTemp > 35) {
+                            statusText.innerText = 'Sangat Panas';
+                            colorHex = '#dc2626'; // Merah
+                        } else if (currentTemp > 30) {
+                            statusText.innerText = 'Hangat';
+                            colorHex = '#ea580c'; // Oranye
                         } else {
-                            statusText.innerText = 'Optimal';
+                            statusText.innerText = 'Sejuk / Optimal';
+                            colorHex = '#006c49'; // Hijau (Primary)
                         }
+
+                        // Terapkan warna ke elemen
+                        statusText.style.color = colorHex;
+                        tempBar.style.backgroundColor = colorHex;
+                        tempBulb.style.backgroundColor = colorHex;
                     }
                 }
             } catch (err) {
