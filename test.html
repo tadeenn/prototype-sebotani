@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html class="light" lang="id" style="">
+<html class="light" lang="id">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>SEBOTANI - Analisis & Rekomendasi</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     
     <!-- Pustaka Chart.js untuk Grafik -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -42,23 +43,11 @@
         }
     </script>
     <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        body {
-            background-color: #f8f9fa;
-            color: #191c1d;
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { background-color: #f8f9fa; color: #191c1d; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         /* Menyembunyikan scrollbar pada deretan tombol waktu */
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen relative">
@@ -118,7 +107,7 @@
                 <h2 class="text-[16px] font-bold text-on-surface">Grafik Historis</h2>
             </div>
             
-            <!-- Filter Waktu (Bisa digeser/scroll horizontal) -->
+            <!-- Filter Waktu -->
             <div class="flex overflow-x-auto hide-scrollbar gap-2 mb-4 pb-1">
                 <button onclick="ubahWaktu('1j')" class="waktu-btn bg-primary text-white text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Jam</button>
                 <button onclick="ubahWaktu('6j')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">6 Jam</button>
@@ -140,7 +129,6 @@
 
         <!-- AI Recommendation Card -->
         <div class="bg-[#eef2ff] rounded-xl p-5 flex flex-col border border-indigo-200 shadow-sm relative overflow-hidden">
-            <!-- Background element -->
             <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[120px] text-indigo-500/10" style="font-variation-settings: 'FILL' 1;">psychology</span>
             
             <div class="flex items-center gap-3 mb-3 relative z-10">
@@ -148,7 +136,6 @@
                     <span class="material-symbols-outlined text-white text-[20px]">smart_toy</span>
                 </div>
                 <h3 class="text-[18px] font-bold text-indigo-900">Saran AI Sebotani</h3>
-                <!-- Indikator live berkedip -->
                 <span class="relative flex h-3 w-3 ml-auto">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
@@ -164,7 +151,6 @@
 
     <!-- UI Interactions Script -->
     <script>
-        // Animasi klik tombol
         document.querySelectorAll('a, button').forEach(el => {
             el.addEventListener('click', (e) => {
                 const ripple = document.createElement('div');
@@ -177,7 +163,6 @@
             });
         });
 
-        // Popup Logic
         function tampilkanPopup() {
             const popup = document.getElementById('connection-popup');
             const popupContent = document.getElementById('popup-content');
@@ -198,16 +183,15 @@
         window.addEventListener('offline', tampilkanPopup);
     </script>
 
-    <!-- CHART.JS LOGIC -->
+    <!-- CHART.JS LOGIC & GENERATOR WAKTU -->
     <script>
         const ctx = document.getElementById('sebotaniChart').getContext('2d');
         let sebotaniChart;
 
-        // Konfigurasi awal grafik
         const config = {
             type: 'line',
             data: {
-                labels: [], // Label waktu
+                labels: [], 
                 datasets: [
                     { label: 'pH Tanah', borderColor: '#eab308', backgroundColor: '#eab308', data: [], yAxisID: 'y' },
                     { label: 'Kelembapan (%)', borderColor: '#3b82f6', backgroundColor: '#3b82f6', data: [], yAxisID: 'y1' },
@@ -231,9 +215,10 @@
 
         sebotaniChart = new Chart(ctx, config);
 
-        // Fungsi Simulasi Data untuk Tombol Filter Waktu
+        // ==========================================
+        // PERBAIKAN: FORMAT WAKTU DI SUMBU X GRAFIK
+        // ==========================================
         function ubahWaktu(rentang) {
-            // Ubah gaya tombol aktif
             document.querySelectorAll('.waktu-btn').forEach(btn => {
                 btn.classList.remove('bg-primary', 'text-white');
                 btn.classList.add('bg-surface-variant', 'text-on-surface-variant');
@@ -241,16 +226,50 @@
             event.target.classList.remove('bg-surface-variant', 'text-on-surface-variant');
             event.target.classList.add('bg-primary', 'text-white');
 
-            // Simulasi pembuatan data (Mock Data) karena WebSocket tidak menyimpan data historis
             let points = 20;
             let labels = [];
             let dataPh = [], dataMoist = [], dataTemp = [];
             
-            for(let i = 0; i < points; i++) {
-                labels.push(`Titik ${i+1}`);
-                dataPh.push(6.0 + Math.random() * 1.5); // pH acak 6.0 - 7.5
-                dataMoist.push(50 + Math.random() * 30); // Kelembapan 50 - 80%
-                dataTemp.push(22 + Math.random() * 10); // Suhu 22 - 32 C
+            let now = new Date();
+            let currentPh = 6.5; 
+            let currentMoist = 70; 
+            let currentTemp = 26; 
+
+            for(let i = points; i >= 0; i--) {
+                let timePoint = new Date(now.getTime());
+                
+                // Kurangi waktu mundur sesuai rentang yang dipilih
+                if(rentang === '1j') timePoint.setMinutes(now.getMinutes() - (i * 3));
+                else if(rentang === '6j') timePoint.setMinutes(now.getMinutes() - (i * 18));
+                else if(rentang === '12j') timePoint.setMinutes(now.getMinutes() - (i * 36));
+                else if(rentang === '1h') timePoint.setHours(now.getHours() - Math.floor(i * 1.2));
+                else if(rentang === '3h') timePoint.setHours(now.getHours() - (i * 3.6));
+                else if(rentang === '1m') timePoint.setHours(now.getHours() - (i * 8.4));
+                else if(rentang === '1bln') timePoint.setDate(now.getDate() - Math.floor(i * 1.5));
+                else if(rentang === '3bln') timePoint.setDate(now.getDate() - (i * 4.5));
+                else if(rentang === '6bln') timePoint.setDate(now.getDate() - (i * 9));
+                else if(rentang === '1t') timePoint.setDate(now.getDate() - (i * 18));
+
+                // Tentukan format label (Jam saja, atau beserta tanggal)
+                let timeStr = "";
+                if (['1j', '6j', '12j', '1h'].includes(rentang)) {
+                    timeStr = timePoint.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}); // cth: 14:00
+                } else if (['3h', '1m', '1bln'].includes(rentang)) {
+                    timeStr = timePoint.toLocaleDateString('id-ID', {day: 'numeric', month: 'short'}) + ", " + timePoint.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}); // cth: 12 Agu, 14:00
+                } else {
+                    timeStr = timePoint.toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: '2-digit'}); // cth: 12 Agu 26
+                }
+                
+                labels.push(timeStr);
+
+                // Buat data berjalan mulus dan masuk akal
+                currentPh = Math.max(4, Math.min(9, currentPh + (Math.random() - 0.5) * 0.3));
+                currentMoist = Math.max(40, Math.min(90, currentMoist + (Math.random() - 0.5) * 5));
+                currentTemp = Math.max(18, Math.min(35, currentTemp + (Math.random() - 0.5) * 2));
+
+                dataPh.push(currentPh);
+                dataMoist.push(currentMoist);
+                dataTemp.push(currentTemp);
             }
 
             sebotaniChart.data.labels = labels;
@@ -260,50 +279,28 @@
             sebotaniChart.update();
         }
 
-        // Muat data awal (1 Jam)
         ubahWaktu('1j');
-        // Set tombol pertama agar terlihat aktif
         document.querySelectorAll('.waktu-btn')[0].classList.add('bg-primary', 'text-white');
         document.querySelectorAll('.waktu-btn')[0].classList.remove('bg-surface-variant', 'text-on-surface-variant');
     </script>
 
     <!-- AI LOGIC & WEBSOCKET REALTIME -->
     <script>
-        // KECERDASAN BUATAN: Sistem Pakar Berbasis Aturan
         function prosesAnalisisAI(ph, moisture, temp) {
             let masalah = [];
             let saran = [];
 
-            // Evaluasi pH Tanah (Ideal: 6.5 - 7.5)
-            if (ph < 6.0) {
-                masalah.push("pH terlalu asam (" + ph + ")");
-                saran.push("Taburkan kapur dolomit pertanian untuk menetralkan keasaman tanah.");
-            } else if (ph > 7.5) {
-                masalah.push("pH terlalu basa (" + ph + ")");
-                saran.push("Tambahkan bahan organik atau sulfur pertanian untuk menurunkan pH.");
-            }
+            if (ph < 6.0) { masalah.push("pH terlalu asam (" + ph + ")"); saran.push("Taburkan kapur dolomit pertanian untuk menetralkan keasaman tanah."); }
+            else if (ph > 7.5) { masalah.push("pH terlalu basa (" + ph + ")"); saran.push("Tambahkan bahan organik atau sulfur pertanian untuk menurunkan pH."); }
 
-            // Evaluasi Kelembapan (Ideal: 60% - 80%)
-            if (moisture < 50) {
-                masalah.push("tanah sangat kering (" + moisture + "%)");
-                saran.push("Segera lakukan penyiraman intensif. Pertimbangkan penggunaan mulsa organik untuk menahan air.");
-            } else if (moisture > 85) {
-                masalah.push("tanah terlalu basah/tergenang (" + moisture + "%)");
-                saran.push("Kurangi penyiraman dan segera perbaiki saluran drainase kebun agar akar kopi tidak membusuk.");
-            }
+            if (moisture < 50) { masalah.push("tanah sangat kering (" + moisture + "%)"); saran.push("Segera lakukan penyiraman intensif. Pertimbangkan penggunaan mulsa organik untuk menahan air."); }
+            else if (moisture > 85) { masalah.push("tanah terlalu basah/tergenang (" + moisture + "%)"); saran.push("Kurangi penyiraman dan segera perbaiki saluran drainase kebun agar akar kopi tidak membusuk."); }
 
-            // Evaluasi Suhu (Ideal: 20°C - 30°C)
-            if (temp < 18) {
-                masalah.push("suhu udara terlalu dingin (" + temp + "°C)");
-                saran.push("Kurangi kanopi pohon peneduh sementara agar sinar matahari pagi bisa masuk memanaskan kebun.");
-            } else if (temp > 32) {
-                masalah.push("suhu udara terlalu panas (" + temp + "°C)");
-                saran.push("Tingkatkan frekuensi pengkabutan/penyiraman ringan, dan pastikan pohon penaung tumbuh dengan baik.");
-            }
+            if (temp < 18) { masalah.push("suhu udara terlalu dingin (" + temp + "°C)"); saran.push("Kurangi kanopi pohon peneduh sementara agar sinar matahari pagi bisa masuk memanaskan kebun."); }
+            else if (temp > 32) { masalah.push("suhu udara terlalu panas (" + temp + "°C)"); saran.push("Tingkatkan frekuensi pengkabutan/penyiraman ringan, dan pastikan pohon penaung tumbuh dengan baik."); }
 
             const aiTextElement = document.getElementById('ai-text');
 
-            // Meracik Kesimpulan
             if (masalah.length === 0) {
                 aiTextElement.innerHTML = "🌱 <strong>Kondisi Ideal!</strong> Saat ini pH, kelembapan, dan suhu kebun Anda berada pada rentang yang sangat optimal untuk pertumbuhan. Pertahankan rutinitas perawatan dan pemupukan Anda.";
             } else {
@@ -316,10 +313,8 @@
             }
         }
 
-
-        // INTEGRASI WEBSOCKET
         let mesinTimeout;
-        const BATAS_WAKTU_TUNGGU = 15000; // 15 detik
+        const BATAS_WAKTU_TUNGGU = 15000;
 
         function aturUlangWaktuTunggu() {
             clearTimeout(mesinTimeout); 
@@ -332,7 +327,10 @@
         const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
         const socket = new WebSocket(wsUrl);
 
-        aturUlangWaktuTunggu(); 
+        socket.onopen = () => {
+            console.log("Koneksi berhasil!");
+            aturUlangWaktuTunggu();
+        }
 
         socket.onclose = () => { clearTimeout(mesinTimeout); tampilkanPopup(); };
         socket.onerror = (error) => { clearTimeout(mesinTimeout); tampilkanPopup(); };
@@ -349,30 +347,27 @@
                     const cMoist = p.soil_moisture !== undefined ? parseFloat(p.soil_moisture) : NaN;
                     const cTemp = p.soil_temprature !== undefined ? parseFloat(p.soil_temprature) : NaN;
 
-                    // Update UI Angka Live jika datanya valid
                     if(!isNaN(cPh)) document.getElementById('live-ph').innerText = cPh.toFixed(1);
                     if(!isNaN(cMoist)) document.getElementById('live-moist').innerText = Math.round(cMoist) + '%';
                     if(!isNaN(cTemp)) document.getElementById('live-temp').innerText = cTemp.toFixed(1) + '°C';
 
-                    // Panggil AI untuk memberikan saran berdasarkan data terbaru
                     if(!isNaN(cPh) && !isNaN(cMoist) && !isNaN(cTemp)) {
                         prosesAnalisisAI(cPh, cMoist, cTemp);
                         
-                        // Menambahkan titik data baru ke grafik secara live (di sisi paling kanan)
-                        const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second:'2-digit' });
+                        // Menambahkan waktu asli saat ini (bukan titik) ke grafik live
+                        const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                         sebotaniChart.data.labels.push(now);
                         sebotaniChart.data.datasets[0].data.push(cPh);
                         sebotaniChart.data.datasets[1].data.push(cMoist);
                         sebotaniChart.data.datasets[2].data.push(cTemp);
 
-                        // Hapus data paling kiri agar grafik tidak memanjang tanpa batas
                         if (sebotaniChart.data.labels.length > 20) {
                             sebotaniChart.data.labels.shift();
                             sebotaniChart.data.datasets[0].data.shift();
                             sebotaniChart.data.datasets[1].data.shift();
                             sebotaniChart.data.datasets[2].data.shift();
                         }
-                        sebotaniChart.update('none'); // Update tanpa animasi penuh agar tidak lag
+                        sebotaniChart.update('none');
                     }
                 }
             } catch (err) {
