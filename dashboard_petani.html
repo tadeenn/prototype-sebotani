@@ -147,23 +147,24 @@
             <p class="font-body-md text-on-surface-variant text-center">Pantau kebun dengan mudah dan presisi.</p>
         </section>
 
-        <!-- Weather Card -->
-        <div class="bg-surface-container-lowest rounded-xl shadow-sm p-lg flex items-center gap-lg border border-outline-variant/30">
-            <div class="bg-secondary-container/10 p-sm rounded-full flex items-center justify-center">
-                <span class="material-symbols-outlined text-secondary text-5xl" style="font-variation-settings: 'FILL' 1;">wb_sunny</span>
+        <!-- Weather Card (Dengan efek transisi halus saat berganti siang/malam) -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-sm p-lg flex items-center gap-lg border border-outline-variant/30 transition-all duration-700">
+            <!-- Background & Icon dikontrol lewat ID -->
+            <div id="weather-icon-bg" class="p-sm rounded-full flex items-center justify-center transition-colors duration-700">
+                <span id="weather-icon" class="material-symbols-outlined text-5xl transition-colors duration-700" style="font-variation-settings: 'FILL' 1;">sync</span>
             </div>
             <div class="flex flex-col">
                 <span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Hari ini</span>
-                <!-- ID Waktu Ditambahkan di sini -->
+                <!-- ID Waktu -->
                 <span id="current-date" class="font-title-sm text-title-sm text-on-surface">Memuat waktu...</span>
-                <span class="font-body-md text-on-surface-variant">Cerah • Berawan Sebagian</span>
+                <span id="weather-text" class="font-body-md text-on-surface-variant">Memuat info...</span>
             </div>
         </div>
 
-        <!-- IoT Data Grid -->
+        <!-- IoT Data Grid (8 Menu Lengkap) -->
         <div class="grid grid-cols-2 gap-md">
             
-            <!-- pH Tanah Card -->
+            <!-- 1. pH Tanah Card -->
             <a href="ph_tanah.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm relative overflow-hidden">
                 <div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center group-hover:bg-primary-container/40 transition-colors">
                     <span class="material-symbols-outlined text-primary text-3xl">potted_plant</span>
@@ -175,7 +176,7 @@
                 </div>
             </a>
 
-            <!-- Kelembapan Tanah Card -->
+            <!-- 2. Kelembapan Tanah Card -->
             <a href="kelembapan.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm relative overflow-hidden">
                 <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
                     <span class="material-symbols-outlined text-blue-600 text-3xl" style="font-variation-settings: 'FILL' 1;">water_drop</span>
@@ -187,7 +188,7 @@
                 </div>
             </a>
 
-            <!-- Suhu Udara Card -->
+            <!-- 3. Suhu Udara Card -->
             <a href="suhu.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm relative overflow-hidden">
                 <div class="w-12 h-12 rounded-full bg-secondary-container/10 flex items-center justify-center group-hover:bg-secondary-container/20 transition-colors">
                     <span class="material-symbols-outlined text-secondary text-3xl">thermostat</span>
@@ -199,7 +200,7 @@
                 </div>
             </a>
 
-            <!-- Jadwal Card -->
+            <!-- 4. Jadwal Card -->
             <a href="penjadwalan.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm">
                 <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center group-hover:bg-purple-200 transition-colors">
                     <span class="material-symbols-outlined text-purple-600 text-3xl">calendar_month</span>
@@ -211,29 +212,54 @@
                 </div>
             </a>
 
-            <!-- Prakiraan Cuaca Card -->
+            <!-- 5. Prakiraan Cuaca Card -->
             <a href="cuaca.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm">
                 <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
                     <span class="material-symbols-outlined text-blue-600 text-3xl">cloud</span>
                 </div>
                 <div>
-                    <h3 class="font-title-sm text-title-sm text-on-surface">Cuaca Sekitar</h3>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">Prakiraan Cuaca</h3>
                     <p class="text-blue-600 font-data-mono">Hujan</p>
                     <span class="inline-block px-xs py-0.5 rounded-full bg-blue-100 text-[10px] font-bold text-blue-800 uppercase">Sore Hari</span>
                 </div>
             </a>
 
-            <!-- Analisis Rekomendasi Card -->
-            <a href="analisis_rekomendasi.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm">
+            <!-- 6. Rekomendasi Pupuk Card (Dikembalikan) -->
+            <a href="rekomendasi_pupuk.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm">
                 <div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center group-hover:bg-primary-container/40 transition-colors">
-                    <span class="material-symbols-outlined text-primary text-3xl">analytics</span>
+                    <span class="material-symbols-outlined text-primary text-3xl">compost</span>
+                </div>
+                <div>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">Rekomendasi Pupuk</h3>
+                    <p class="text-primary font-data-mono">Lihat Saran</p>
+                    <span class="inline-block px-xs py-0.5 rounded-full bg-primary-container/30 text-[10px] font-bold text-on-primary-container uppercase">Dari pakar</span>
+                </div>
+            </a>
+
+            <!-- 7. Analisis Rekomendasi Card -->
+            <a href="analisis_rekomendasi.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm">
+                <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                    <span class="material-symbols-outlined text-purple-600 text-3xl">analytics</span>
                 </div>
                 <div>
                     <h3 class="font-title-sm text-title-sm text-on-surface">Analisis & AI</h3>
-                    <p class="text-primary font-data-mono">Pantau</p>
-                    <span class="inline-block px-xs py-0.5 rounded-full bg-primary-container/30 text-[10px] font-bold text-on-primary-container uppercase">Data Grafik</span>
+                    <p class="text-purple-600 font-data-mono">94%</p>
+                    <span class="inline-block px-xs py-0.5 rounded-full bg-purple-100 text-[10px] font-bold text-purple-800 uppercase">Akurat</span>
                 </div>
             </a>
+
+            <!-- 8. Laporan Mingguan Card (Dikembalikan) -->
+            <a href="laporan_mingguan.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm">
+                <div class="w-12 h-12 rounded-full bg-secondary-container/10 flex items-center justify-center group-hover:bg-secondary-container/20 transition-colors">
+                    <span class="material-symbols-outlined text-secondary text-3xl">description</span>
+                </div>
+                <div>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">Laporan Mingguan</h3>
+                    <p class="text-secondary font-data-mono">Dirangkum</p>
+                    <span class="inline-block px-xs py-0.5 rounded-full bg-secondary-container/10 text-[10px] font-bold text-on-secondary-container uppercase">Cek rutin</span>
+                </div>
+            </a>
+            
         </div>
 
         <!-- Banner Section: Saran Hari Ini -->
@@ -303,7 +329,7 @@
 
     <!-- KUMPULAN SCRIPT JS -->
     <script>
-        // 1. Logika Waktu Real-Time (Jam & Tanggal)
+        // 1. Logika Waktu Real-Time (Jam & Tanggal) & Pergantian Ikon Siang/Malam
         function perbaruiJam() {
             const sekarang = new Date();
             const opsiTanggal = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
@@ -313,12 +339,32 @@
             const formatWaktu = sekarang.toLocaleTimeString('id-ID', opsiWaktu);
             
             document.getElementById('current-date').innerText = formatTanggal + " • " + formatWaktu;
+
+            // Logika Siang/Malam
+            const jam = sekarang.getHours();
+            const iconElement = document.getElementById('weather-icon');
+            const bgElement = document.getElementById('weather-icon-bg');
+            const textCuaca = document.getElementById('weather-text');
+
+            if (jam >= 6 && jam < 18) {
+                // Siang Hari (Matahari)
+                iconElement.innerText = 'wb_sunny';
+                iconElement.className = 'material-symbols-outlined text-secondary text-5xl transition-colors duration-700';
+                bgElement.className = 'bg-secondary-container/10 p-sm rounded-full flex items-center justify-center transition-colors duration-700';
+                textCuaca.innerText = 'Cerah • Berawan Sebagian';
+            } else {
+                // Malam Hari (Bulan Sabit / Dark Mode)
+                iconElement.innerText = 'dark_mode'; 
+                iconElement.className = 'material-symbols-outlined text-blue-600 text-5xl transition-colors duration-700';
+                bgElement.className = 'bg-blue-100 p-sm rounded-full flex items-center justify-center transition-colors duration-700';
+                textCuaca.innerText = 'Malam • Cerah Berbintang';
+            }
         }
         setInterval(perbaruiJam, 1000);
         perbaruiJam();
 
         // 2. Interaksi UI & Scroll
-        document.querySelectorAll('button').forEach(btn => {
+        document.querySelectorAll('button, a').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 let ripple = document.createElement('div');
                 ripple.classList.add('ripple');
