@@ -1,384 +1,361 @@
 <!DOCTYPE html>
-<html class="light" lang="id" style="">
+<html class="light" lang="id">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>SEBOTANI - Analisis & Rekomendasi</title>
+    <title>SEBOTANI - Eksplorasi Data Historis</title>
+    
+    <!-- Pustaka Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    
+    <!-- Pustaka Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     
     <!-- Pustaka Chart.js untuk Grafik -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Pustaka html2pdf untuk Cetak Laporan PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script id="tailwind-config">
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
-                    "colors": {
+                    colors: {
                         "primary": "#006c49",
-                        "on-primary": "#ffffff",
-                        "primary-container": "#10b981",
-                        "on-primary-container": "#00422b",
-                        "error": "#ba1a1a",
-                        "surface": "#f8f9fa",
-                        "on-surface": "#191c1d",
-                        "surface-variant": "#e1e3e4",
-                        "on-surface-variant": "#3c4a42",
-                        "surface-container-lowest": "#ffffff",
-                        "outline-variant": "#bbcabf",
-                        "secondary": "#855300",
-                        // Warna khusus grafik
-                        "chart-ph": "#eab308",
-                        "chart-moist": "#3b82f6",
-                        "chart-temp": "#ef4444"
+                        "surface": "#ffffff",
+                        "background": "#fbfdf9",
+                        "outline": "#727971",
+                        "chart-moist": "#10b981",
+                        "chart-par": "#f59e0b",
+                        "chart-rh": "#8b5cf6",
+                        "chart-temp": "#0f766e"
                     },
-                    "spacing": {
-                        "margin-mobile": "16px",
-                        "margin-desktop": "40px"
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
                     }
-                },
-            },
+                }
+            }
         }
     </script>
     <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        body {
-            background-color: #f8f9fa;
-            color: #191c1d;
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        /* Menyembunyikan scrollbar pada deretan tombol waktu */
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { background-color: #fbfdf9; color: #191c1d; }
+        
+        /* Kustomisasi scrollbar untuk heatmap */
+        .heatmap-grid { display: grid; grid-template-columns: auto repeat(14, 1fr); gap: 8px; align-items: center; }
+        .day-label { font-size: 11px; color: #727971; font-weight: 500; text-align: right; padding-right: 8px; }
+        .box { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+        .box .material-symbols-outlined { font-size: 14px; color: white; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen relative">
-    
-    <!-- POPUP KONEKSI TERPUTUS -->
-    <div id="connection-popup" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm">
-        <div id="popup-content" class="bg-surface rounded-2xl shadow-xl p-6 max-w-sm w-[90%] flex flex-col items-center text-center transform scale-95 transition-transform duration-300 border border-outline-variant/30">
-            <span class="material-symbols-outlined text-error text-[56px] mb-4">wifi_off</span>
-            <h3 class="text-[18px] font-bold text-on-surface mb-2">Koneksi Terputus</h3>
-            <p class="text-[14px] text-on-surface-variant mb-6 leading-relaxed">
-                Coba cek koneksi internet Anda atau cek mesin SEBOTANI.
-            </p>
-            <button onclick="tutupPopup()" class="bg-primary text-on-primary font-semibold py-3 px-6 rounded-xl shadow-sm active:scale-95 transition-transform duration-150 w-full">
-                Mengerti
-            </button>
-        </div>
+<body class="min-h-screen p-4 md:p-8">
+
+    <!-- Header Actions (Tidak ikut tercetak di PDF) -->
+    <div class="max-w-6xl mx-auto flex justify-between items-center mb-6 no-print">
+        <a href="dashboard_petani.html" class="flex items-center gap-2 text-primary hover:bg-green-50 px-3 py-2 rounded-lg transition-colors">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span class="font-semibold">Kembali</span>
+        </a>
+        
+        <!-- Tombol Cetak PDF -->
+        <button onclick="cetakPDF()" class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg shadow-md hover:bg-green-800 transition-colors active:scale-95">
+            <span class="material-symbols-outlined">picture_as_pdf</span>
+            <span class="font-semibold">Cetak Laporan (PDF)</span>
+        </button>
     </div>
 
-    <!-- TopAppBar -->
-    <header class="fixed top-0 w-full z-50 bg-primary shadow-sm flex justify-between items-center px-margin-mobile h-14">
-        <div class="flex items-center w-full justify-between">
-            <a href="dashboard_petani.html" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors active:scale-95 duration-150">
-                <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
-            </a>
-            <div class="flex flex-col items-center">
-                <span class="text-[20px] font-semibold text-white">Analisis & Rekomendasi</span>
-            </div>
-            <div class="flex items-center justify-center w-10 h-10">
-                <img alt="SEBOTANI Logo" src="https://prototype-sebotani.vercel.app/sebotani-logo.png">
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content Canvas -->
-    <main class="flex-grow pt-20 pb-24 px-margin-mobile md:px-margin-desktop max-w-4xl mx-auto w-full">
+    <!-- AREA YANG AKAN DICETAK KE PDF (ID: report-area) -->
+    <div id="report-area" class="max-w-6xl mx-auto bg-white p-6 rounded-none sm:rounded-2xl shadow-sm border border-gray-100">
         
-        <!-- Live Data Overview -->
-        <div class="grid grid-cols-3 gap-3 mb-4">
-            <div class="bg-surface-container-lowest rounded-xl p-3 border border-outline-variant/30 text-center shadow-sm">
-                <p class="text-[12px] text-on-surface-variant font-semibold mb-1">pH Tanah</p>
-                <p id="live-ph" class="text-2xl font-bold text-chart-ph">0.0</p>
+        <!-- Report Header -->
+        <div class="flex justify-between items-start mb-6 border-b border-gray-100 pb-4">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Eksplorasi Data Historis & Analitik Presisi</h1>
+                <p class="text-sm text-gray-500 mt-1">Analisis deret waktu telemetri 9 sensor greenhouse kopi "Smart Farming Seboto"</p>
             </div>
-            <div class="bg-surface-container-lowest rounded-xl p-3 border border-outline-variant/30 text-center shadow-sm">
-                <p class="text-[12px] text-on-surface-variant font-semibold mb-1">Kelembapan</p>
-                <p id="live-moist" class="text-2xl font-bold text-chart-moist">0%</p>
-            </div>
-            <div class="bg-surface-container-lowest rounded-xl p-3 border border-outline-variant/30 text-center shadow-sm">
-                <p class="text-[12px] text-on-surface-variant font-semibold mb-1">Suhu Udara</p>
-                <p id="live-temp" class="text-2xl font-bold text-chart-temp">0°C</p>
+            <div class="text-right">
+                <img alt="SEBOTANI" src="https://prototype-sebotani.vercel.app/sebotani-logo.png" class="h-10 ml-auto mb-2 opacity-80">
+                <!-- Detail Tanggal & Jam Realtime -->
+                <p class="text-xs text-gray-400 font-mono" id="waktu-cetak">Memuat waktu...</p>
             </div>
         </div>
 
-        <!-- Chart Card -->
-        <div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-4 flex flex-col mb-4 border border-outline-variant/30">
-            <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-outlined text-primary">monitoring</span>
-                <h2 class="text-[16px] font-bold text-on-surface">Grafik Historis</h2>
-            </div>
-            
-            <!-- Filter Waktu (Bisa digeser/scroll horizontal) -->
-            <div class="flex overflow-x-auto hide-scrollbar gap-2 mb-4 pb-1">
-                <button onclick="ubahWaktu('1j')" class="waktu-btn bg-primary text-white text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Jam</button>
-                <button onclick="ubahWaktu('6j')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">6 Jam</button>
-                <button onclick="ubahWaktu('12j')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">12 Jam</button>
-                <button onclick="ubahWaktu('1h')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Hari</button>
-                <button onclick="ubahWaktu('3h')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">3 Hari</button>
-                <button onclick="ubahWaktu('1m')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Minggu</button>
-                <button onclick="ubahWaktu('1bln')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Bulan</button>
-                <button onclick="ubahWaktu('3bln')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">3 Bulan</button>
-                <button onclick="ubahWaktu('6bln')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">6 Bulan</button>
-                <button onclick="ubahWaktu('1t')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Tahun</button>
+        <!-- Control Panel -->
+        <div class="bg-gray-50/50 border border-gray-200 rounded-xl p-2 mb-6 flex flex-wrap gap-2 justify-between items-center">
+            <div class="flex items-center gap-1 overflow-x-auto text-sm">
+                <div class="px-3 text-gray-500"><span class="material-symbols-outlined text-[20px] align-middle">calendar_month</span></div>
+                <button class="bg-primary text-white font-semibold px-4 py-1.5 rounded-lg whitespace-nowrap shadow-sm">7 Hari Terakhir</button>
+                <button class="text-gray-600 font-medium hover:bg-gray-100 px-4 py-1.5 rounded-lg whitespace-nowrap">30 Hari Terakhir</button>
+                <button class="text-gray-600 font-medium hover:bg-gray-100 px-4 py-1.5 rounded-lg whitespace-nowrap">90 Hari Terakhir</button>
+                <button class="text-gray-600 font-medium hover:bg-gray-100 px-4 py-1.5 rounded-lg whitespace-nowrap">Custom Range</button>
+                <div class="w-px h-6 bg-gray-300 mx-2"></div>
+                <button class="flex items-center gap-1 bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 px-4 py-1.5 rounded-lg whitespace-nowrap shadow-sm">
+                    <span class="material-symbols-outlined text-[18px] text-primary">swap_horiz</span> Bandingkan Periode
+                </button>
             </div>
 
-            <!-- Area Grafik -->
-            <div class="w-full h-[250px] relative">
-                <canvas id="sebotaniChart"></canvas>
-            </div>
-        </div>
-
-        <!-- AI Recommendation Card -->
-        <div class="bg-[#eef2ff] rounded-xl p-5 flex flex-col border border-indigo-200 shadow-sm relative overflow-hidden">
-            <!-- Background element -->
-            <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[120px] text-indigo-500/10" style="font-variation-settings: 'FILL' 1;">psychology</span>
-            
-            <div class="flex items-center gap-3 mb-3 relative z-10">
-                <div class="bg-indigo-500 p-2 rounded-lg flex items-center justify-center shadow-md">
-                    <span class="material-symbols-outlined text-white text-[20px]">smart_toy</span>
+            <div class="flex items-center gap-3">
+                <div class="flex items-center bg-white border border-gray-200 rounded-lg p-1 shadow-sm text-xs font-semibold text-gray-500">
+                    <span class="material-symbols-outlined text-[16px] px-2">schedule</span>
+                    <button class="px-2 py-1 hover:bg-gray-100 rounded">15M</button>
+                    <button class="px-2 py-1 bg-gray-100 text-gray-900 rounded shadow-sm">JAM</button>
+                    <button class="px-2 py-1 hover:bg-gray-100 rounded">HARI</button>
                 </div>
-                <h3 class="text-[18px] font-bold text-indigo-900">Saran AI Sebotani</h3>
-                <!-- Indikator live berkedip -->
-                <span class="relative flex h-3 w-3 ml-auto">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
-                </span>
-            </div>
-            <div class="relative z-10 bg-white/60 backdrop-blur-sm p-4 rounded-xl border border-white/50">
-                <p id="ai-text" class="text-[14px] text-indigo-950 leading-relaxed font-medium">
-                    Menunggu aliran data untuk melakukan analisis...
-                </p>
+                <button class="flex items-center gap-1 bg-white border border-gray-200 text-gray-700 font-medium text-sm px-4 py-1.5 rounded-lg shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">filter_alt</span> Sensor (3)
+                </button>
             </div>
         </div>
-    </main>
 
-    <!-- UI Interactions Script -->
+        <!-- Tabs -->
+        <div class="flex gap-6 border-b border-gray-200 mb-6 px-2 text-sm font-semibold">
+            <button class="text-primary border-b-2 border-primary pb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">show_chart</span> Trend Multi-Axis
+            </button>
+            <button class="text-gray-500 hover:text-gray-700 pb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">bar_chart</span> Distribusi & Statistik
+            </button>
+            <button class="text-gray-500 hover:text-gray-700 pb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">grid_on</span> Heatmap & Matriks Korelasi
+            </button>
+            <button class="text-gray-500 hover:text-gray-700 pb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">table_rows</span> Data Mentah
+            </button>
+        </div>
+
+        <!-- Main Chart Card -->
+        <div class="border border-gray-200 rounded-xl p-5 mb-6">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="flex items-center gap-2 text-gray-800 font-bold">
+                        <span class="material-symbols-outlined text-primary text-[20px]">multiline_chart</span> 
+                        Grafik Trend Multi-Axis Sensor Telemetri
+                    </h3>
+                    <p class="text-xs text-gray-500 mt-1">Dua sumbu Y independen untuk observasi korelasi suhu vs kelembaban vs cahaya</p>
+                </div>
+                <div class="flex items-center gap-1.5 text-xs text-gray-500 font-medium bg-red-50 px-3 py-1.5 rounded-full border border-red-100">
+                    <div class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></div>
+                    Anomali Terdeteksi
+                </div>
+            </div>
+
+            <!-- Chart Canvas -->
+            <div class="w-full h-[350px] relative">
+                <canvas id="multiAxisChart"></canvas>
+            </div>
+
+            <!-- Brush Slider Mockup -->
+            <div class="w-full h-4 bg-[#eef1ed] border border-gray-300 mt-2 relative cursor-ew-resize">
+                <div class="absolute left-0 top-0 h-full w-2 bg-gray-400 border-r border-gray-500"></div>
+                <div class="absolute right-0 top-0 h-full w-2 bg-gray-400 border-l border-gray-500"></div>
+            </div>
+
+            <!-- Legend Bawah -->
+            <div class="flex justify-center gap-6 mt-4 text-xs font-semibold">
+                <div class="flex items-center gap-1 text-chart-moist"><span class="material-symbols-outlined text-[16px]">water_drop</span> Moisture Tanah (%)</div>
+                <div class="flex items-center gap-1 text-chart-par"><span class="material-symbols-outlined text-[16px]">wb_sunny</span> PAR Cahaya (µmol)</div>
+                <div class="flex items-center gap-1 text-[#8b5cf6]"><span class="material-symbols-outlined text-[16px]">air</span> RH Udara (%RH)</div>
+                <div class="flex items-center gap-1 text-[#0f766e]"><span class="material-symbols-outlined text-[16px]">thermostat</span> Suhu Udara (°C)</div>
+            </div>
+
+            <div class="mt-5 bg-orange-50/50 border border-orange-100 rounded-lg p-3 flex items-start gap-2 text-xs text-gray-600">
+                <span class="material-symbols-outlined text-orange-500 text-[18px]">warning</span>
+                Gunakan slider <strong>Brush</strong> di bagian bawah grafik untuk melakukan zoom rentang jam tertentu secara presisi.
+            </div>
+        </div>
+
+        <!-- Heatmap Card -->
+        <div class="border border-gray-200 rounded-xl p-5">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="flex items-center gap-2 text-gray-800 font-bold">
+                    <span class="material-symbols-outlined text-primary text-[20px]">calendar_month</span> 
+                    Heatmap Kualitas Lingkungan Harian (3 Bulan)
+                </h3>
+                <div class="flex items-center gap-2 text-[10px] font-semibold text-gray-500">
+                    Kurang
+                    <div class="w-3 h-3 rounded-sm bg-red-400"></div>
+                    <div class="w-3 h-3 rounded-sm bg-yellow-400"></div>
+                    <div class="w-3 h-3 rounded-sm bg-emerald-400"></div>
+                    <div class="w-3 h-3 rounded-sm bg-emerald-600"></div>
+                    Optimal (100)
+                </div>
+            </div>
+
+            <!-- Heatmap Grid -->
+            <div class="heatmap-grid overflow-x-auto pb-2" id="heatmap-container">
+                <!-- Javascript akan mengisi grid ini -->
+            </div>
+
+            <div class="mt-6 bg-[#ebfbf3] border border-[#bbf7d0] rounded-lg p-3 flex items-start gap-2 text-xs text-gray-700">
+                <span class="material-symbols-outlined text-primary text-[18px]">info</span>
+                <p><strong>Rata-rata Skor Kestabilan 90 Hari:</strong> 89.2/100. Hanya 3 hari dengan stabilitas di bawah 75% akibat perubahan iklim luar mendadak.</p>
+            </div>
+        </div>
+
+    </div>
+
     <script>
-        // Animasi klik tombol
-        document.querySelectorAll('a, button').forEach(el => {
-            el.addEventListener('click', (e) => {
-                const ripple = document.createElement('div');
-                ripple.className = 'absolute bg-black/10 rounded-full scale-0 animate-ping pointer-events-none';
-                ripple.style.width = '20px';
-                ripple.style.height = '20px';
-                el.classList.add('relative', 'overflow-hidden');
-                el.appendChild(ripple);
-                setTimeout(() => ripple.remove(), 600);
-            });
-        });
+        // --- 1. SET PENANGGALAN DETAIL & REALTIME ---
+        function updateWaktuCetak() {
+            const sekarang = new Date();
+            const opsi = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' };
+            document.getElementById('waktu-cetak').innerText = "Dicetak pada: " + sekarang.toLocaleDateString('id-ID', opsi);
+        }
+        updateWaktuCetak();
 
-        // Popup Logic
-        function tampilkanPopup() {
-            const popup = document.getElementById('connection-popup');
-            const popupContent = document.getElementById('popup-content');
-            popup.classList.remove('hidden');
-            void popup.offsetWidth; 
-            popup.classList.remove('opacity-0');
-            popupContent.classList.remove('scale-95');
+        // --- 2. KONFIGURASI GRAFIK CHART.JS (Multi-Axis & Detail Waktu) ---
+        const ctx = document.getElementById('multiAxisChart').getContext('2d');
+        
+        // Membuat label waktu yang detail (Tanggal & Jam)
+        const labelsWaktu = [];
+        let waktuMulai = new Date();
+        waktuMulai.setHours(waktuMulai.getHours() - 14); // Mundur 14 jam
+        
+        for (let i = 0; i <= 30; i++) {
+            let label = waktuMulai.toLocaleDateString('id-ID', {day: 'numeric', month: 'short'}) + " " + 
+                        waktuMulai.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+            labelsWaktu.push(label);
+            waktuMulai.setMinutes(waktuMulai.getMinutes() + 30); // Interval 30 menit
         }
 
-        function tutupPopup() {
-            const popup = document.getElementById('connection-popup');
-            const popupContent = document.getElementById('popup-content');
-            popup.classList.add('opacity-0');
-            popupContent.classList.add('scale-95');
-            setTimeout(() => { popup.classList.add('hidden'); }, 300);
-            aturUlangWaktuTunggu();
-        }
-        window.addEventListener('offline', tampilkanPopup);
-    </script>
-
-    <!-- CHART.JS LOGIC -->
-    <script>
-        const ctx = document.getElementById('sebotaniChart').getContext('2d');
-        let sebotaniChart;
-
-        // Konfigurasi awal grafik
-        const config = {
+        // Generate data dummy
+        const dataMoist = Array(31).fill(60).map(() => 58 + Math.random() * 5);
+        const dataTemp = Array(31).fill(24).map(() => 22 + Math.random() * 4);
+        
+        // Data PAR Cahaya (naik mendadak di pagi hari)
+        const dataPar = Array(31).fill(0);
+        for(let i=12; i<31; i++) { dataPar[i] = 30 + (i-12)*2.5 + Math.random()*5; }
+        
+        const multiAxisChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: [], // Label waktu
+                labels: labelsWaktu,
                 datasets: [
-                    { label: 'pH Tanah', borderColor: '#eab308', backgroundColor: '#eab308', data: [], yAxisID: 'y' },
-                    { label: 'Kelembapan (%)', borderColor: '#3b82f6', backgroundColor: '#3b82f6', data: [], yAxisID: 'y1' },
-                    { label: 'Suhu (°C)', borderColor: '#ef4444', backgroundColor: '#ef4444', data: [], yAxisID: 'y1' }
+                    {
+                        label: 'Moisture Tanah (%)',
+                        data: dataMoist,
+                        borderColor: '#10b981',
+                        backgroundColor: '#10b981',
+                        yAxisID: 'y',
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Suhu Udara (°C)',
+                        data: dataTemp,
+                        borderColor: '#0f766e',
+                        backgroundColor: '#0f766e',
+                        yAxisID: 'y',
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'PAR Cahaya (µmol)',
+                        data: dataPar,
+                        borderColor: '#f59e0b',
+                        borderDash: [5, 5],
+                        yAxisID: 'y1',
+                        tension: 0.1,
+                        borderWidth: 2,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Anomali',
+                        data: [{x: labelsWaktu[24], y: 28}],
+                        backgroundColor: '#ef4444',
+                        borderColor: '#ef4444',
+                        type: 'scatter',
+                        yAxisID: 'y',
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }
                 ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
                 plugins: {
-                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                    legend: { display: false },
+                    tooltip: { mode: 'index', intersect: false }
                 },
                 scales: {
-                    x: { ticks: { maxTicksLimit: 6, font: { size: 10 } } },
-                    y: { type: 'linear', display: true, position: 'left', min: 0, max: 14, title: { display: true, text: 'pH' } },
-                    y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, title: { display: true, text: '% / °C' } }
-                }
-            }
-        };
-
-        sebotaniChart = new Chart(ctx, config);
-
-        // Fungsi Simulasi Data untuk Tombol Filter Waktu
-        function ubahWaktu(rentang) {
-            // Ubah gaya tombol aktif
-            document.querySelectorAll('.waktu-btn').forEach(btn => {
-                btn.classList.remove('bg-primary', 'text-white');
-                btn.classList.add('bg-surface-variant', 'text-on-surface-variant');
-            });
-            event.target.classList.remove('bg-surface-variant', 'text-on-surface-variant');
-            event.target.classList.add('bg-primary', 'text-white');
-
-            // Simulasi pembuatan data (Mock Data) karena WebSocket tidak menyimpan data historis
-            let points = 20;
-            let labels = [];
-            let dataPh = [], dataMoist = [], dataTemp = [];
-            
-            for(let i = 0; i < points; i++) {
-                labels.push(`Titik ${i+1}`);
-                dataPh.push(6.0 + Math.random() * 1.5); // pH acak 6.0 - 7.5
-                dataMoist.push(50 + Math.random() * 30); // Kelembapan 50 - 80%
-                dataTemp.push(22 + Math.random() * 10); // Suhu 22 - 32 C
-            }
-
-            sebotaniChart.data.labels = labels;
-            sebotaniChart.data.datasets[0].data = dataPh;
-            sebotaniChart.data.datasets[1].data = dataMoist;
-            sebotaniChart.data.datasets[2].data = dataTemp;
-            sebotaniChart.update();
-        }
-
-        // Muat data awal (1 Jam)
-        ubahWaktu('1j');
-        // Set tombol pertama agar terlihat aktif
-        document.querySelectorAll('.waktu-btn')[0].classList.add('bg-primary', 'text-white');
-        document.querySelectorAll('.waktu-btn')[0].classList.remove('bg-surface-variant', 'text-on-surface-variant');
-    </script>
-
-    <!-- AI LOGIC & WEBSOCKET REALTIME -->
-    <script>
-        // KECERDASAN BUATAN: Sistem Pakar Berbasis Aturan
-        function prosesAnalisisAI(ph, moisture, temp) {
-            let masalah = [];
-            let saran = [];
-
-            // Evaluasi pH Tanah (Ideal: 6.5 - 7.5)
-            if (ph < 6.0) {
-                masalah.push("pH terlalu asam (" + ph + ")");
-                saran.push("Taburkan kapur dolomit pertanian untuk menetralkan keasaman tanah.");
-            } else if (ph > 7.5) {
-                masalah.push("pH terlalu basa (" + ph + ")");
-                saran.push("Tambahkan bahan organik atau sulfur pertanian untuk menurunkan pH.");
-            }
-
-            // Evaluasi Kelembapan (Ideal: 60% - 80%)
-            if (moisture < 50) {
-                masalah.push("tanah sangat kering (" + moisture + "%)");
-                saran.push("Segera lakukan penyiraman intensif. Pertimbangkan penggunaan mulsa organik untuk menahan air.");
-            } else if (moisture > 85) {
-                masalah.push("tanah terlalu basah/tergenang (" + moisture + "%)");
-                saran.push("Kurangi penyiraman dan segera perbaiki saluran drainase kebun agar akar kopi tidak membusuk.");
-            }
-
-            // Evaluasi Suhu (Ideal: 20°C - 30°C)
-            if (temp < 18) {
-                masalah.push("suhu udara terlalu dingin (" + temp + "°C)");
-                saran.push("Kurangi kanopi pohon peneduh sementara agar sinar matahari pagi bisa masuk memanaskan kebun.");
-            } else if (temp > 32) {
-                masalah.push("suhu udara terlalu panas (" + temp + "°C)");
-                saran.push("Tingkatkan frekuensi pengkabutan/penyiraman ringan, dan pastikan pohon penaung tumbuh dengan baik.");
-            }
-
-            const aiTextElement = document.getElementById('ai-text');
-
-            // Meracik Kesimpulan
-            if (masalah.length === 0) {
-                aiTextElement.innerHTML = "🌱 <strong>Kondisi Ideal!</strong> Saat ini pH, kelembapan, dan suhu kebun Anda berada pada rentang yang sangat optimal untuk pertumbuhan. Pertahankan rutinitas perawatan dan pemupukan Anda.";
-            } else {
-                let kalimatMasalah = masalah.join(", ");
-                let kalimatSaran = saran.map(s => "<li>" + s + "</li>").join("");
-                
-                aiTextElement.innerHTML = `⚠️ <strong>Perhatian:</strong> Sistem mendeteksi bahwa <strong>${kalimatMasalah}</strong>.<br><br>
-                <strong>Tindakan yang direkomendasikan:</strong>
-                <ul class="list-disc pl-5 mt-1 space-y-1">${kalimatSaran}</ul>`;
-            }
-        }
-
-
-        // INTEGRASI WEBSOCKET
-        let mesinTimeout;
-        const BATAS_WAKTU_TUNGGU = 15000; // 15 detik
-
-        function aturUlangWaktuTunggu() {
-            clearTimeout(mesinTimeout); 
-            mesinTimeout = setTimeout(() => {
-                console.warn("Mesin tidak merespons selama 15 detik.");
-                tampilkanPopup();
-            }, BATAS_WAKTU_TUNGGU);
-        }
-
-        const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
-        const socket = new WebSocket(wsUrl);
-
-        aturUlangWaktuTunggu(); 
-
-        socket.onclose = () => { clearTimeout(mesinTimeout); tampilkanPopup(); };
-        socket.onerror = (error) => { clearTimeout(mesinTimeout); tampilkanPopup(); };
-
-        socket.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                
-                if (data.type === 'telemetry' && data.payload && data.payload.payload) {
-                    aturUlangWaktuTunggu(); 
-
-                    const p = data.payload.payload;
-                    const cPh = p.soil_ph !== undefined ? parseFloat(p.soil_ph) : NaN;
-                    const cMoist = p.soil_moisture !== undefined ? parseFloat(p.soil_moisture) : NaN;
-                    const cTemp = p.soil_temprature !== undefined ? parseFloat(p.soil_temprature) : NaN;
-
-                    // Update UI Angka Live jika datanya valid
-                    if(!isNaN(cPh)) document.getElementById('live-ph').innerText = cPh.toFixed(1);
-                    if(!isNaN(cMoist)) document.getElementById('live-moist').innerText = Math.round(cMoist) + '%';
-                    if(!isNaN(cTemp)) document.getElementById('live-temp').innerText = cTemp.toFixed(1) + '°C';
-
-                    // Panggil AI untuk memberikan saran berdasarkan data terbaru
-                    if(!isNaN(cPh) && !isNaN(cMoist) && !isNaN(cTemp)) {
-                        prosesAnalisisAI(cPh, cMoist, cTemp);
-                        
-                        // Menambahkan titik data baru ke grafik secara live (di sisi paling kanan)
-                        const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second:'2-digit' });
-                        sebotaniChart.data.labels.push(now);
-                        sebotaniChart.data.datasets[0].data.push(cPh);
-                        sebotaniChart.data.datasets[1].data.push(cMoist);
-                        sebotaniChart.data.datasets[2].data.push(cTemp);
-
-                        // Hapus data paling kiri agar grafik tidak memanjang tanpa batas
-                        if (sebotaniChart.data.labels.length > 20) {
-                            sebotaniChart.data.labels.shift();
-                            sebotaniChart.data.datasets[0].data.shift();
-                            sebotaniChart.data.datasets[1].data.shift();
-                            sebotaniChart.data.datasets[2].data.shift();
-                        }
-                        sebotaniChart.update('none'); // Update tanpa animasi penuh agar tidak lag
+                    x: {
+                        grid: { display: false },
+                        ticks: { maxTicksLimit: 8, font: { size: 10 } }
+                    },
+                    y: {
+                        type: 'linear', display: true, position: 'left', min: 0, max: 80,
+                        grid: { color: '#f3f4f6' }
+                    },
+                    y1: {
+                        type: 'linear', display: true, position: 'right', min: 0, max: 80,
+                        grid: { drawOnChartArea: false }
                     }
                 }
-            } catch (err) {
-                console.log("Mengabaikan pesan non-JSON dari server.");
             }
-        };
+        });
+
+        // --- 3. GENERATOR HEATMAP ---
+        const heatmapContainer = document.getElementById('heatmap-container');
+        const hari = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+        
+        // Template warna dari gambar
+        const colors = ['bg-emerald-500', 'bg-emerald-400', 'bg-yellow-400', 'bg-red-400'];
+        
+        let htmlGrid = '';
+        // Looping untuk 7 baris (Hari)
+        for (let row = 0; row < 7; row++) {
+            htmlGrid += `<div class="day-label">${hari[row]}</div>`;
+            
+            // Looping untuk 14 Kolom (Minggu)
+            for (let col = 0; col < 14; col++) {
+                // Logika acak untuk mereplikasi pola warna gambar
+                let colorClass = colors[0];
+                let icon = '<span class="material-symbols-outlined">check</span>';
+                
+                let rand = Math.random();
+                if(col % 3 === 0 && rand > 0.5) { colorClass = colors[2]; icon = ''; }
+                else if (rand > 0.95) { colorClass = colors[3]; icon = ''; }
+                else if (rand > 0.6) { colorClass = colors[1]; icon = ''; }
+
+                // Kosongkan beberapa kolom untuk efek terputus (mirip gambar asli)
+                if(col === 1 || col === 12) {
+                    htmlGrid += `<div></div>`;
+                } else {
+                    htmlGrid += `<div class="box ${colorClass}">${icon}</div>`;
+                }
+            }
+        }
+        heatmapContainer.innerHTML = htmlGrid;
+
+        // --- 4. FUNGSI CETAK PDF (html2pdf) ---
+        function cetakPDF() {
+            // Perbarui waktu tepat sebelum dicetak
+            updateWaktuCetak();
+            
+            const elemen = document.getElementById('report-area');
+            const opsi = {
+                margin:       [10, 0, 10, 0], // Margin (Atas, Kiri, Bawah, Kanan) dalam mm
+                filename:     'Analitik_Historis_Sebotani.pdf',
+                image:        { type: 'jpeg', quality: 1 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+            
+            // Ubah gaya tombol saat memproses
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">hourglass_empty</span> Memproses...';
+            
+            html2pdf().set(opsi).from(elemen).save().then(() => {
+                // Kembalikan tombol setelah selesai
+                btn.innerHTML = originalText;
+            });
+        }
     </script>
 </body>
 </html>
