@@ -242,7 +242,8 @@
         socket.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
-                
+
+                console.log("Data asli dari server:", data);
                 // Memastikan data 'ph' benar-benar ada dan tidak kosong (null/undefined)
                 if (data.ph !== undefined && data.ph !== null && data.ph !== "") {
                     const currentPh = parseFloat(data.ph);
