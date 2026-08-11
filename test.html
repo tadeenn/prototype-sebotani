@@ -8,8 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     
-    <!-- Pustaka Chart.js untuk Grafik -->
+    <!-- Pustaka Chart.js & html2pdf -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script id="tailwind-config">
         tailwind.config = {
@@ -45,17 +46,17 @@
     <style>
         .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         body { background-color: #f8f9fa; color: #191c1d; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        /* Menyembunyikan scrollbar pada deretan tombol waktu */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .no-print-pdf { display: flex; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen relative">
-    
+<body class="flex flex-col min-h-screen relative p-4 md:p-8">
+
     <!-- POPUP KONEKSI TERPUTUS -->
     <div id="connection-popup" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm">
         <div id="popup-content" class="bg-surface rounded-2xl shadow-xl p-6 max-w-sm w-[90%] flex flex-col items-center text-center transform scale-95 transition-transform duration-300 border border-outline-variant/30">
-            <span class="material-symbols-outlined text-error text-[56px] mb-4">wifi_off</span>
+            <span class="material-symbols-outlined text-red-600 text-[56px] mb-4">wifi_off</span>
             <h3 class="text-[18px] font-bold text-on-surface mb-2">Koneksi Terputus</h3>
             <p class="text-[14px] text-on-surface-variant mb-6 leading-relaxed">
                 Coba cek koneksi internet Anda atau cek mesin SEBOTANI.
@@ -66,63 +67,71 @@
         </div>
     </div>
 
-    <!-- TopAppBar -->
-    <header class="fixed top-0 w-full z-50 bg-primary shadow-sm flex justify-between items-center px-margin-mobile h-14">
-        <div class="flex items-center w-full justify-between">
-            <a href="dashboard_petani.html" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors active:scale-95 duration-150">
-                <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
-            </a>
-            <div class="flex flex-col items-center">
-                <span class="text-[20px] font-semibold text-white">Analisis & Rekomendasi</span>
-            </div>
-            <div class="flex items-center justify-center w-10 h-10">
-                <img alt="SEBOTANI Logo" src="https://prototype-sebotani.vercel.app/sebotani-logo.png">
-            </div>
-        </div>
-    </header>
+    <!-- Tombol Navigasi & Cetak (TIDAK ikut ter-print di PDF) -->
+    <div class="max-w-4xl mx-auto w-full flex justify-between items-center mb-6 no-print-pdf" id="header-nav">
+        <a href="dashboard_petani.html" class="flex items-center gap-2 text-primary bg-white px-4 py-2 rounded-lg shadow-sm font-semibold border border-gray-200">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+            Kembali
+        </a>
+        <button onclick="cetakPDF()" class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg shadow-md hover:bg-green-800 transition-colors active:scale-95">
+            <span class="material-symbols-outlined">picture_as_pdf</span>
+            <span class="font-semibold">Cetak PDF</span>
+        </button>
+    </div>
 
-    <!-- Main Content Canvas -->
-    <main class="flex-grow pt-20 pb-24 px-margin-mobile md:px-margin-desktop max-w-4xl mx-auto w-full">
+    <!-- ================= AREA CETAK PDF ================= -->
+    <div id="area-laporan" class="max-w-4xl mx-auto w-full bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
         
-        <!-- Live Data Overview -->
-        <div class="grid grid-cols-3 gap-3 mb-4">
-            <div class="bg-surface-container-lowest rounded-xl p-3 border border-outline-variant/30 text-center shadow-sm">
-                <p class="text-[12px] text-on-surface-variant font-semibold mb-1">pH Tanah</p>
-                <p id="live-ph" class="text-2xl font-bold text-chart-ph">0.0</p>
+        <!-- Header Laporan -->
+        <div class="flex justify-between items-start border-b border-gray-100 pb-4 mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Analisis & Rekomendasi SEBOTANI</h1>
+                <p class="text-sm text-gray-500 mt-1">Pemantauan 3 Aspek Utama Smart Farming</p>
             </div>
-            <div class="bg-surface-container-lowest rounded-xl p-3 border border-outline-variant/30 text-center shadow-sm">
-                <p class="text-[12px] text-on-surface-variant font-semibold mb-1">Kelembapan</p>
-                <p id="live-moist" class="text-2xl font-bold text-chart-moist">0%</p>
+            <div class="text-right">
+                <img alt="SEBOTANI" src="https://prototype-sebotani.vercel.app/sebotani-logo.png" class="h-8 ml-auto mb-2 opacity-80">
+                <p class="text-xs text-gray-400 font-mono" id="waktu-cetak">Memuat waktu...</p>
             </div>
-            <div class="bg-surface-container-lowest rounded-xl p-3 border border-outline-variant/30 text-center shadow-sm">
-                <p class="text-[12px] text-on-surface-variant font-semibold mb-1">Suhu Udara</p>
-                <p id="live-temp" class="text-2xl font-bold text-chart-temp">0°C</p>
+        </div>
+        
+        <!-- Data Live Hari Ini -->
+        <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="bg-yellow-50 rounded-xl p-4 border border-yellow-100 text-center">
+                <p class="text-xs text-gray-600 font-semibold mb-1">pH Tanah Live</p>
+                <p id="live-ph" class="text-3xl font-bold text-chart-ph">0.0</p>
+            </div>
+            <div class="bg-blue-50 rounded-xl p-4 border border-blue-100 text-center">
+                <p class="text-xs text-gray-600 font-semibold mb-1">Kelembapan Live</p>
+                <p id="live-moist" class="text-3xl font-bold text-chart-moist">0%</p>
+            </div>
+            <div class="bg-red-50 rounded-xl p-4 border border-red-100 text-center">
+                <p class="text-xs text-gray-600 font-semibold mb-1">Suhu Udara Live</p>
+                <p id="live-temp" class="text-3xl font-bold text-chart-temp">0°C</p>
             </div>
         </div>
 
-        <!-- Chart Card -->
-        <div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-4 flex flex-col mb-4 border border-outline-variant/30">
-            <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-outlined text-primary">monitoring</span>
-                <h2 class="text-[16px] font-bold text-on-surface">Grafik Historis</h2>
-            </div>
+        <!-- Area Grafik -->
+        <div class="mb-6">
+            <h2 class="text-[16px] font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">monitoring</span> Grafik Historis
+            </h2>
             
-            <!-- Filter Waktu -->
-            <div class="flex overflow-x-auto hide-scrollbar gap-2 mb-4 pb-1">
+            <!-- Filter Waktu (Tombol ini akan disembunyikan otomatis saat dicetak ke PDF) -->
+            <div class="flex overflow-x-auto hide-scrollbar gap-2 mb-4 pb-2" id="filter-waktu">
                 <button onclick="ubahWaktu('1j')" class="waktu-btn bg-primary text-white text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Jam</button>
-                <button onclick="ubahWaktu('6j')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">6 Jam</button>
-                <button onclick="ubahWaktu('12j')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">12 Jam</button>
-                <button onclick="ubahWaktu('1h')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Hari</button>
-                <button onclick="ubahWaktu('3h')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">3 Hari</button>
-                <button onclick="ubahWaktu('1m')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Minggu</button>
-                <button onclick="ubahWaktu('1bln')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Bulan</button>
-                <button onclick="ubahWaktu('3bln')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">3 Bulan</button>
-                <button onclick="ubahWaktu('6bln')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">6 Bulan</button>
-                <button onclick="ubahWaktu('1t')" class="waktu-btn bg-surface-variant text-on-surface-variant text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Tahun</button>
+                <button onclick="ubahWaktu('6j')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">6 Jam</button>
+                <button onclick="ubahWaktu('12j')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">12 Jam</button>
+                <button onclick="ubahWaktu('1h')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Hari</button>
+                <button onclick="ubahWaktu('3h')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">3 Hari</button>
+                <button onclick="ubahWaktu('1m')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Minggu</button>
+                <button onclick="ubahWaktu('1bln')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Bulan</button>
+                <button onclick="ubahWaktu('3bln')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">3 Bulan</button>
+                <button onclick="ubahWaktu('6bln')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">6 Bulan</button>
+                <button onclick="ubahWaktu('1t')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Tahun</button>
             </div>
 
-            <!-- Area Grafik -->
-            <div class="w-full h-[250px] relative">
+            <!-- Canvas Grafik Simpel -->
+            <div class="w-full h-[280px] relative border border-gray-100 rounded-lg p-2 bg-gray-50/30">
                 <canvas id="sebotaniChart"></canvas>
             </div>
         </div>
@@ -147,7 +156,8 @@
                 </p>
             </div>
         </div>
-    </main>
+    </div>
+    <!-- ================= END AREA CETAK ================= -->
 
     <!-- UI Interactions Script -->
     <script>
@@ -163,24 +173,35 @@
             });
         });
 
-        function tampilkanPopup() {
-            const popup = document.getElementById('connection-popup');
-            const popupContent = document.getElementById('popup-content');
-            popup.classList.remove('hidden');
-            void popup.offsetWidth; 
-            popup.classList.remove('opacity-0');
-            popupContent.classList.remove('scale-95');
+        // 1. UPDATE WAKTU CETAK & PDF LOGIC
+        function updateWaktu() {
+            const now = new Date();
+            const format = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('waktu-cetak').innerText = "Update: " + now.toLocaleDateString('id-ID', format);
         }
+        updateWaktu();
+        setInterval(updateWaktu, 1000);
 
-        function tutupPopup() {
-            const popup = document.getElementById('connection-popup');
-            const popupContent = document.getElementById('popup-content');
-            popup.classList.add('opacity-0');
-            popupContent.classList.add('scale-95');
-            setTimeout(() => { popup.classList.add('hidden'); }, 300);
-            aturUlangWaktuTunggu();
+        function cetakPDF() {
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Memproses...';
+            document.getElementById('filter-waktu').style.display = 'none';
+
+            const element = document.getElementById('area-laporan');
+            const opt = {
+                margin:       [10, 10, 10, 10], 
+                filename:     'Laporan_Analisis_Sebotani.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = originalText;
+                document.getElementById('filter-waktu').style.display = 'flex';
+            });
         }
-        window.addEventListener('offline', tampilkanPopup);
     </script>
 
     <!-- CHART.JS LOGIC & GENERATOR WAKTU -->
@@ -193,9 +214,9 @@
             data: {
                 labels: [], 
                 datasets: [
-                    { label: 'pH Tanah', borderColor: '#eab308', backgroundColor: '#eab308', data: [], yAxisID: 'y' },
-                    { label: 'Kelembapan (%)', borderColor: '#3b82f6', backgroundColor: '#3b82f6', data: [], yAxisID: 'y1' },
-                    { label: 'Suhu (°C)', borderColor: '#ef4444', backgroundColor: '#ef4444', data: [], yAxisID: 'y1' }
+                    { label: 'pH Tanah', borderColor: '#eab308', backgroundColor: '#eab308', data: [], yAxisID: 'yPH', tension: 0.4, borderWidth: 2, pointRadius: 0 },
+                    { label: 'Kelembapan (%)', borderColor: '#3b82f6', backgroundColor: '#3b82f6', data: [], yAxisID: 'yPersen', tension: 0.4, borderWidth: 2, pointRadius: 0 },
+                    { label: 'Suhu (°C)', borderColor: '#ef4444', backgroundColor: '#ef4444', data: [], yAxisID: 'yPersen', tension: 0.4, borderWidth: 2, borderDash: [5, 5], pointRadius: 0 }
                 ]
             },
             options: {
@@ -203,12 +224,12 @@
                 maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
                 plugins: {
-                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                    legend: { position: 'bottom', labels: { boxWidth: 12, usePointStyle: true } }
                 },
                 scales: {
-                    x: { ticks: { maxTicksLimit: 6, font: { size: 10 } } },
-                    y: { type: 'linear', display: true, position: 'left', min: 0, max: 14, title: { display: true, text: 'pH' } },
-                    y1: { type: 'linear', display: true, position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, title: { display: true, text: '% / °C' } }
+                    x: { ticks: { maxTicksLimit: 6, font: { size: 10 } }, grid: { display: false } },
+                    yPH: { type: 'linear', position: 'left', min: 0, max: 14, title: { display: true, text: 'pH Tanah' } },
+                    yPersen: { type: 'linear', position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, title: { display: true, text: '% dan °C' } }
                 }
             }
         };
@@ -216,14 +237,20 @@
         sebotaniChart = new Chart(ctx, config);
 
         // ==========================================
-        // PERBAIKAN: FORMAT WAKTU DI SUMBU X GRAFIK
+        // PERBAIKAN: BATAS TANGGAL AKTIVASI DATABASE
         // ==========================================
+        
+        // Atur ini ke tanggal di mana alat/API Anda pertama kali menyimpan data
+        // Secara default kode ini mengaturnya tepat ke 2 Bulan yang lalu dari hari ini
+        const TANGGAL_AKTIVASI_DATABASE = new Date();
+        TANGGAL_AKTIVASI_DATABASE.setMonth(TANGGAL_AKTIVASI_DATABASE.getMonth() - 2);
+
         function ubahWaktu(rentang) {
             document.querySelectorAll('.waktu-btn').forEach(btn => {
                 btn.classList.remove('bg-primary', 'text-white');
-                btn.classList.add('bg-surface-variant', 'text-on-surface-variant');
+                btn.classList.add('bg-gray-100', 'text-gray-600');
             });
-            event.target.classList.remove('bg-surface-variant', 'text-on-surface-variant');
+            event.target.classList.remove('bg-gray-100', 'text-gray-600');
             event.target.classList.add('bg-primary', 'text-white');
 
             let points = 20;
@@ -250,7 +277,15 @@
                 else if(rentang === '6bln') timePoint.setDate(now.getDate() - (i * 9));
                 else if(rentang === '1t') timePoint.setDate(now.getDate() - (i * 18));
 
-                // Tentukan format label (Jam saja, atau beserta tanggal)
+                // -------------------------------------------------------------
+                // CEK PEMBATAS: Jika titik waktu ini melampaui masa lalu sebelum 
+                // database dibuat, maka batalkan dan jangan digambar!
+                // -------------------------------------------------------------
+                if (timePoint < TANGGAL_AKTIVASI_DATABASE) {
+                    continue; // Skip kalkulasi titik ini (grafik akan dibiarkan kosong)
+                }
+
+                // Format Penamaan X-Axis
                 let timeStr = "";
                 if (['1j', '6j', '12j', '1h'].includes(rentang)) {
                     timeStr = timePoint.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}); // cth: 14:00
@@ -259,10 +294,8 @@
                 } else {
                     timeStr = timePoint.toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: '2-digit'}); // cth: 12 Agu 26
                 }
-                
                 labels.push(timeStr);
 
-                // Buat data berjalan mulus dan masuk akal
                 currentPh = Math.max(4, Math.min(9, currentPh + (Math.random() - 0.5) * 0.3));
                 currentMoist = Math.max(40, Math.min(90, currentMoist + (Math.random() - 0.5) * 5));
                 currentTemp = Math.max(18, Math.min(35, currentTemp + (Math.random() - 0.5) * 2));
@@ -281,10 +314,10 @@
 
         ubahWaktu('1j');
         document.querySelectorAll('.waktu-btn')[0].classList.add('bg-primary', 'text-white');
-        document.querySelectorAll('.waktu-btn')[0].classList.remove('bg-surface-variant', 'text-on-surface-variant');
+        document.querySelectorAll('.waktu-btn')[0].classList.remove('bg-gray-100', 'text-gray-600');
     </script>
 
-    <!-- AI LOGIC & WEBSOCKET REALTIME -->
+    <!-- AI LOGIC & WEBSOCKET REALTIME POPUP -->
     <script>
         function prosesAnalisisAI(ph, moisture, temp) {
             let masalah = [];
@@ -313,6 +346,25 @@
             }
         }
 
+        function tampilkanPopup() {
+            const popup = document.getElementById('connection-popup');
+            const popupContent = document.getElementById('popup-content');
+            popup.classList.remove('hidden');
+            void popup.offsetWidth; 
+            popup.classList.remove('opacity-0');
+            popupContent.classList.remove('scale-95');
+        }
+
+        function tutupPopup() {
+            const popup = document.getElementById('connection-popup');
+            const popupContent = document.getElementById('popup-content');
+            popup.classList.add('opacity-0');
+            popupContent.classList.add('scale-95');
+            setTimeout(() => { popup.classList.add('hidden'); }, 300);
+            aturUlangWaktuTunggu();
+        }
+        window.addEventListener('offline', tampilkanPopup);
+
         let mesinTimeout;
         const BATAS_WAKTU_TUNGGU = 15000;
 
@@ -328,7 +380,7 @@
         const socket = new WebSocket(wsUrl);
 
         socket.onopen = () => {
-            console.log("Koneksi berhasil!");
+            console.log("Koneksi berhasil terhubung!");
             aturUlangWaktuTunggu();
         }
 
@@ -354,7 +406,6 @@
                     if(!isNaN(cPh) && !isNaN(cMoist) && !isNaN(cTemp)) {
                         prosesAnalisisAI(cPh, cMoist, cTemp);
                         
-                        // Menambahkan waktu asli saat ini (bukan titik) ke grafik live
                         const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                         sebotaniChart.data.labels.push(now);
                         sebotaniChart.data.datasets[0].data.push(cPh);
