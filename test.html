@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>SEBOTANI - Tanah &amp; pH</title>
+    <title>SEBOTANI - Kelembapan Tanah</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
@@ -107,15 +107,6 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        .ph-gradient {
-            background: linear-gradient(to right, 
-                #ef4444 0%, /* 4 - Red */
-                #f97316 20%, /* 5.2 - Orange */
-                #eab308 50%, /* 7 - Greenish Yellow */
-                #22c55e 70%, /* 8.2 - Green */
-                #ef4444 100% /* 10 - Red back */
-            );
-        }
         body {
             background-color: #f8f9fa;
             color: #191c1d;
@@ -127,7 +118,22 @@
         }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen relative">
+    
+    <!-- POPUP KONEKSI TERPUTUS -->
+    <div id="connection-popup" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm">
+        <div id="popup-content" class="bg-surface rounded-2xl shadow-xl p-lg max-w-sm w-[90%] flex flex-col items-center text-center transform scale-95 transition-transform duration-300 border border-outline-variant/30">
+            <span class="material-symbols-outlined text-error text-[56px] mb-md" style="font-variation-settings: 'FILL' 1;">wifi_off</span>
+            <h3 class="font-title-sm text-title-sm text-on-surface mb-xs font-bold">Koneksi Terputus</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant mb-lg leading-relaxed">
+                coba cek koneksi atau cek mesin SEBOTANI
+            </p>
+            <button onclick="tutupPopup()" class="bg-primary text-on-primary font-semibold py-3 px-lg rounded-xl shadow-sm active:scale-95 transition-transform duration-150 w-full">
+                Mengerti
+            </button>
+        </div>
+    </div>
+
     <!-- TopAppBar -->
     <header class="fixed top-0 w-full z-50 bg-primary shadow-sm flex justify-between items-center px-margin-mobile h-14">
         <div class="flex items-center w-full justify-between">
@@ -135,7 +141,7 @@
                 <span class="material-symbols-outlined text-white">arrow_back</span>
             </a>
             <div class="flex flex-col items-center">
-                <span class="font-headline-md-mobile text-headline-md-mobile text-white">Tanah &amp; pH</span>
+                <span class="font-headline-md-mobile text-headline-md-mobile text-white">Kelembapan Tanah</span>
             </div>
             <div class="flex items-center justify-center w-10 h-10">
                 <img alt="SEBOTANI" src="https://prototype-sebotani.vercel.app/sebotani-logo.png">
@@ -145,28 +151,27 @@
 
     <!-- Main Content Canvas -->
     <main class="flex-grow pt-20 pb-24 px-margin-mobile md:px-margin-desktop max-w-2xl mx-auto w-full">
-        <!-- pH Gauge Card -->
+        <!-- Moisture Gauge Card -->
         <div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-lg flex flex-col items-center mb-md border border-outline-variant/30">
-            <div class="flex flex-col items-center my-md">
-                <div class="flex items-center gap-md">
-                    <span id="ph-value" class="font-display-lg text-[64px] leading-tight font-bold text-primary">0.0</span>
+            <div class="flex items-center justify-center gap-md my-md">
+                <span class="material-symbols-outlined text-primary text-[120px]">water_drop</span>
+                <div class="flex flex-col items-start">
+                    <!-- ID ditambahkan di sini -->
+                    <span id="moisture-value" class="font-display-lg text-[64px] leading-tight font-bold text-[#1e3a8a]">0%</span>
+                    <p id="moisture-status" class="font-body-lg text-body-lg text-[#1d4ed8] font-semibold">Menghubungkan...</p>
                 </div>
-                <p id="ph-status" class="font-body-lg text-body-lg text-secondary font-semibold">Menghubungkan...</p>
             </div>
             
-            <!-- pH Scale Visualization -->
+            <!-- Moisture Scale Visualization -->
             <div class="w-full mt-xl relative px-xs">
                 <div class="flex justify-between w-full mb-xs font-label-caps text-label-caps text-on-surface-variant">
-                    <span class="">4</span>
-                    <span class="relative -left-2">7</span>
-                    <span class="">10</span>
+                    <span class="">0%</span>
+                    <span class="">50%</span>
+                    <span class="">100%</span>
                 </div>
-                <div class="w-full h-4 rounded-full ph-gradient relative shadow-inner overflow-visible">
-                    <div id="ph-gauge" class="absolute top-full mt-1 flex flex-col items-center transition-all duration-700 ease-out" style="left: 0%;">
-                        <div class="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[10px] border-b-on-surface"></div>
-                    </div>
-                    <!-- Center Marker line (pH 7) -->
-                    <div class="absolute left-1/2 top-0 w-0.5 h-full bg-white/50 transform -translate-x-1/2"></div>
+                <div class="w-full h-4 rounded-full bg-surface-container shadow-inner relative overflow-hidden">
+                    <!-- ID ditambahkan di sini -->
+                    <div id="moisture-bar" class="absolute left-0 top-0 h-full transition-all duration-700 ease-out bg-[#1e3a8a]" style="width: 0%;"></div>
                 </div>
             </div>
         </div>
@@ -179,7 +184,7 @@
             <div class="flex flex-col">
                 <h3 class="font-title-sm text-title-sm text-on-primary-container">Saran</h3>
                 <p class="font-body-md text-body-md text-on-surface-variant mt-xs leading-relaxed">
-                    pH tanah masih baik untuk tanaman. Pertahankan pH <span class="font-bold text-primary">6.5 - 7.5</span> untuk hasil panen yang optimal.
+                    Kelembapan tanah saat ini ideal untuk pertumbuhan tanaman kopi. Pertahankan di angka <span class="font-bold text-primary">60% - 80%</span>.
                 </p>
             </div>
         </div>
@@ -210,71 +215,91 @@
             });
         });
     </script>
-<!-- INTEGRASI REAL-TIME WEBSOCKET (API) -->
+
+    <!-- INTEGRASI REAL-TIME WEBSOCKET & POPUP LOGIC UNTUK KELEMBAPAN -->
     <script>
-        // MASUKKAN URL WSS YANG BERHASIL TERHUBUNG DI SINI
+        // Logika untuk menampilkan dan menyembunyikan Popup
+        function tampilkanPopup() {
+            const popup = document.getElementById('connection-popup');
+            const popupContent = document.getElementById('popup-content');
+            
+            popup.classList.remove('hidden');
+            void popup.offsetWidth; 
+            
+            popup.classList.remove('opacity-0');
+            popupContent.classList.remove('scale-95');
+        }
+
+        function tutupPopup() {
+            const popup = document.getElementById('connection-popup');
+            const popupContent = document.getElementById('popup-content');
+            
+            popup.classList.add('opacity-0');
+            popupContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                popup.classList.add('hidden');
+            }, 300);
+        }
+
+        window.addEventListener('offline', tampilkanPopup);
+
+        // URL WebSocket yang diminta
         const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
         const socket = new WebSocket(wsUrl);
 
         function resetKeNol() {
-            document.getElementById('ph-value').innerText = '0.0';
-            document.getElementById('ph-gauge').style.left = '0%';
-            document.getElementById('ph-status').innerText = 'Tidak Terhubung / Tidak Ada Data';
+            document.getElementById('moisture-value').innerText = '0%';
+            document.getElementById('moisture-bar').style.width = '0%';
+            document.getElementById('moisture-status').innerText = 'Tidak Terhubung';
         }
 
         socket.onclose = () => {
             console.warn("Koneksi API terputus.");
             resetKeNol();
+            tampilkanPopup();
         };
 
         socket.onerror = (error) => {
             console.error("Kesalahan jaringan API:", error);
             resetKeNol();
+            tampilkanPopup();
         };
 
-        // Pemicu 3: Ketika pesan diterima
         socket.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
                 
-                // Cek pesan yang masuk di console untuk memastikan
-                console.log("Pesan masuk:", data);
-                
-                // Pastikan ini adalah pesan 'telemetry' dan memiliki struktur yang benar
                 if (data.type === 'telemetry' && data.payload && data.payload.payload) {
                     
-                    const nilaiPh = data.payload.payload.soil_ph; 
+                    // Mengambil nilai soil_moisture dari payload
+                    const nilaiMoisture = data.payload.payload.soil_moisture; 
 
-                    // Jika soil_ph benar-benar ada di dalam pesan ini
-                    if (nilaiPh !== undefined && nilaiPh !== null && nilaiPh !== "") {
-                        const currentPh = parseFloat(nilaiPh);
+                    if (nilaiMoisture !== undefined && nilaiMoisture !== null && nilaiMoisture !== "") {
+                        const currentMoisture = parseFloat(nilaiMoisture);
                         
-                        // Abaikan jika bukan angka
-                        if(isNaN(currentPh)) return; 
+                        if(isNaN(currentMoisture)) return; 
 
-                        // A. Update Angka Utama di UI
-                        document.getElementById('ph-value').innerText = currentPh.toFixed(1);
+                        // Update Angka
+                        // Karena kelembapan biasanya berupa integer, menggunakan Math.round
+                        document.getElementById('moisture-value').innerText = Math.round(currentMoisture) + '%';
                         
-                        // B. Kalkulasi persentase pergerakan panah
-                        let percent = ((currentPh - 4) / 6) * 100;
-                        percent = Math.max(0, Math.min(100, percent)); 
-                        document.getElementById('ph-gauge').style.left = `${percent}%`;
+                        // Update Bar (Persentase langsung)
+                        let percent = Math.max(0, Math.min(100, currentMoisture)); 
+                        document.getElementById('moisture-bar').style.width = `${percent}%`;
 
-                        // C. Update Deskripsi Teks
-                        const statusText = document.getElementById('ph-status');
-                        if (currentPh < 6.5) {
-                            statusText.innerText = 'Asam';
-                        } else if (currentPh > 7.5) {
-                            statusText.innerText = 'Basa';
+                        // Update Status
+                        const statusText = document.getElementById('moisture-status');
+                        if (currentMoisture < 40) {
+                            statusText.innerText = 'Kering';
+                        } else if (currentMoisture > 85) {
+                            statusText.innerText = 'Terlalu Basah';
                         } else {
-                            statusText.innerText = 'Netral / Ideal';
+                            statusText.innerText = 'Optimal';
                         }
                     }
-                    // KITA MENGHAPUS 'else { resetKeNol(); }' DI SINI
-                    // Jadi jika data yang masuk adalah pesan lain, UI tidak akan ter-reset ke 0
                 }
             } catch (err) {
-                // Abaikan error jika server mengirim pesan berupa teks biasa (bukan JSON)
                 console.log("Mengabaikan pesan non-JSON dari server.");
             }
         };
