@@ -23,16 +23,19 @@
         appId: "1:100314098060:web:29a6b3a8357f9a7e948ea9"
     };
 
-    // Inisialisasi Firebase & Firestore murni 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    try {
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-    window.db = db;
-    window.dbTools = { doc, getDoc, setDoc };
-    window.firebaseReady = true;
+        window.db = db;
+        window.dbTools = { doc, getDoc, setDoc };
+        window.firebaseReady = true;
 
-    if (typeof window.inisialisasiDataProfil === 'function') {
-        window.inisialisasiDataProfil();
+        if (typeof window.inisialisasiDataProfil === 'function') {
+            window.inisialisasiDataProfil();
+        }
+    } catch(e) {
+        console.warn("Firebase gagal diinisialisasi", e);
     }
 </script>
     
@@ -116,19 +119,9 @@
                         "title-sm": ["Inter"],
                         "headline-md-mobile": ["Inter"],
                         "data-mono": ["Inter"]
-                    },
-                    "fontSize": {
-                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
-                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                        "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
-                        "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                        "data-mono": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
                     }
-                },
-            },
+                }
+            }
         }
     </script>
 <style>
@@ -138,10 +131,6 @@
         body {
             background-color: #f8f9fa;
             font-family: 'Inter', sans-serif;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(8px);
         }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
     </style>
@@ -168,8 +157,7 @@
 <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md">
 <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUxbxa3OqFWlJqxX9dCy9OzcZzWBEUJ2aSvwpW4qZX1uB13djLVtGGW2ZHg57b1eunQEBGn02J4yhA7o_SluIBmfWZINjWLwapqUXyP0rDVoem6qfhWUJaDHXl8k2_z_3eYEMQZ2tJIrVfYNlCKLe_dkTqdxTkh_zkCg7BEFSpc214V90nICWMvVyH_FvDemEdiqPuXApfomBdvUbqxcyOYSHbE5KfUn17uxJsdoMQaQpGwBTgQuWXSie1sT05-0n8DIvKnwyK_gA">
 </div>
-<!-- Tombol Edit Profil Utama -->
-<button onclick="bukaModalEdit()" class="absolute bottom-0 right-0 bg-primary text-on-primary p-2 rounded-full shadow-lg active:scale-90 transition-transform cursor-pointer" title="Edit Profil">
+<button onclick="bukaModalEdit()" class="absolute bottom-0 right-0 bg-primary text-on-primary p-2 rounded-full shadow-lg active:scale-90 transition-transform cursor-pointer">
 <span class="material-symbols-outlined text-[20px]">edit</span>
 </button>
 </div>
@@ -401,7 +389,7 @@ Keluar dari Akun
 
     let userProfil = JSON.parse(localStorage.getItem('sebotani_profil_data')) || profilDefault;
 
-    // Fungsi utama memuat data ke tampilan HTML
+    // 1. Fungsi memuat data ke tampilan
     function muatDataKeTampilan() {
         document.getElementById('view-nama-kelompok').innerText = userProfil.namaKelompok;
         document.getElementById('view-nama-ketua').innerText = userProfil.namaKetua;
@@ -416,8 +404,9 @@ Keluar dari Akun
         document.getElementById('status-bahasa').innerText = userProfil.bahasa;
     }
 
-    // Sinkronisasi dengan Firebase Firestore Cloud
+    // 2. Tarik Data Awal dari Firebase (Jika ada)
     window.inisialisasiDataProfil = async function() {
+        if (!window.firebaseReady || !window.db) return;
         try {
             const docRef = window.dbTools.doc(window.db, "sebotani_db", "profil_petani");
             const docSnap = await window.dbTools.getDoc(docRef);
@@ -425,16 +414,15 @@ Keluar dari Akun
                 userProfil = docSnap.data();
                 localStorage.setItem('sebotani_profil_data', JSON.stringify(userProfil));
                 muatDataKeTampilan();
-                console.log("Data profil berhasil dimuat dari Firebase Firestore!");
             } else {
                 await window.dbTools.setDoc(docRef, userProfil);
             }
         } catch (err) {
-            console.warn("Gagal menyinkronkan dengan Firebase (Mode Offline aktif):", err);
+            console.warn("Sinkronisasi Firebase gagal, menggunakan data lokal:", err);
         }
     };
 
-    // Modal Edit Profil
+    // 3. Kontrol Modal Edit Profil
     function bukaModalEdit() {
         document.getElementById('edit-nama-kelompok').value = userProfil.namaKelompok;
         document.getElementById('edit-nama-ketua').value = userProfil.namaKetua;
@@ -454,25 +442,22 @@ Keluar dari Akun
         }, 10);
     }
 
-    // PERBAIKAN: Fungsi Paksa Tutup Modal
+    // FUNGSI INI TELAH DIPERBAIKI AGAR SELALU MENUTUP MODAL
     function tutupModalEdit() {
         const modal = document.getElementById('modal-edit');
         const content = document.getElementById('modal-edit-content');
         
-        // Memanipulasi style secara langsung untuk transisi
-        modal.style.opacity = '0';
-        content.style.transform = 'scale(0.95)';
+        modal.classList.add('opacity-0');
+        content.classList.add('scale-95');
         
         setTimeout(() => {
             modal.classList.add('hidden');
-            // Reset style setelah tersembunyi
-            modal.style.opacity = '';
-            content.style.transform = '';
         }, 300);
     }
 
-    // PERBAIKAN: Fungsi Simpan Profil yang Diperbarui
+    // FUNGSI SIMPAN PROFIL DENGAN OPTIMISTIC UI
     async function simpanProfil() {
+        // A. Ambil nilai dari Form
         userProfil.namaKelompok = document.getElementById('edit-nama-kelompok').value;
         userProfil.namaKetua = document.getElementById('edit-nama-ketua').value;
         userProfil.telepon = document.getElementById('edit-telepon').value;
@@ -482,30 +467,27 @@ Keluar dari Akun
         userProfil.komoditas = document.getElementById('edit-komoditas').value;
         userProfil.lokasi = document.getElementById('edit-lokasi').value;
 
-        // Simpan ke LocalStorage
+        // B. Update LocalStorage Langsung
         localStorage.setItem('sebotani_profil_data', JSON.stringify(userProfil));
 
-        // Simpan ke Firebase Firestore (jika terhubung)
+        // C. Tutup Modal Langsung & Update UI (Optimistic UI)
+        tutupModalEdit();
+        muatDataKeTampilan();
+        
+        // Munculkan notifikasi sukses sesaat setelah modal tertutup
+        setTimeout(() => alert("Perubahan profil berhasil disimpan!"), 350);
+
+        // D. Sinkronkan ke Firebase diam-diam di background (tidak akan menghalangi penutupan modal)
         if (window.firebaseReady && window.db) {
             try {
                 await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "profil_petani"), userProfil);
-                console.log("Profil diperbarui di Cloud Firebase.");
             } catch (e) {
-                console.warn("Gagal menyimpan ke Cloud (tersimpan lokal):", e);
+                console.warn("Gagal menyimpan ke Cloud:", e);
             }
         }
-
-        // Terapkan perubahan ke antarmuka HTML
-        muatDataKeTampilan();
-        
-        // Tutup Modal Segera
-        tutupModalEdit();
-        
-        // Beri jeda sebentar sebelum memunculkan popup alert
-        setTimeout(() => alert("Perubahan profil berhasil disimpan!"), 350);
     }
 
-    // Modal Ubah Password
+    // 4. Modal Ubah Password
     function bukaModalPassword() {
         const modal = document.getElementById('modal-password');
         const content = document.getElementById('modal-password-content');
@@ -519,13 +501,9 @@ Keluar dari Akun
     function tutupModalPassword() {
         const modal = document.getElementById('modal-password');
         const content = document.getElementById('modal-password-content');
-        modal.style.opacity = '0';
-        content.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            modal.style.opacity = '';
-            content.style.transform = '';
-        }, 300);
+        modal.classList.add('opacity-0');
+        content.classList.add('scale-95');
+        setTimeout(() => modal.classList.add('hidden'), 300);
     }
 
     function prosesUbahPassword() {
@@ -541,41 +519,44 @@ Keluar dari Akun
         tutupModalPassword();
     }
 
-    // Toggle Notifikasi
+    // 5. Toggle Notifikasi
     async function toggleNotifikasi() {
         userProfil.notifAktif = !userProfil.notifAktif;
         localStorage.setItem('sebotani_profil_data', JSON.stringify(userProfil));
+        muatDataKeTampilan();
+        alert(`Status notifikasi diubah menjadi: ${userProfil.notifAktif ? "Aktif" : "Nonaktif"}`);
+        
         if (window.firebaseReady && window.db) {
             try { await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "profil_petani"), userProfil); } catch(e){}
         }
-        muatDataKeTampilan();
-        alert(`Status notifikasi diubah menjadi: ${userProfil.notifAktif ? "Aktif" : "Nonaktif"}`);
     }
 
-    // Ganti Bahasa
+    // 6. Ganti Bahasa
     async function gantiBahasa() {
         userProfil.bahasa = userProfil.bahasa === "Indonesia" ? "English" : "Indonesia";
         localStorage.setItem('sebotani_profil_data', JSON.stringify(userProfil));
+        muatDataKeTampilan();
+        alert(`Bahasa diubah ke: ${userProfil.bahasa}`);
+        
         if (window.firebaseReady && window.db) {
             try { await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "profil_petani"), userProfil); } catch(e){}
         }
-        muatDataKeTampilan();
-        alert(`Bahasa diubah ke: ${userProfil.bahasa}`);
     }
 
-    // Keluar Akun
+    // 7. Keluar Akun
     function konfirmasiKeluar() {
         if (confirm("Apakah Anda yakin ingin keluar dari aplikasi SEBOTANI?")) {
             window.location.href = "login.html";
         }
     }
 
-    // Inisialisasi awal tampilan saat DOM siap
+    // Inisialisasi awal
     document.addEventListener("DOMContentLoaded", () => {
         muatDataKeTampilan();
-        if (window.firebaseReady) {
-            window.inisialisasiDataProfil();
-        }
+        // Cek Firebase setelah beberapa saat untuk memberi waktu script termuat
+        setTimeout(() => {
+            if (window.firebaseReady) window.inisialisasiDataProfil();
+        }, 1000);
     });
 
     // Efek Transparansi Header saat Scroll
