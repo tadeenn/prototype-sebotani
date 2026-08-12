@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
 
-<!-- KONFIGURASI FIREBASE SDK -->
+<!-- KONFIGURASI FIREBASE SDK (Murni Firestore Tanpa Analytics) -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -23,7 +23,7 @@
         appId: "1:100314098060:web:29a6b3a8357f9a7e948ea9"
     };
 
-    // Inisialisasi Firebase & Firestore murni (Tanpa Analytics agar tidak error 400)
+    // Inisialisasi Firebase & Firestore murni 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -427,7 +427,6 @@ Keluar dari Akun
                 muatDataKeTampilan();
                 console.log("Data profil berhasil dimuat dari Firebase Firestore!");
             } else {
-                // Jika dokumen cloud belum ada, unggah data default/lokal pertama kali
                 await window.dbTools.setDoc(docRef, userProfil);
             }
         } catch (err) {
@@ -455,14 +454,24 @@ Keluar dari Akun
         }, 10);
     }
 
+    // PERBAIKAN: Fungsi Paksa Tutup Modal
     function tutupModalEdit() {
         const modal = document.getElementById('modal-edit');
         const content = document.getElementById('modal-edit-content');
-        modal.classList.add('opacity-0');
-        content.classList.add('scale-95');
-        setTimeout(() => modal.classList.add('hidden'), 300);
+        
+        // Memanipulasi style secara langsung untuk transisi
+        modal.style.opacity = '0';
+        content.style.transform = 'scale(0.95)';
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            // Reset style setelah tersembunyi
+            modal.style.opacity = '';
+            content.style.transform = '';
+        }, 300);
     }
 
+    // PERBAIKAN: Fungsi Simpan Profil yang Diperbarui
     async function simpanProfil() {
         userProfil.namaKelompok = document.getElementById('edit-nama-kelompok').value;
         userProfil.namaKetua = document.getElementById('edit-nama-ketua').value;
@@ -486,9 +495,14 @@ Keluar dari Akun
             }
         }
 
+        // Terapkan perubahan ke antarmuka HTML
         muatDataKeTampilan();
+        
+        // Tutup Modal Segera
         tutupModalEdit();
-        alert("Perubahan profil berhasil disimpan!");
+        
+        // Beri jeda sebentar sebelum memunculkan popup alert
+        setTimeout(() => alert("Perubahan profil berhasil disimpan!"), 350);
     }
 
     // Modal Ubah Password
@@ -505,9 +519,13 @@ Keluar dari Akun
     function tutupModalPassword() {
         const modal = document.getElementById('modal-password');
         const content = document.getElementById('modal-password-content');
-        modal.classList.add('opacity-0');
-        content.classList.add('scale-95');
-        setTimeout(() => modal.classList.add('hidden'), 300);
+        modal.style.opacity = '0';
+        content.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.style.opacity = '';
+            content.style.transform = '';
+        }, 300);
     }
 
     function prosesUbahPassword() {
@@ -528,7 +546,7 @@ Keluar dari Akun
         userProfil.notifAktif = !userProfil.notifAktif;
         localStorage.setItem('sebotani_profil_data', JSON.stringify(userProfil));
         if (window.firebaseReady && window.db) {
-            await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "profil_petani"), userProfil);
+            try { await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "profil_petani"), userProfil); } catch(e){}
         }
         muatDataKeTampilan();
         alert(`Status notifikasi diubah menjadi: ${userProfil.notifAktif ? "Aktif" : "Nonaktif"}`);
@@ -539,7 +557,7 @@ Keluar dari Akun
         userProfil.bahasa = userProfil.bahasa === "Indonesia" ? "English" : "Indonesia";
         localStorage.setItem('sebotani_profil_data', JSON.stringify(userProfil));
         if (window.firebaseReady && window.db) {
-            await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "profil_petani"), userProfil);
+            try { await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "profil_petani"), userProfil); } catch(e){}
         }
         muatDataKeTampilan();
         alert(`Bahasa diubah ke: ${userProfil.bahasa}`);
