@@ -7,6 +7,33 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
+    import { getFirestore, collection, addDoc, getDoc, setDoc, doc, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDTSexC_iufQJtZEwBhP4vF3pa1VdgvZM",
+        authDomain: "sebotani-database.firebaseapp.com",
+        projectId: "sebotani-database",
+        storageBucket: "sebotani-database.firebasestorage.app",
+        messagingSenderId: "100314098060",
+        appId: "1:100314098060:web:29a6b3a8357f9a7e948ea9",
+        measurementId: "G-CZ09GHVW6W"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    // Daftarkan ke window agar bisa diakses script lain di halaman ini
+    window.db = db;
+    window.dbTools = { collection, addDoc, getDoc, setDoc, doc, query, orderBy, limit, onSnapshot };
+    
+    console.log("Firebase & Firestore berhasil diinisialisasi!");
+</script>
     
     <script id="tailwind-config">
         tailwind.config = {
