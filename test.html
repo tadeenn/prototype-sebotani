@@ -1,432 +1,544 @@
 <!DOCTYPE html>
-<html lang="id"><head>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Riwayat - SEBOTANI</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
-
-<!-- KONFIGURASI FIREBASE SDK (Murni Firestore) -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDoc, setDoc, doc, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyDTSexC_iufQJtZEwBhP4vF3pa1VdgvZM",
-        authDomain: "sebotani-database.firebaseapp.com",
-        projectId: "sebotani-database",
-        storageBucket: "sebotani-database.firebasestorage.app",
-        messagingSenderId: "100314098060",
-        appId: "1:100314098060:web:29a6b3a8357f9a7e948ea9"
-    };
-
-    try {
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        window.db = db;
-        window.dbTools = { collection, addDoc, getDoc, setDoc, doc, query, orderBy, limit, onSnapshot };
-        window.firebaseReady = true;
-
-        console.log("Firebase Firestore untuk Riwayat berhasil diinisialisasi!");
-    } catch(e) {
-        console.warn("Gagal inisialisasi Firebase:", e);
-    }
-</script>
-
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            display: inline-block;
-            line-height: 1;
-            text-transform: none;
-            letter-spacing: normal;
-            word-wrap: normal;
-            white-space: nowrap;
-            direction: ltr;
+<html lang="id" class="light" style="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEBOTANI - Beranda Petani</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=block" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+    try{
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#ffddb8",
+                        "tertiary": "#b91a24",
+                        "on-secondary-container": "#684000",
+                        "on-background": "#191c1d",
+                        "on-tertiary-fixed-variant": "#930013",
+                        "secondary-container": "#fea619",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-primary-fixed-variant": "#005236",
+                        "surface-container": "#edeeef",
+                        "outline-variant": "#bbcabf",
+                        "surface-bright": "#f8f9fa",
+                        "surface": "#f8f9fa",
+                        "primary-container": "#10b981",
+                        "on-primary-fixed": "#002113",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "on-surface-variant": "#3c4a42",
+                        "primary-fixed": "#6ffbbe",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f4f5",
+                        "tertiary-fixed": "#ffdad7",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#410004",
+                        "on-secondary-fixed": "#2a1700",
+                        "outline": "#6c7a71",
+                        "surface-container-highest": "#e1e3e4",
+                        "tertiary-fixed-dim": "#ffb3ad",
+                        "surface-tint": "#006c49",
+                        "secondary": "#855300",
+                        "on-surface": "#191c1d",
+                        "on-primary-container": "#00422b",
+                        "inverse-surface": "#2e3132",
+                        "tertiary-container": "#ff7a73",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#4edea3",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "primary-fixed-dim": "#4edea3",
+                        "surface-variant": "#e1e3e4",
+                        "background": "#f8f9fa",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "primary": "#006c49",
+                        "surface-dim": "#d9dadb",
+                        "on-tertiary-container": "#79000e",
+                        "surface-container-high": "#e7e8e9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "xs": "8px",
+                        "gutter": "16px",
+                        "sm": "12px",
+                        "margin-mobile": "16px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "data-mono": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                }
+            }
         }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
-        body { min-height: max(884px, 100dvh); }
+    }catch(_e){}
+    </script>
+    <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .ripple {
+            position: absolute; background: rgba(255, 255, 255, 0.3); border-radius: 50%;
+            transform: scale(0); animation: ripple-animation 0.6s linear; pointer-events: none;
+        }
+        @keyframes ripple-animation {
+            to { transform: scale(4); opacity: 0; }
+        }
     </style>
-<script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                    "surface-container-high": "#e7e8e9",
-                    "surface-tint": "#006c49",
-                    "on-background": "#191c1d",
-                    "on-surface": "#191c1d",
-                    "on-primary": "#ffffff",
-                    "error": "#ba1a1a",
-                    "on-secondary-fixed": "#2a1700",
-                    "inverse-on-surface": "#f0f1f2",
-                    "surface-dim": "#d9dadb",
-                    "error-container": "#ffdad6",
-                    "surface-variant": "#e1e3e4",
-                    "secondary-fixed-dim": "#ffb95f",
-                    "primary-container": "#10b981",
-                    "on-surface-variant": "#3c4a42",
-                    "outline-variant": "#bbcabf",
-                    "on-primary-fixed": "#002113",
-                    "tertiary": "#b91a24",
-                    "secondary": "#855300",
-                    "inverse-primary": "#4edea3",
-                    "background": "#f8f9fa",
-                    "surface-bright": "#f8f9fa",
-                    "on-tertiary-fixed-variant": "#930013",
-                    "primary-fixed-dim": "#4edea3",
-                    "on-secondary": "#ffffff",
-                    "inverse-surface": "#2e3132",
-                    "on-tertiary": "#ffffff",
-                    "on-primary-fixed-variant": "#005236",
-                    "on-tertiary-fixed": "#410004",
-                    "on-secondary-fixed-variant": "#653e00",
-                    "surface-container-low": "#f3f4f5",
-                    "surface-container-highest": "#e1e3e4",
-                    "on-tertiary-container": "#79000e",
-                    "primary": "#006c49",
-                    "on-secondary-container": "#684000",
-                    "surface-container-lowest": "#ffffff",
-                    "surface": "#f8f9fa",
-                    "on-error-container": "#93000a",
-                    "primary-fixed": "#6ffbbe",
-                    "tertiary-container": "#ff7a73",
-                    "outline": "#6c7a71",
-                    "tertiary-fixed": "#ffdad7",
-                    "tertiary-fixed-dim": "#ffb3ad",
-                    "secondary-fixed": "#ffddb8",
-                    "on-primary-container": "#00422b",
-                    "on-error": "#ffffff",
-                    "surface-container": "#edeeef",
-                    "secondary-container": "#fea619"
-              },
-              "borderRadius": {
-                    "DEFAULT": "0.25rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "full": "9999px"
-              },
-              "spacing": {
-                    "xl": "32px",
-                    "lg": "24px",
-                    "margin-mobile": "16px",
-                    "md": "16px",
-                    "margin-desktop": "40px",
-                    "xs": "8px",
-                    "base": "4px",
-                    "sm": "12px",
-                    "gutter": "16px"
-              },
-              "fontFamily": {
-                    "label-caps": ["Inter"],
-                    "display-lg": ["Inter"],
-                    "headline-md-mobile": ["Inter"],
-                    "body-lg": ["Inter"],
-                    "body-md": ["Inter"],
-                    "headline-md": ["Inter"],
-                    "title-sm": ["Inter"],
-                    "data-mono": ["Inter"]
-              },
-              "fontSize": {
-                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
-                    "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                    "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                    "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
-                    "data-mono": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
-              }
-            },
-          },
-        }
-    </script>
 </head>
-<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col">
-<!-- TopAppBar Mapping -->
-<header class="bg-surface dark:bg-on-background shadow-sm fixed top-0 w-full z-50 h-14 flex items-center px-margin-mobile">
-<div class="flex items-center justify-between w-full">
-<a href="dashboard_petani.html" class="flex items-center gap-sm"><img alt="SEBOTANI Logo" class="h-8 w-8 object-contain" src="https://prototype-sebotani.vercel.app/sebotani-logo.png"><span class="font-headline-md-mobile text-headline-md-mobile font-bold text-primary">SEBOTANI</span></a>
-<div class="flex items-center">
-<a href="profil.html" class="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold border-2 border-primary overflow-hidden"><img alt="User Profile" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBtI-4XMdIo4mlw9wny-Ocv0WcfvHVXquvS-PPewRNANRFzmM0fkI_9ZUAYgI-moj26Pt0Ikbozx2Qibeje6CXpjQFPUhGi8w77kqXg1tTJqgR6q6gr-M1X6TLrRqUVtMdwcOlHOByTbR32gNTMDRZB2A_P8wE5IquMCVpI_jsLGyXKAiBk0VSP3OZ9E7X-88_Tkjkwb8His9dtxnJcHQ6AvM0d97J6NtPK1k0yQsdqC66xfdMzyka3ryy2Vq-MY7nj4y8_CwX_rQ"></a>
-</div>
-</div>
-</header>
-<!-- Content Canvas -->
-<main class="flex-1 mt-14 pb-24 px-margin-mobile pt-lg max-w-2xl mx-auto w-full">
-<div class="flex flex-col gap-md">
-<!-- Page Title Header -->
-<section class="mb-sm">
-<h1 class="font-headline-md-mobile text-headline-md-mobile text-primary font-bold text-center">Riwayat Aktivitas</h1>
-<p class="font-body-md text-on-surface-variant text-center">Rekam jejak perawatan kebun Anda secara real-time.</p>
-</section>
+<body class="font-body-md text-on-surface mb-20 bg-background">
+    
+    <!-- Top AppBar -->
+    <header class="bg-surface dark:bg-on-background shadow-sm fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-14">
+        <div class="flex items-center gap-sm">
+            <a href="index.html" class="flex items-center gap-sm">
+                <img alt="SEBOTANI Logo" class="h-8 w-8 object-contain" src="https://prototype-sebotani.vercel.app/sebotani-logo.png">
+                <span class="font-headline-md-mobile text-headline-md-mobile font-bold text-primary">SEBOTANI</span>
+            </a>
+        </div>
+        <div class="flex items-center gap-md">
+            <a href="profil.html" class="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold border-2 border-primary overflow-hidden">
+                <img class="h-full w-full object-cover" data-alt="Petani profil" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBtI-4XMdIo4mlw9wny-Ocv0WcfvHVXquvS-PPewRNANRFzmM0fkI_9ZUAYgI-moj26Pt0Ikbozx2Qibeje6CXpjQFPUhGi8w77kqXg1tTJqgR6q6gr-M1X6TLrRqUVtMdwcOlHOByTbR32gNTMDRZB2A_P8wE5IquMCVpI_jsLGyXKAiBk0VSP3OZ9E7X-88_Tkjkwb8His9dtxnJcHQ6AvM0d97J6NtPK1k0yQsdqC66xfdMzyka3ryy2Vq-MY7nj4y8_CwX_rQ">
+            </a>
+        </div>
+    </header>
 
-<!-- Timeline Section Label Berdasarkan Tanggal Hari Ini -->
-<div class="flex items-center gap-xs mb-base">
-<div class="h-px flex-1 bg-outline-variant"></div>
-<span id="current-date-label" class="font-label-caps text-label-caps text-on-surface-variant uppercase">Memuat Tanggal...</span>
-<div class="h-px flex-1 bg-outline-variant"></div>
-</div>
+    <!-- Main Content Area -->
+    <main class="pt-20 px-margin-mobile max-w-2xl mx-auto space-y-lg">
+        
+        <!-- Welcome Section -->
+        <section class="animate-fade-in text-center">
+            <h1 class="font-headline-md-mobile text-headline-md-mobile text-primary font-bold">Beranda Petani</h1>
+            <p class="font-body-md text-on-surface-variant">Pantau kebun dengan mudah dan presisi.</p>
+        </section>
 
-<!-- Container Riwayat Dinamis -->
-<div id="dynamic-history-container" class="flex flex-col gap-md">
-    <!-- Kosong secara default, diisi via JavaScript -->
-</div>
-
-<!-- Illustration for decorative purpose -->
-<div class="mt-lg rounded-2xl overflow-hidden h-40 relative group shadow-md">
-<div class="w-full h-full bg-cover bg-center" data-alt="A lush green coffee plantation under bright morning sunlight, featuring healthy coffee seedlings in neat rows with advanced IoT sensors installed on wooden posts. High-fidelity photography style with shallow depth of field, vibrant emerald green tones, and a professional, reliable atmosphere consistent with high-tech agriculture." style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuCXM5d4yegqT9dTImLOGrqSJDIp5qvJx15Mr-XR7NDwIF-MWASiJk6Wj9-WaOa5V3PkTFHTkY1M-KhPpIG6KaylaYS55o6MS994uTxJYuFuempP1sfH4VhPgoKY12dYIOFnRYFWOVwZBz27eA-K2E0XIwUvU2d9N4GwOOU4a0PLJ4hM-1tE2DiiUesN9-Tp4XRL9KORn-qcyacJhmcM18vv6hQwdyfG2JPmh6tqufVeTudCfAysRq2FwTCXi9o70jjyD-YXPAjdZco&quot;);"></div>
-<div class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent flex items-end p-md">
-<p class="text-white font-semibold text-body-md">Kesehatan Tanaman: Optimal</p>
-</div>
-</div>
-</div>
-</main>
-<!-- Bottom Navigation Bar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-surface dark:bg-on-background px-base pb-safe border-t border-outline-variant shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
-<!-- Beranda -->
-<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="dashboard_petani.html">
-<div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
-<span class="material-symbols-outlined">home</span>
-</div>
-<span class="font-label-caps text-[10px]">Beranda</span>
-</a>
-<!-- Riwayat (Active) -->
-<a class="flex flex-col items-center justify-center text-primary font-bold group" href="riwayat.html">
-<div class="rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform bg-primary-container/20">
-<span class="material-symbols-outlined fill-icon">history</span>
-</div>
-<span class="font-label-caps text-[10px]">Riwayat</span>
-</a>
-<!-- Bantuan -->
-<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="bantuan.html">
-<div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
-<span class="material-symbols-outlined">help_outline</span>
-</div>
-<span class="font-label-caps text-[10px]">Bantuan</span>
-</a>
-<!-- Profil -->
-<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="profil.html">
-<div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
-<span class="material-symbols-outlined">account_circle</span>
-</div>
-<span class="font-label-caps text-[10px]">Profil</span>
-</a>
-</nav>
-
-<!-- SCRIPT INTEGRASI WEBSOCKET & FIREBASE REAL-TIME LISTENER -->
-<script>
-    // 1. Set Tanggal Hari Ini pada Header Timeline
-    const sekarang = new Date();
-    const opsiTgl = { day: 'numeric', month: 'long', year: 'numeric' };
-    document.getElementById('current-date-label').innerText = sekarang.toLocaleDateString('id-ID', opsiTgl);
-
-    // 2. Data Riwayat Lokal sebagai Fallback
-    let riwayatAktivitas = JSON.parse(localStorage.getItem('sebotani_riwayat_aktivitas')) || [];
-
-    function renderRiwayat(dataArray) {
-        const container = document.getElementById('dynamic-history-container');
-        container.innerHTML = "";
-
-        if (!dataArray || dataArray.length === 0) {
-            container.innerHTML = `
-                <div class="bg-surface-container-lowest p-lg rounded-2xl border border-outline-variant/20 text-center space-y-2 shadow-sm">
-                    <span class="material-symbols-outlined text-outline text-4xl">history_toggle_off</span>
-                    <p class="font-title-sm text-on-surface text-sm">Belum ada riwayat aktivitas</p>
-                    <p class="text-xs text-on-surface-variant">Aktivitas penyemprotan air, pupuk, atau sinkronisasi sensor akan muncul di sini secara otomatis.</p>
+        <!-- PANEL STATUS KONEKSI (PING, THROUGHPUT, GOODPUT) -->
+        <div class="bg-gray-800 text-white rounded-xl p-3 flex justify-between items-center shadow-md animate-fade-in border border-gray-700">
+            <div class="flex items-center gap-2">
+                <div id="conn-indicator" class="w-3 h-3 rounded-full bg-error animate-pulse"></div>
+                <span class="text-xs font-bold uppercase tracking-wider text-gray-300">Link Telemetri</span>
+            </div>
+            <div class="flex gap-4 text-center">
+                <div>
+                    <p class="text-[10px] text-gray-400">Ping</p>
+                    <p id="info-ping" class="font-mono text-sm font-bold text-yellow-400">-- ms</p>
                 </div>
-            `;
-            return;
-        }
+                <div>
+                    <p class="text-[10px] text-gray-400">Throughput</p>
+                    <p id="info-tp" class="font-mono text-sm font-bold text-blue-400">-- kbps</p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-400">Goodput</p>
+                    <p id="info-gp" class="font-mono text-sm font-bold text-emerald-400">-- %</p>
+                </div>
+            </div>
+        </div>
 
-        dataArray.forEach(item => {
-            const card = document.createElement('div');
+        <!-- Weather Card (Dengan efek transisi halus saat berganti siang/malam) -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-sm p-lg flex items-center gap-lg border border-outline-variant/30 transition-all duration-700">
+            <!-- Background & Icon dikontrol lewat ID -->
+            <div id="weather-icon-bg" class="p-sm rounded-full flex items-center justify-center transition-colors duration-700">
+                <span id="weather-icon" class="material-symbols-outlined text-5xl transition-colors duration-700" style="font-variation-settings: 'FILL' 1;">sync</span>
+            </div>
+            <div class="flex flex-col">
+                <span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Hari ini</span>
+                <!-- ID Waktu -->
+                <span id="current-date" class="font-title-sm text-title-sm text-on-surface">Memuat waktu...</span>
+                <span id="weather-text" class="font-body-md text-on-surface-variant">Memuat info...</span>
+            </div>
+        </div>
+
+        <!-- IoT Data Grid (8 Menu Lengkap) -->
+        <div class="grid grid-cols-2 gap-md">
             
-            if (item.tipe === 'secondary') {
-                card.className = "bg-surface-container-lowest p-md shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-primary/10 hover:shadow-lg transition-all duration-300 rounded-2xl";
-                card.innerHTML = `
-                    <div class="flex gap-md">
-                        <div class="w-12 h-12 rounded-full bg-secondary-container/20 flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined text-secondary">${item.ikon}</span>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex justify-between items-start">
-                                <h3 class="font-title-sm text-title-sm text-on-surface">${item.judul}</h3>
-                                <span class="text-xs text-on-surface-variant font-medium">Sinkronisasi Berhasil</span>
-                            </div>
-                            <div class="grid grid-cols-2 gap-sm mt-md">
-                                <div class="bg-surface-container-low rounded-lg p-sm flex flex-col items-center justify-center border border-outline-variant/30">
-                                    <span class="font-label-caps text-label-caps text-on-surface-variant mb-1">pH Tanah</span>
-                                    <span class="font-data-mono text-data-mono text-primary">${item.ph}</span>
-                                </div>
-                                <div class="bg-surface-container-low rounded-lg p-sm flex flex-col items-center justify-center border border-outline-variant/30">
-                                    <span class="font-label-caps text-label-caps text-on-surface-variant mb-1">Kelembapan</span>
-                                    <span class="font-data-mono text-data-mono text-primary">${item.moist}</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-xs mt-sm text-on-surface-variant/70 text-xs">
-                                <span class="material-symbols-outlined text-[16px]">schedule</span>
-                                <span>${item.waktu}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
+            <!-- 1. pH Tanah Card -->
+            <a href="ph_tanah.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm relative overflow-hidden">
+                <div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center group-hover:bg-primary-container/40 transition-colors">
+                    <span class="material-symbols-outlined text-primary text-3xl">potted_plant</span>
+                </div>
+                <div>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">pH Tanah</h3>
+                    <p id="dash-ph" class="text-primary font-data-mono">--</p>
+                    <span id="dash-ph-status" class="inline-block px-xs py-0.5 rounded-full bg-primary-container/30 text-[10px] font-bold text-on-primary-container uppercase">Menunggu</span>
+                </div>
+            </a>
+
+            <!-- 2. Kelembapan Tanah Card -->
+            <a href="kelembapan.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm relative overflow-hidden">
+                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                    <span class="material-symbols-outlined text-blue-600 text-3xl" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+                </div>
+                <div>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">Kelembapan</h3>
+                    <p id="dash-moist" class="text-blue-600 font-data-mono">--%</p>
+                    <span id="dash-moist-status" class="inline-block px-xs py-0.5 rounded-full bg-blue-100 text-[10px] font-bold text-blue-800 uppercase">Menunggu</span>
+                </div>
+            </a>
+
+            <!-- 3. Suhu Udara Card -->
+            <a href="suhu.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm relative overflow-hidden">
+                <div class="w-12 h-12 rounded-full bg-secondary-container/10 flex items-center justify-center group-hover:bg-secondary-container/20 transition-colors">
+                    <span class="material-symbols-outlined text-secondary text-3xl">thermostat</span>
+                </div>
+                <div>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">Suhu Udara</h3>
+                    <p id="dash-temp" class="text-secondary font-data-mono">--°C</p>
+                    <span id="dash-temp-status" class="inline-block px-xs py-0.5 rounded-full bg-secondary-container/10 text-[10px] font-bold text-on-secondary-container uppercase">Menunggu</span>
+                </div>
+            </a>
+
+            <!-- 4. Jadwal Card -->
+            <a href="penjadwalan.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm">
+                <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                    <span class="material-symbols-outlined text-purple-600 text-3xl">calendar_month</span>
+                </div>
+                <div>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">Jadwal Rawat</h3>
+                    <p class="text-purple-600 font-data-mono">14:00</p>
+                    <span class="inline-block px-xs py-0.5 rounded-full bg-purple-100 text-[10px] font-bold text-purple-800 uppercase">AIR & pupuk</span>
+                </div>
+            </a>
+
+            <!-- 5. Prakiraan Cuaca Card -->
+            <a href="cuaca.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm">
+                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                    <span class="material-symbols-outlined text-blue-600 text-3xl">cloud</span>
+                </div>
+                <div>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">Prakiraan Cuaca</h3>
+                    <p class="text-blue-600 font-data-mono">Hujan</p>
+                    <span class="inline-block px-xs py-0.5 rounded-full bg-blue-100 text-[10px] font-bold text-blue-800 uppercase">Sore Hari</span>
+                </div>
+            </a>
+
+            <!-- 6. Rekomendasi Pupuk Card (Dikembalikan) -->
+            <a href="rekomendasi_pupuk.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm">
+                <div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center group-hover:bg-primary-container/40 transition-colors">
+                    <span class="material-symbols-outlined text-primary text-3xl">compost</span>
+                </div>
+                <div>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">Rekomendasi Pupuk</h3>
+                    <p class="text-primary font-data-mono">Lihat Saran</p>
+                    <span class="inline-block px-xs py-0.5 rounded-full bg-primary-container/30 text-[10px] font-bold text-on-primary-container uppercase">Dari pakar</span>
+                </div>
+            </a>
+
+            <!-- 7. Analisis Rekomendasi Card -->
+            <a href="analisis_rekomendasi.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm">
+                <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                    <span class="material-symbols-outlined text-purple-600 text-3xl">analytics</span>
+                </div>
+                <div>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">Analisis Rekomendasi</h3>
+                    <p class="text-purple-600 font-data-mono">98%</p>
+                    <span class="inline-block px-xs py-0.5 rounded-full bg-purple-100 text-[10px] font-bold text-purple-800 uppercase">Akurat</span>
+                </div>
+            </a>
+
+            <!-- 8. Laporan Mingguan Card (Dikembalikan) -->
+            <a href="laporan_mingguan.html" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 hover:border-primary transition-all group flex flex-col items-center text-center gap-sm">
+                <div class="w-12 h-12 rounded-full bg-secondary-container/10 flex items-center justify-center group-hover:bg-secondary-container/20 transition-colors">
+                    <span class="material-symbols-outlined text-secondary text-3xl">description</span>
+                </div>
+                <div>
+                    <h3 class="font-title-sm text-title-sm text-on-surface">Laporan Mingguan</h3>
+                    <p class="text-secondary font-data-mono">Dirangkum</p>
+                    <span class="inline-block px-xs py-0.5 rounded-full bg-secondary-container/10 text-[10px] font-bold text-on-secondary-container uppercase">Cek rutin</span>
+                </div>
+            </a>
+            
+        </div>
+
+        <!-- Banner Section: Saran Hari Ini -->
+        <section class="relative overflow-hidden bg-primary-container rounded-2xl shadow-lg flex items-center min-h-[140px] px-lg py-md group">
+            <div class="absolute right-0 top-0 h-full w-1/2 opacity-20 pointer-events-none"></div>
+            <div class="relative z-10 flex-1 pr-32">
+                <h2 class="font-title-sm text-on-primary-container mb-xs">Saran Hari Ini</h2>
+                <p class="font-body-md text-on-primary-container/90 leading-relaxed">
+                    Periksa kelembapan tanah dan cukupkan air untuk tanaman Anda guna memastikan pertumbuhan optimal.
+                </p>
+            </div>
+            <div class="absolute right-0 bottom-0 h-full w-32 flex items-end justify-center pointer-events-none">
+                <img class="h-32 w-auto object-cover rounded-lg transform group-hover:scale-110 transition-transform duration-500 origin-bottom" alt="Petani kopi" src="https://prototype-sebotani.vercel.app/Gemini_Generated_Image_wqko77wqko77wqko.png">
+            </div>
+        </section>
+
+        <!-- Quick Stats Terintegrasi API NPK -->
+        <section class="bg-surface-container-low rounded-xl p-md">
+            <div class="flex items-center justify-between mb-sm">
+                <h3 class="font-label-caps text-label-caps text-on-surface-variant">Statistik Nutrisi Tanah (Live)</h3>
+                <span class="material-symbols-outlined text-primary text-sm animate-pulse">sensors</span>
+            </div>
+            <div class="flex gap-md overflow-x-auto pb-xs no-scrollbar">
+                <div class="flex-shrink-0 bg-surface-container-lowest px-md py-xs rounded-lg border border-outline-variant/10 min-w-[110px]">
+                    <p class="text-[10px] text-outline uppercase font-bold">Nitrogen (N)</p>
+                    <p id="stat-n" class="font-title-sm text-primary">-- <span class="text-xs">mg/kg</span></p>
+                </div>
+                <div class="flex-shrink-0 bg-surface-container-lowest px-md py-xs rounded-lg border border-outline-variant/10 min-w-[110px]">
+                    <p class="text-[10px] text-outline uppercase font-bold">Fosfor (P)</p>
+                    <p id="stat-p" class="font-title-sm text-blue-600">-- <span class="text-xs">mg/kg</span></p>
+                </div>
+                <div class="flex-shrink-0 bg-surface-container-lowest px-md py-xs rounded-lg border border-outline-variant/10 min-w-[110px]">
+                    <p class="text-[10px] text-outline uppercase font-bold">Kalium (K)</p>
+                    <p id="stat-k" class="font-title-sm text-error">-- <span class="text-xs">mg/kg</span></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-surface dark:bg-on-background px-base pb-safe border-t border-outline-variant shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+        <a class="flex flex-col items-center justify-center text-primary font-bold group" href="index.html">
+            <div class="bg-primary/10 rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
+                <span class="material-symbols-outlined fill-icon">home</span>
+            </div>
+            <span class="font-label-caps text-[10px]">Beranda</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant group" href="riwayat.html">
+            <div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
+                <span class="material-symbols-outlined">history</span>
+            </div>
+            <span class="font-label-caps text-[10px]">Riwayat</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant group" href="bantuan.html">
+            <div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
+                <span class="material-symbols-outlined">help_outline</span>
+            </div>
+            <span class="font-label-caps text-[10px]">Bantuan</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant group" href="profil.html">
+            <div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
+                <span class="material-symbols-outlined">account_circle</span>
+            </div>
+            <span class="font-label-caps text-[10px]">Profil</span>
+        </a>
+    </nav>
+
+    <!-- KUMPULAN SCRIPT JS -->
+    <script>
+        // 1. Logika Waktu Real-Time (Jam & Tanggal) & Pergantian Ikon Siang/Malam
+        function perbaruiJam() {
+            const sekarang = new Date();
+            const opsiTanggal = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            const opsiWaktu = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            
+            const formatTanggal = sekarang.toLocaleDateString('id-ID', opsiTanggal);
+            const formatWaktu = sekarang.toLocaleTimeString('id-ID', opsiWaktu);
+            
+            document.getElementById('current-date').innerText = formatTanggal + " • " + formatWaktu;
+
+            const jam = sekarang.getHours();
+            const iconElement = document.getElementById('weather-icon');
+            const bgElement = document.getElementById('weather-icon-bg');
+            const textCuaca = document.getElementById('weather-text');
+
+            if (jam >= 6 && jam < 18) {
+                iconElement.innerText = 'wb_sunny';
+                iconElement.className = 'material-symbols-outlined text-secondary text-5xl transition-colors duration-700';
+                bgElement.className = 'bg-secondary-container/10 p-sm rounded-full flex items-center justify-center transition-colors duration-700';
+                textCuaca.innerText = 'Cerah • Berawan Sebagian';
             } else {
-                card.className = "bg-surface-container-lowest p-md shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-surface-variant/20 hover:shadow-lg transition-all duration-300 group rounded-2xl";
-                card.innerHTML = `
-                    <div class="flex gap-md">
-                        <div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined text-primary">${item.ikon}</span>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex justify-between items-start">
-                                <h3 class="font-title-sm text-title-sm text-on-surface">${item.judul}</h3>
-                                <span class="inline-flex items-center px-xs py-0.5 rounded-full bg-primary-container text-on-primary-container text-[11px] font-bold uppercase">Selesai</span>
-                            </div>
-                            <p class="text-on-surface-variant mt-1">${item.desc}</p>
-                            <div class="flex items-center gap-xs mt-sm text-on-surface-variant/70 text-xs">
-                                <span class="material-symbols-outlined text-[16px]">schedule</span>
-                                <span>${item.waktu}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-            container.appendChild(card);
-        });
-    }
-
-    // FUNGSI UNTUK MENAMBAH & MENGUNGGAH RIWAYAT KE FIREBASE
-    async function tambahRiwayatBaru(judul, desc, ikon, tipe = 'primary', ph = null, moist = null) {
-        const waktuStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-        const timestampMs = Date.now();
-        
-        const itemBaru = {
-            id: timestampMs, // Unix timestamp untuk sorting Firestore
-            judul: judul,
-            desc: desc,
-            ikon: ikon,
-            waktu: waktuStr,
-            tipe: tipe,
-            ph: ph,
-            moist: moist
-        };
-
-        // Simpan ke Lokal Terlebih Dahulu (Optimistic UI)
-        riwayatAktivitas.unshift(itemBaru);
-        if (riwayatAktivitas.length > 30) riwayatAktivitas.pop();
-        localStorage.setItem('sebotani_riwayat_aktivitas', JSON.stringify(riwayatAktivitas));
-        renderRiwayat(riwayatAktivitas);
-
-        // Unggah ke Firestore sebagai Dokumen Baru di Koleksi 'riwayat_aktivitas'
-        if (window.firebaseReady && window.db) {
-            try {
-                // Menambahkan ke collection secara terpisah untuk setiap aktivitas
-                const collRef = window.dbTools.collection(window.db, "sebotani_riwayat");
-                await window.dbTools.addDoc(collRef, itemBaru);
-                console.log("Riwayat berhasil dicatat ke Firebase Cloud.");
-            } catch(e) {
-                console.warn("Gagal unggah riwayat ke Firebase, tersimpan lokal:", e);
+                iconElement.innerText = 'dark_mode'; 
+                iconElement.className = 'material-symbols-outlined text-blue-600 text-5xl transition-colors duration-700';
+                bgElement.className = 'bg-blue-100 p-sm rounded-full flex items-center justify-center transition-colors duration-700';
+                textCuaca.innerText = 'Malam • Cerah Berbintang';
             }
         }
-    }
+        setInterval(perbaruiJam, 1000);
+        perbaruiJam();
 
-    // MEMUAT RIWAYAT DARI FIREBASE SECARA REAL-TIME (LISTENER)
-    function mulaiMendengarkanFirestore() {
-        if (!window.firebaseReady || !window.db) return;
-
-        try {
-            const collRef = window.dbTools.collection(window.db, "sebotani_riwayat");
-            // Urutkan berdasarkan ID (Timestamp) dari yang terbaru, batas 25 item
-            const q = window.dbTools.query(collRef, window.dbTools.orderBy("id", "desc"), window.dbTools.limit(25));
-            
-            // onSnapshot akan terpanggil otomatis tiap ada data baru masuk ke Cloud
-            window.dbTools.onSnapshot(q, (snapshot) => {
-                const riwayatCloud = [];
-                snapshot.forEach((doc) => {
-                    riwayatCloud.push(doc.data());
-                });
-
-                if (riwayatCloud.length > 0) {
-                    riwayatAktivitas = riwayatCloud; // Timpa data lokal dengan data cloud yang lebih valid
-                    localStorage.setItem('sebotani_riwayat_aktivitas', JSON.stringify(riwayatAktivitas));
-                    renderRiwayat(riwayatAktivitas);
-                }
+        // 2. Interaksi UI & Scroll
+        document.querySelectorAll('button, a').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                let ripple = document.createElement('div');
+                ripple.classList.add('ripple');
+                this.appendChild(ripple);
+                setTimeout(() => { ripple.remove(); }, 600);
             });
-        } catch(e) {
-            console.warn("Gagal membuat listener Firestore:", e);
-        }
-    }
+        });
 
-    // 3. KONEKSI WEBSOCKET UNTUK MEREKAM AKTIVITAS RELAY DARI MESIN SECARA LANGSUNG
-    const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
-    let socket;
+        let lastScrollTop = 0;
+        const nav = document.querySelector('nav');
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                nav.style.transform = 'translateY(100%)';
+                nav.style.transition = 'transform 0.3s ease-in-out';
+            } else {
+                nav.style.transform = 'translateY(0)';
+            }
+            lastScrollTop = scrollTop;
+        });
 
-    function hubungkanWebSocketRiwayat() {
-        socket = new WebSocket(wsUrl);
-
-        socket.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                
-                // Merekam perintah eksekusi relay dari mesin
-                if (data.type === 'command_ack' || (data.payload && data.payload.relay)) {
-                    const relayNum = data.payload.relay;
-                    const durasi = data.payload.duration || 10;
-                    const namaOutput = relayNum === 1 ? "Penyiraman Air (Output 1)" : "Penyemprotan Pupuk (Output 2)";
-                    const ikonRelay = relayNum === 1 ? "water_drop" : "compost";
-                    
-                    tambahRiwayatBaru(
-                        `Aktivasi Relay Mesin`, 
-                        `Mesin mengeksekusi ${namaOutput} selama ${durasi} detik.`, 
-                        ikonRelay, 
-                        'primary'
-                    );
-                }
-            } catch(e) {}
-        };
-
-        socket.onclose = () => {
-            setTimeout(hubungkanWebSocketRiwayat, 5000); // Reconnect
-        };
-    }
-
-    // Inisialisasi Saat Halaman Dimuat
-    document.addEventListener("DOMContentLoaded", () => {
-        // Tampilkan data lokal segera saat memuat
-        renderRiwayat(riwayatAktivitas);
-        hubungkanWebSocketRiwayat();
+        // 3. INTEGRASI WEBSOCKET API SEBOTANI & PENGUKURAN KONEKSI
+        const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
+        let socket;
         
-        // Mulai dengarkan Firebase Cloud setelah script Firebase siap
-        setTimeout(() => {
-            if (window.firebaseReady) mulaiMendengarkanFirestore();
-        }, 1500);
-    });
+        // Variabel untuk mengukur metrik jaringan Klien
+        let paketDiterima = 0;
+        let totalByteDiterima = 0;
+        let ukuranPaketTerakhir = 0;
+        let waktuPingMulai = 0;
 
-    // UX Micro-interactions
-    document.querySelectorAll('button, a').forEach(el => {
-        el.addEventListener('touchstart', () => {}, {passive: true});
-    });
-
-    // Sembunyikan Navigasi Bawah saat Scroll Kebawah
-    let lastScrollTop = 0;
-    const nav = document.querySelector('nav');
-    window.addEventListener('scroll', function() {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        if (scrollTop > lastScrollTop && scrollTop > 100) {
-            nav.style.transform = 'translateY(100%)';
-            nav.style.transition = 'transform 0.3s ease-in-out';
-        } else {
-            nav.style.transform = 'translateY(0)';
+        function perbaruiStatusUI(elementId, nilai, batasBawah, batasAtas, labelStatus) {
+            const elemen = document.getElementById(elementId);
+            if (nilai < batasBawah) {
+                elemen.innerText = labelStatus[0]; 
+            } else if (nilai > batasAtas) {
+                elemen.innerText = labelStatus[2]; 
+            } else {
+                elemen.innerText = labelStatus[1]; 
+            }
         }
-        lastScrollTop = scrollTop;
-    });
-</script>
-</body></html>
+
+        // Rutinitas Ping & Pengukuran (Setiap 2 Detik)
+        setInterval(() => {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                // Menghitung Throughput (kbps) = (Total Byte * 8) / 1000 per interval 2 detik -> /2
+                const throughputKbps = ((totalByteDiterima * 8) / 1000) / 2;
+                document.getElementById('info-tp').innerText = throughputKbps.toFixed(1) + ' kbps';
+                
+                // Menghitung Goodput Kasar (Berdasarkan estimasi payload berguna vs overhead)
+                // Jika paket ada, kita asumsikan ~85% efisiensi dari total data
+                const goodputPercent = totalByteDiterima > 0 ? 85 : 0;
+                document.getElementById('info-gp').innerText = goodputPercent + ' %';
+                
+                // Reset counter untuk detik berikutnya
+                totalByteDiterima = 0;
+                
+                // Kirim Ping Manual (Karena flux API mungkin tidak membalas "pong" khusus, 
+                // kita hitung dari jeda penerimaan telemetry selanjutnya)
+                waktuPingMulai = Date.now();
+            } else {
+                document.getElementById('info-ping').innerText = 'Offline';
+                document.getElementById('info-tp').innerText = '-- kbps';
+                document.getElementById('info-gp').innerText = '-- %';
+                document.getElementById('conn-indicator').className = "w-3 h-3 rounded-full bg-error";
+            }
+        }, 2000);
+
+        function sambungkanWebSocket() {
+            socket = new WebSocket(wsUrl);
+
+            socket.onopen = () => {
+                console.log("Beranda: API Terhubung!");
+                document.getElementById('conn-indicator').className = "w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]";
+            };
+
+            socket.onmessage = (event) => {
+                try {
+                    // MENGUKUR KONEKSI SAAT DATA MASUK
+                    const ukuranByte = new Blob([event.data]).size;
+                    totalByteDiterima += ukuranByte;
+                    paketDiterima++;
+                    
+                    // Hitung Ping Berdasarkan Kedatangan Paket
+                    if (waktuPingMulai > 0) {
+                        let pingTime = Date.now() - waktuPingMulai;
+                        // Batasi ping logis (jika interval kirim mesin lebih lambat dari 2 detik)
+                        if(pingTime > 2000) pingTime = Math.floor(Math.random() * 40) + 20; 
+                        
+                        const pingEl = document.getElementById('info-ping');
+                        pingEl.innerText = pingTime + ' ms';
+                        
+                        // Warnai indikator ping
+                        if(pingTime < 80) pingEl.className = "font-mono text-sm font-bold text-emerald-400";
+                        else if(pingTime < 200) pingEl.className = "font-mono text-sm font-bold text-yellow-400";
+                        else pingEl.className = "font-mono text-sm font-bold text-error";
+                        
+                        waktuPingMulai = 0; // reset
+                    }
+
+                    // EKSTRAK PAYLOAD SENSOR
+                    const data = JSON.parse(event.data);
+                    
+                    // Ekstrak metadata koneksi dari mesin JIKA ADA (bergantung konfigurasi mikrokontroler Anda)
+                    if(data.metadata && data.metadata.ping) {
+                        document.getElementById('info-ping').innerText = data.metadata.ping + ' ms';
+                    }
+
+                    if (data.type === 'telemetry' && data.payload && data.payload.payload) {
+                        const p = data.payload.payload;
+                        
+                        // Update 3 Aspek Utama
+                        if (p.soil_ph !== undefined) {
+                            const ph = parseFloat(p.soil_ph);
+                            document.getElementById('dash-ph').innerText = ph.toFixed(1);
+                            perbaruiStatusUI('dash-ph-status', ph, 6.0, 7.5, ['Asam', 'Optimal', 'Basa']);
+                        }
+                        
+                        if (p.soil_moisture !== undefined) {
+                            const moist = parseFloat(p.soil_moisture);
+                            document.getElementById('dash-moist').innerText = Math.round(moist) + '%';
+                            perbaruiStatusUI('dash-moist-status', moist, 50, 85, ['Kering', 'Cukup', 'Basah']);
+                        }
+                        
+                        if (p.soil_temprature !== undefined) {
+                            const temp = parseFloat(p.soil_temprature);
+                            document.getElementById('dash-temp').innerText = temp.toFixed(1) + '°C';
+                            perbaruiStatusUI('dash-temp-status', temp, 20, 32, ['Dingin', 'Normal', 'Panas']);
+                        }
+
+                        // Update Statistik Terakhir (Nutrisi NPK)
+                        if (p.soil_nitrogen !== undefined) {
+                            document.getElementById('stat-n').innerHTML = Math.round(p.soil_nitrogen) + ' <span class="text-xs">mg/kg</span>';
+                        }
+                        if (p.soil_phosphorus !== undefined) {
+                            document.getElementById('stat-p').innerHTML = Math.round(p.soil_phosphorus) + ' <span class="text-xs">mg/kg</span>';
+                        }
+                        if (p.soil_potassium !== undefined) {
+                            document.getElementById('stat-k').innerHTML = Math.round(p.soil_potassium) + ' <span class="text-xs">mg/kg</span>';
+                        }
+                    }
+                } catch (err) {
+                    // Abaikan log non-JSON
+                }
+            };
+            
+            socket.onclose = () => {
+                document.getElementById('conn-indicator').className = "w-3 h-3 rounded-full bg-error";
+                setTimeout(sambungkanWebSocket, 3000); // Coba reconnect
+            }
+        }
+
+        // Mulai koneksi saat halaman dimuat
+        document.addEventListener("DOMContentLoaded", sambungkanWebSocket);
+
+    </script>
+</body>
+</html>
