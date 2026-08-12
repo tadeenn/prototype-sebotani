@@ -265,6 +265,35 @@
             };
         }
 
+        // --- FUNGSI MENCATAT RIWAYAT KE FIREBASE ---
+        async function catatRiwayatDariJadwal(outputNumber, durasiDetik, sumber = "Manual/Jadwal") {
+            const namaOutput = outputNumber === 1 ? "Penyiraman Air (Output 1)" : "Penyemprotan Pupuk (Output 2)";
+            const ikonRelay = outputNumber === 1 ? "water_drop" : "compost";
+            const waktuStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            const timestampMs = Date.now();
+            
+            const itemRiwayat = {
+                id: timestampMs, // Unix timestamp untuk sorting Firestore
+                judul: `Aktivasi Relay (${sumber})`,
+                desc: `Perintah terkirim: Mengeksekusi ${namaOutput} selama ${durasiDetik} detik.`,
+                ikon: ikonRelay,
+                waktu: waktuStr,
+                tipe: 'primary',
+                ph: null,
+                moist: null
+            };
+
+            if (window.firebaseReady && window.db) {
+                try {
+                    const collRef = window.dbTools.collection(window.db, "sebotani_riwayat");
+                    await window.dbTools.addDoc(collRef, itemRiwayat);
+                    console.log("Riwayat berhasil dicatat ke Firebase dari Penjadwalan!");
+                } catch(e) {
+                    console.warn("Gagal mencatat riwayat:", e);
+                }
+            }
+        }
+
         function kirimPerintahRelay(outputNumber, durasiDetik) {
             if (!socket || socket.readyState !== WebSocket.OPEN) {
                 alert("Gagal: Mesin Smart-Farming sedang offline/tidak terhubung!");
@@ -277,8 +306,12 @@
             };
 
             socket.send(JSON.stringify(payloadPerintah));
+            
             const namaOutput = outputNumber === 1 ? "OUTPUT 1 (Air)" : "OUTPUT 2 (Pupuk)";
             alert(`Perintah terkirim: ${namaOutput} menyala selama ${durasiDetik} detik!`);
+
+            // LANGSUNG CATAT KE RIWAYAT FIREBASE
+            catatRiwayatDariJadwal(outputNumber, durasiDetik, "Penjadwalan/Manual");
         }
 
         function triggerRelayManual(outputNum) {
