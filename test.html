@@ -12,7 +12,6 @@
 <!-- KONFIGURASI FIREBASE SDK -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
     import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -21,25 +20,22 @@
         projectId: "sebotani-database",
         storageBucket: "sebotani-database.firebasestorage.app",
         messagingSenderId: "100314098060",
-        appId: "1:100314098060:web:29a6b3a8357f9a7e948ea9",
-        measurementId: "G-CZ09GHVW6W"
+        appId: "1:100314098060:web:29a6b3a8357f9a7e948ea9"
     };
 
+    // Inisialisasi Firebase & Firestore murni (Tanpa Analytics agar tidak error 400)
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const db = getFirestore(app);
 
-    // Daftarkan ke window agar bisa diakses fungsi global
     window.db = db;
     window.dbTools = { doc, getDoc, setDoc };
     window.firebaseReady = true;
 
-    // Picu pemuatan data setelah Firebase siap
     if (typeof window.inisialisasiDataProfil === 'function') {
         window.inisialisasiDataProfil();
     }
 </script>
-
+    
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
