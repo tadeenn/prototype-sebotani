@@ -1,18 +1,17 @@
 <!DOCTYPE html>
-<html lang="id" style="">
+<html class="light" lang="id">
 <head>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Profil - SEBOTANI</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>SEBOTANI - Penjadwalan Semprot</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
 
 <!-- KONFIGURASI FIREBASE SDK (Murni Firestore Tanpa Analytics) -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDoc, setDoc, doc, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDTSexC_iufQJtZEwBhP4vF3pa1VdgvZM",
@@ -24,550 +23,448 @@
     };
 
     try {
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // Daftarkan ke window agar bisa diakses script lain di halaman ini
         window.db = db;
-        window.dbTools = { doc, getDoc, setDoc };
+        window.dbTools = { collection, addDoc, getDoc, setDoc, doc, query, orderBy, limit, onSnapshot };
         window.firebaseReady = true;
-
-        if (typeof window.inisialisasiDataProfil === 'function') {
-            window.inisialisasiDataProfil();
-        }
+        
+        console.log("Firebase & Firestore berhasil diinisialisasi!");
     } catch(e) {
-        console.warn("Firebase gagal diinisialisasi", e);
+        console.warn("Gagal inisialisasi Firebase:", e);
     }
 </script>
     
-<script id="tailwind-config">
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
-                    "colors": {
-                        "on-error-container": "#93000a",
-                        "inverse-surface": "#2e3132",
-                        "background": "#f8f9fa",
-                        "secondary-fixed-dim": "#ffb95f",
-                        "error": "#ba1a1a",
-                        "primary-fixed": "#6ffbbe",
-                        "on-secondary-fixed": "#2a1700",
-                        "on-secondary-fixed-variant": "#653e00",
-                        "tertiary-container": "#ff7a73",
-                        "tertiary-fixed": "#ffdad7",
-                        "outline": "#6c7a71",
-                        "primary-container": "#10b981",
-                        "on-surface-variant": "#3c4a42",
-                        "on-secondary": "#ffffff",
-                        "tertiary-fixed-dim": "#ffb3ad",
-                        "primary-fixed-dim": "#4edea3",
+                    colors: {
                         "primary": "#006c49",
-                        "inverse-primary": "#4edea3",
-                        "surface-bright": "#f8f9fa",
-                        "surface-variant": "#e1e3e4",
-                        "surface": "#f8f9fa",
-                        "on-primary-container": "#00422b",
-                        "secondary-fixed": "#ffddb8",
-                        "outline-variant": "#bbcabf",
-                        "on-tertiary-fixed-variant": "#930013",
-                        "on-secondary-container": "#684000",
-                        "surface-tint": "#006c49",
-                        "surface-container-lowest": "#ffffff",
-                        "surface-container-high": "#e7e8e9",
-                        "error-container": "#ffdad6",
-                        "surface-container-low": "#f3f4f5",
-                        "surface-container": "#edeeef",
-                        "secondary": "#855300",
-                        "on-tertiary-fixed": "#410004",
-                        "on-surface": "#191c1d",
                         "on-primary": "#ffffff",
-                        "inverse-on-surface": "#f0f1f2",
-                        "surface-dim": "#d9dadb",
-                        "on-primary-fixed": "#002113",
-                        "surface-container-highest": "#e1e3e4",
-                        "secondary-container": "#fea619",
-                        "on-tertiary-container": "#79000e",
-                        "tertiary": "#b91a24",
-                        "on-tertiary": "#ffffff",
-                        "on-primary-fixed-variant": "#005236",
-                        "on-error": "#ffffff",
-                        "on-background": "#191c1d"
+                        "primary-container": "#10b981",
+                        "on-primary-container": "#00422b",
+                        "error": "#ba1a1a",
+                        "surface": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "surface-variant": "#e1e3e4",
+                        "on-surface-variant": "#3c4a42",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#bbcabf",
+                        "secondary": "#855300",
+                        "on-secondary": "#ffffff",
+                        "background": "#f8f9fa"
                     },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "gutter": "16px",
-                        "xs": "8px",
-                        "xl": "32px",
-                        "margin-desktop": "40px",
-                        "sm": "12px",
-                        "lg": "24px",
-                        "base": "4px",
-                        "md": "16px",
-                        "margin-mobile": "16px"
-                    },
-                    "fontFamily": {
-                        "label-caps": ["Inter"],
-                        "display-lg": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "body-md": ["Inter"],
-                        "headline-md": ["Inter"],
-                        "title-sm": ["Inter"],
-                        "headline-md-mobile": ["Inter"],
-                        "data-mono": ["Inter"]
+                    spacing: {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px"
                     }
                 }
             }
         }
     </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Inter', sans-serif;
-        }
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { background-color: #f8f9fa; color: #191c1d; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-background text-on-surface min-h-screen pb-24">
+<body class="flex flex-col min-h-screen relative">
 
-<!-- Top AppBar -->
-<header class="bg-surface dark:bg-on-background shadow-sm fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-14">
-<div class="flex items-center gap-sm cursor-pointer" onclick="window.location.href='dashboard_petani.html'">
-<img alt="SEBOTANI Logo" class="h-8 w-8 object-contain" src="https://prototype-sebotani.vercel.app/sebotani-logo.png">
-<span class="font-headline-md-mobile text-headline-md-mobile font-bold text-primary">SEBOTANI</span>
-</div>
-<div class="flex items-center gap-md">
-<div class="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold border-2 border-primary overflow-hidden cursor-pointer" onclick="window.location.href='profil.html'">
-<img class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBtI-4XMdIo4mlw9wny-Ocv0WcfvHVXquvS-PPewRNANRFzmM0fkI_9ZUAYgI-moj26Pt0Ikbozx2Qibeje6CXpjQFPUhGi8w77kqXg1tTJqgR6q6gr-M1X6TLrRqUVtMdwcOlHOByTbR32gNTMDRZB2A_P8wE5IquMCVpI_jsLGyXKAiBk0VSP3OZ9E7X-88_Tkjkwb8His9dtxnJcHQ6AvM0d97J6NtPK1k0yQsdqC66xfdMzyka3ryy2Vq-MY7nj4y8_CwX_rQ">
-</div>
-</div>
-</header>
-
-<main class="pt-20 px-margin-mobile space-y-6 max-w-2xl mx-auto">
-<!-- Profile Header Section -->
-<section class="flex flex-col items-center py-6">
-<div class="relative mb-4">
-<div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md">
-<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUxbxa3OqFWlJqxX9dCy9OzcZzWBEUJ2aSvwpW4qZX1uB13djLVtGGW2ZHg57b1eunQEBGn02J4yhA7o_SluIBmfWZINjWLwapqUXyP0rDVoem6qfhWUJaDHXl8k2_z_3eYEMQZ2tJIrVfYNlCKLe_dkTqdxTkh_zkCg7BEFSpc214V90nICWMvVyH_FvDemEdiqPuXApfomBdvUbqxcyOYSHbE5KfUn17uxJsdoMQaQpGwBTgQuWXSie1sT05-0n8DIvKnwyK_gA">
-</div>
-<button onclick="bukaModalEdit()" class="absolute bottom-0 right-0 bg-primary text-on-primary p-2 rounded-full shadow-lg active:scale-90 transition-transform cursor-pointer">
-<span class="material-symbols-outlined text-[20px]">edit</span>
-</button>
-</div>
-<h1 id="view-nama-kelompok" class="font-headline-md-mobile text-headline-md-mobile text-on-surface text-center">Kelompok Tani 1</h1>
-<p class="font-body-md text-body-md text-on-surface-variant text-center">Pemilik Lahan - Zona 1</p>
-<button onclick="bukaModalEdit()" class="mt-3 text-xs bg-primary/10 text-primary font-bold px-4 py-1.5 rounded-full hover:bg-primary hover:text-white transition-colors">
-    Edit Data Profil
-</button>
-</section>
-
-<!-- Bento Grid Layout for Info -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<!-- Personal Information Card -->
-<section class="bg-surface rounded-lg p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-variant/30">
-<div class="flex items-center gap-xs mb-md">
-<span class="material-symbols-outlined text-primary">person</span>
-<h2 class="font-title-sm text-title-sm">Informasi Pribadi</h2>
-</div>
-<div class="space-y-4">
-<div class="border-b border-surface-variant pb-2">
-<p class="font-label-caps text-label-caps text-on-surface-variant">Nama Ketua</p>
-<p id="view-nama-ketua" class="font-body-lg text-body-lg font-semibold">Mas Agung</p>
-</div>
-<div class="border-b border-surface-variant pb-2">
-<p class="font-label-caps text-label-caps text-on-surface-variant">Nomor Telepon</p>
-<p id="view-telepon" class="font-body-lg text-body-lg font-semibold">+62 812-3456-7890</p>
-</div>
-<div class="border-b border-surface-variant pb-2">
-<p class="font-label-caps text-label-caps text-on-surface-variant">Email</p>
-<p id="view-email" class="font-body-lg text-body-lg font-semibold">petani.sejahtera@email.com</p>
-</div>
-<div>
-<p class="font-label-caps text-label-caps text-on-surface-variant">Alamat</p>
-<p id="view-alamat" class="font-body-lg text-body-lg font-semibold">Jl. Raya Seboto No. 45, Boyolali</p>
-</div>
-</div>
-</section>
-
-<!-- Farm Information Card -->
-<section class="bg-surface rounded-lg p-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-surface-variant/30 h-fit">
-<div class="flex items-center gap-xs mb-md">
-<span class="material-symbols-outlined text-primary">agriculture</span>
-<h2 class="font-title-sm text-title-sm">Informasi Lahan</h2>
-</div>
-<div class="grid grid-cols-2 gap-4">
-<div class="bg-primary-container/10 p-3 rounded-lg">
-<p class="font-label-caps text-label-caps text-primary">Luas Lahan</p>
-<p id="view-luas" class="font-data-mono text-data-mono text-primary">2.5</p>
-<p class="font-body-md text-body-md text-on-primary-container">Hektar</p>
-</div>
-<div class="bg-secondary-container/10 p-3 rounded-lg">
-<p class="font-label-caps text-label-caps text-secondary">Komoditas</p>
-<div class="mt-2">
-<span class="material-symbols-outlined text-secondary block">coffee</span>
-<p id="view-komoditas" class="font-body-lg text-body-lg font-semibold text-on-secondary-container">Kopi Arabika</p>
-</div>
-</div>
-</div>
-<div class="mt-4 p-3 bg-surface-container-low rounded-lg flex items-center gap-sm">
-<span class="material-symbols-outlined text-on-surface-variant">location_on</span>
-<div>
-<p class="font-label-caps text-label-caps text-on-surface-variant">Lokasi Utama</p>
-<p id="view-lokasi" class="font-body-md text-body-md font-semibold">Seboto, Boyolali, Jawa Tengah</p>
-</div>
-</div>
-</section>
-</div>
-
-<!-- Account Settings List -->
-<section class="bg-surface rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)] overflow-hidden">
-<div class="px-md py-md border-b border-surface-variant/50">
-<h2 class="font-title-sm text-title-sm">Pengaturan Akun</h2>
-</div>
-<div class="divide-y divide-surface-variant/50">
-<button onclick="bukaModalPassword()" class="w-full flex items-center justify-between p-md hover:bg-surface-container transition-colors active:scale-[0.99] cursor-pointer text-left">
-<div class="flex items-center gap-sm">
-<span class="material-symbols-outlined text-on-surface-variant">lock_reset</span>
-<span class="font-body-lg text-body-lg">Ubah Password</span>
-</div>
-<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
-</button>
-<button onclick="toggleNotifikasi()" class="w-full flex items-center justify-between p-md hover:bg-surface-container transition-colors active:scale-[0.99] cursor-pointer text-left">
-<div class="flex items-center gap-sm">
-<span class="material-symbols-outlined text-on-surface-variant">notifications_active</span>
-<span class="font-body-lg text-body-lg">Notifikasi</span>
-</div>
-<div class="flex items-center gap-xs">
-<span id="status-notif" class="text-label-caps text-primary font-bold">Aktif</span>
-<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
-</div>
-</button>
-<button onclick="gantiBahasa()" class="w-full flex items-center justify-between p-md hover:bg-surface-container transition-colors active:scale-[0.99] cursor-pointer text-left">
-<div class="flex items-center gap-sm">
-<span class="material-symbols-outlined text-on-surface-variant">language</span>
-<span class="font-body-lg text-body-lg">Bahasa</span>
-</div>
-<div class="flex items-center gap-xs">
-<span id="status-bahasa" class="text-label-caps text-on-surface-variant font-bold">Indonesia</span>
-<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
-</div>
-</button>
-</div>
-</section>
-
-<!-- Logout Button -->
-<div class="pt-4 pb-12">
-<button onclick="konfirmasiKeluar()" class="w-full h-14 bg-white border-2 border-error text-error font-semibold rounded-lg flex items-center justify-center gap-xs active:scale-95 transition-all shadow-sm cursor-pointer">
-<span class="material-symbols-outlined">logout</span>
-Keluar dari Akun
-</button>
-</div>
-</main>
-
-<!-- MODAL POPUP: EDIT PROFIL -->
-<div id="modal-edit" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm p-4">
-    <div id="modal-edit-content" class="bg-surface rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] flex flex-col transform scale-95 transition-transform duration-300 border border-outline-variant/30 overflow-hidden">
-        <div class="bg-primary text-white p-4 flex justify-between items-center">
-            <h3 class="font-bold text-[18px]">Edit Data Profil & Lahan</h3>
-            <button onclick="tutupModalEdit()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/20">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-        </div>
-        <div class="p-lg overflow-y-auto space-y-4 flex-grow hide-scrollbar">
-            <div>
-                <label class="text-xs font-bold text-on-surface-variant uppercase">Nama Kelompok Tani</label>
-                <input id="edit-nama-kelompok" type="text" class="w-full p-3 rounded-xl border border-gray-300 mt-1 focus:outline-primary">
+    <!-- TopAppBar Konsisten dengan Halaman Lain -->
+    <header class="fixed top-0 w-full z-50 bg-primary shadow-sm flex justify-between items-center px-margin-mobile h-14">
+        <div class="flex items-center w-full justify-between max-w-2xl mx-auto">
+            <a href="dashboard_petani.html" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors active:scale-95 duration-150">
+                <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+            </a>
+            <div class="flex flex-col items-center">
+                <span class="text-[18px] md:text-[20px] font-semibold text-white">Jadwal & Kontrol Relay</span>
             </div>
-            <div>
-                <label class="text-xs font-bold text-on-surface-variant uppercase">Nama Ketua</label>
-                <input id="edit-nama-ketua" type="text" class="w-full p-3 rounded-xl border border-gray-300 mt-1 focus:outline-primary">
-            </div>
-            <div>
-                <label class="text-xs font-bold text-on-surface-variant uppercase">Nomor Telepon</label>
-                <input id="edit-telepon" type="text" class="w-full p-3 rounded-xl border border-gray-300 mt-1 focus:outline-primary">
-            </div>
-            <div>
-                <label class="text-xs font-bold text-on-surface-variant uppercase">Email</label>
-                <input id="edit-email" type="email" class="w-full p-3 rounded-xl border border-gray-300 mt-1 focus:outline-primary">
-            </div>
-            <div>
-                <label class="text-xs font-bold text-on-surface-variant uppercase">Alamat</label>
-                <input id="edit-alamat" type="text" class="w-full p-3 rounded-xl border border-gray-300 mt-1 focus:outline-primary">
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="text-xs font-bold text-on-surface-variant uppercase">Luas Lahan (Ha)</label>
-                    <input id="edit-luas" type="number" step="0.1" class="w-full p-3 rounded-xl border border-gray-300 mt-1 focus:outline-primary">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-on-surface-variant uppercase">Komoditas</label>
-                    <input id="edit-komoditas" type="text" class="w-full p-3 rounded-xl border border-gray-300 mt-1 focus:outline-primary">
-                </div>
-            </div>
-            <div>
-                <label class="text-xs font-bold text-on-surface-variant uppercase">Lokasi Utama</label>
-                <input id="edit-lokasi" type="text" class="w-full p-3 rounded-xl border border-gray-300 mt-1 focus:outline-primary">
+            <div class="flex items-center justify-center w-10 h-10">
+                <img alt="SEBOTANI Logo" src="https://prototype-sebotani.vercel.app/sebotani-logo.png" class="h-8">
             </div>
         </div>
-        <div class="p-md bg-gray-50 border-t flex gap-3">
-            <button onclick="tutupModalEdit()" class="flex-1 py-3 rounded-xl border border-primary text-primary font-semibold">Batal</button>
-            <button onclick="simpanProfil()" class="flex-1 py-3 rounded-xl bg-primary text-white font-semibold shadow-sm">Simpan Perubahan</button>
-        </div>
-    </div>
-</div>
+    </header>
 
-<!-- MODAL POPUP: UBAH PASSWORD -->
-<div id="modal-password" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm p-4">
-    <div id="modal-password-content" class="bg-surface rounded-2xl shadow-xl max-w-sm w-full p-6 space-y-4 transform scale-95 transition-transform duration-300">
-        <h3 class="font-bold text-[18px]">Ubah Password Akun</h3>
+    <!-- Main Content Canvas -->
+    <main class="flex-grow pt-20 pb-28 px-margin-mobile max-w-2xl mx-auto w-full space-y-6">
+        
+        <!-- Status Koneksi Mesin -->
+        <div class="bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/30 shadow-[0px_4px_12px_rgba(0,0,0,0.05)] flex items-center justify-between">
+            <div>
+                <p class="text-xs text-on-surface-variant font-semibold">Status Mesin Smart-Farming</p>
+                <p id="connection-status" class="text-sm font-bold text-error mt-0.5">Menghubungkan ke Relay...</p>
+            </div>
+            <div id="status-indicator" class="w-3.5 h-3.5 rounded-full bg-error animate-pulse"></div>
+        </div>
+
+        <!-- Section 1: Penyemprotan Manual Instan -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-5 border border-outline-variant/30 space-y-4">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">touch_app</span>
+                <h2 class="text-[16px] font-bold text-on-surface">Penyemprotan Manual Instan</h2>
+            </div>
+            <p class="text-[13px] text-on-surface-variant leading-relaxed">
+                Gunakan tombol di bawah apabila Anda mendapati parameter kelembapan atau nutrisi tanah yang harus segera dicukupi secara instan.
+            </p>
+            
+            <div class="grid grid-cols-2 gap-3 pt-1">
+                <!-- Tombol Manual Output 1: Air -->
+                <button onclick="triggerRelayManual(1)" class="flex flex-col items-center justify-center p-4 bg-blue-50/80 border border-blue-200 rounded-xl hover:bg-blue-100 active:scale-95 transition-all group shadow-sm">
+                    <span class="material-symbols-outlined text-blue-600 text-3xl mb-1 group-hover:scale-110 transition-transform">water_drop</span>
+                    <span class="font-bold text-blue-900 text-sm">Semprot Air</span>
+                    <span class="text-[10px] text-blue-700 font-bold bg-blue-200/50 px-2 py-0.5 rounded-full mt-1.5">OUTPUT 1 (AIR)</span>
+                </button>
+                
+                <!-- Tombol Manual Output 2: Pupuk -->
+                <button onclick="triggerRelayManual(2)" class="flex flex-col items-center justify-center p-4 bg-amber-50/80 border border-amber-200 rounded-xl hover:bg-amber-100 active:scale-95 transition-all group shadow-sm">
+                    <span class="material-symbols-outlined text-amber-600 text-3xl mb-1 group-hover:scale-110 transition-transform">compost</span>
+                    <span class="font-bold text-amber-900 text-sm">Semprot Pupuk</span>
+                    <span class="text-[10px] text-amber-700 font-bold bg-amber-200/50 px-2 py-0.5 rounded-full mt-1.5">OUTPUT 2 (PUPUK)</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Section 2: Daftar Jadwal Relay Aktif -->
         <div class="space-y-3">
-            <div>
-                <label class="text-xs font-bold text-on-surface-variant uppercase">Password Lama</label>
-                <input id="old-pass" type="password" class="w-full p-3 rounded-xl border border-gray-300 mt-1 focus:outline-primary" placeholder="••••••••">
+            <div class="flex items-center justify-between">
+                <h2 class="text-[16px] font-bold text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">schedule</span>
+                    Daftar Jadwal Relay Aktif
+                </h2>
+                <button onclick="bukaModalTambah()" class="flex items-center gap-1 bg-primary text-white text-xs font-semibold py-2 px-3 rounded-xl shadow-sm active:scale-95 transition-transform">
+                    <span class="material-symbols-outlined text-sm">add</span>
+                    Tambah Jadwal
+                </button>
             </div>
-            <div>
-                <label class="text-xs font-bold text-on-surface-variant uppercase">Password Baru</label>
-                <input id="new-pass" type="password" class="w-full p-3 rounded-xl border border-gray-300 mt-1 focus:outline-primary" placeholder="••••••••">
+
+            <!-- Container Daftar Jadwal Dinamis -->
+            <div id="schedule-list" class="space-y-3">
+                <!-- Diisi oleh Javascript -->
             </div>
         </div>
-        <div class="flex gap-3 pt-2">
-            <button onclick="tutupModalPassword()" class="flex-1 py-2.5 rounded-xl border border-primary text-primary font-semibold text-sm">Batal</button>
-            <button onclick="prosesUbahPassword()" class="flex-1 py-2.5 rounded-xl bg-primary text-white font-semibold text-sm shadow-sm">Simpan</button>
+
+        <!-- Section 3: Otomasi Proteksi Sensor (AI Logic) -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-5 border border-outline-variant/30 space-y-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-[16px] font-bold text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">psychology</span>
+                    Otomasi Proteksi Sensor
+                </h2>
+                <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wider">Aktif</span>
+            </div>
+            <p class="text-[13px] text-on-surface-variant leading-relaxed">
+                Sistem secara otomatis memicu <strong>OUTPUT 1 (Air)</strong> jika sensor membaca <strong>Suhu Udara &lt; 20°C</strong> dan <strong>Kelembapan Tanah &lt; 50%</strong> secara bersamaan.
+            </p>
+            <div class="p-3 bg-gray-50 rounded-xl text-xs font-mono text-on-surface-variant flex justify-between items-center border border-gray-200">
+                <span>Status Sensor Live:</span>
+                <span id="sensor-status-monitor" class="font-bold text-primary">Menunggu data mesin...</span>
+            </div>
+        </div>
+
+        <!-- Tombol Navigasi Bawah -->
+        <div class="pt-2 space-y-3">
+            <a href="rekomendasi_pupuk.html" class="w-full bg-[#855300] text-white font-semibold py-3.5 px-4 rounded-xl shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined">recommend</span>
+                Rekomendasi Pupuk
+            </a>
+            <a href="dashboard_petani.html" class="w-full bg-primary text-white font-semibold py-3.5 px-4 rounded-xl shadow-sm active:scale-95 transition-all flex items-center justify-center">
+                Kembali ke Beranda
+            </a>
+        </div>
+    </main>
+
+    <!-- Modal Tambah Jadwal Relay -->
+    <div id="schedule-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm p-4">
+        <div id="modal-content" class="bg-surface rounded-2xl shadow-xl max-w-sm w-[90%] p-6 flex flex-col transform scale-95 transition-transform duration-300 border border-outline-variant/30 space-y-4">
+            <h3 class="text-[18px] font-bold text-on-surface">Tambah Jadwal Semprot Relay</h3>
+            <div class="space-y-3">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Pilih Output Relay</label>
+                    <select id="input-output-type" class="w-full p-3 rounded-xl border border-outline-variant/30 bg-surface-container-lowest text-sm font-semibold focus:outline-primary">
+                        <option value="1">OUTPUT 1 (Penyiraman Air)</option>
+                        <option value="2">OUTPUT 2 (Penyemprotan Pupuk)</option>
+                    </select>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Waktu Eksekusi (Jam)</label>
+                    <input id="input-time" class="w-full p-3 rounded-xl border border-outline-variant/30 bg-surface-container-lowest text-sm font-semibold focus:outline-primary" type="time" value="06:00">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Durasi Semprot (Detik)</label>
+                    <input id="input-duration" class="w-full p-3 rounded-xl border border-outline-variant/30 bg-surface-container-lowest text-sm font-semibold focus:outline-primary" type="number" value="10" min="1" max="120">
+                    <span class="text-[11px] text-outline">Relay akan ON selama durasi ini lalu otomatis OFF.</span>
+                </div>
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button onclick="tutupModalTambah()" class="flex-1 py-3 rounded-xl font-semibold text-primary border border-primary hover:bg-primary/5 transition-colors text-sm">Batal</button>
+                <button onclick="simpanJadwalBaru()" class="flex-1 py-3 rounded-xl font-semibold bg-primary text-white shadow-sm active:scale-95 transition-all text-sm">Simpan</button>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Bottom Navigation Bar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-surface dark:bg-on-background px-base pb-safe border-t border-outline-variant shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
-<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="dashboard_petani.html">
-<div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
-<span class="material-symbols-outlined">home</span>
-</div>
-<span class="font-label-caps text-[10px]">Beranda</span>
-</a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="riwayat.html">
-<div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
-<span class="material-symbols-outlined">history</span>
-</div>
-<span class="font-label-caps text-[10px]">Riwayat</span>
-</a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant group" href="bantuan.html">
-<div class="hover:bg-surface-container-low rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
-<span class="material-symbols-outlined">help_outline</span>
-</div>
-<span class="font-label-caps text-[10px]">Bantuan</span>
-</a>
-<a class="flex flex-col items-center justify-center text-primary font-bold group" href="profil.html">
-<div class="bg-primary/10 rounded-full px-4 py-1 mb-1 group-active:scale-90 transition-transform">
-<span class="material-symbols-outlined fill-icon">account_circle</span>
-</div>
-<span class="font-label-caps text-[10px]">Profil</span>
-</a>
-</nav>
+    <!-- LOGIKA JAVASCRIPT WEBSOCKET, LOKAL, & FIREBASE -->
+    <script>
+        let daftarJadwal = JSON.parse(localStorage.getItem('sebotani_jadwal_relay')) || [
+            { id: 1, output: 1, label: 'Penyiraman Pagi (Air)', time: '06:00', duration: 10, active: true },
+            { id: 2, output: 2, label: 'Pemupukan Rutin (Pupuk)', time: '17:00', duration: 5, active: true }
+        ];
 
-<!-- JavaScript Interaktif, LocalStorage & Firebase Sync -->
-<script>
-    const profilDefault = {
-        namaKelompok: "Kelompok Tani 1",
-        namaKetua: "Mas Agung",
-        telepon: "+62 812-3456-7890",
-        email: "petani.sejahtera@email.com",
-        alamat: "Jl. Raya Seboto No. 45, Boyolali",
-        luas: "2.5",
-        komoditas: "Kopi Arabika",
-        lokasi: "Seboto, Boyolali, Jawa Tengah",
-        notifAktif: true,
-        bahasa: "Indonesia"
-    };
-
-    let userProfil = JSON.parse(localStorage.getItem('sebotani_profil_data')) || profilDefault;
-
-    // 1. Fungsi memuat data ke tampilan
-    function muatDataKeTampilan() {
-        document.getElementById('view-nama-kelompok').innerText = userProfil.namaKelompok;
-        document.getElementById('view-nama-ketua').innerText = userProfil.namaKetua;
-        document.getElementById('view-telepon').innerText = userProfil.telepon;
-        document.getElementById('view-email').innerText = userProfil.email;
-        document.getElementById('view-alamat').innerText = userProfil.alamat;
-        document.getElementById('view-luas').innerText = userProfil.luas;
-        document.getElementById('view-komoditas').innerText = userProfil.komoditas;
-        document.getElementById('view-lokasi').innerText = userProfil.lokasi;
-
-        document.getElementById('status-notif').innerText = userProfil.notifAktif ? "Aktif" : "Nonaktif";
-        document.getElementById('status-bahasa').innerText = userProfil.bahasa;
-    }
-
-    // 2. Tarik Data Awal dari Firebase (Jika ada)
-    window.inisialisasiDataProfil = async function() {
-        if (!window.firebaseReady || !window.db) return;
-        try {
-            const docRef = window.dbTools.doc(window.db, "sebotani_db", "profil_petani");
-            const docSnap = await window.dbTools.getDoc(docRef);
-            if (docSnap.exists()) {
-                userProfil = docSnap.data();
-                localStorage.setItem('sebotani_profil_data', JSON.stringify(userProfil));
-                muatDataKeTampilan();
-            } else {
-                await window.dbTools.setDoc(docRef, userProfil);
-            }
-        } catch (err) {
-            console.warn("Sinkronisasi Firebase gagal, menggunakan data lokal:", err);
-        }
-    };
-
-    // 3. Kontrol Modal Edit Profil
-    function bukaModalEdit() {
-        document.getElementById('edit-nama-kelompok').value = userProfil.namaKelompok;
-        document.getElementById('edit-nama-ketua').value = userProfil.namaKetua;
-        document.getElementById('edit-telepon').value = userProfil.telepon;
-        document.getElementById('edit-email').value = userProfil.email;
-        document.getElementById('edit-alamat').value = userProfil.alamat;
-        document.getElementById('edit-luas').value = userProfil.luas;
-        document.getElementById('edit-komoditas').value = userProfil.komoditas;
-        document.getElementById('edit-lokasi').value = userProfil.lokasi;
-
-        const modal = document.getElementById('modal-edit');
-        const content = document.getElementById('modal-edit-content');
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-            content.classList.remove('scale-95');
-        }, 10);
-    }
-
-    // FUNGSI INI TELAH DIPERBAIKI AGAR SELALU MENUTUP MODAL
-    function tutupModalEdit() {
-        const modal = document.getElementById('modal-edit');
-        const content = document.getElementById('modal-edit-content');
-        
-        modal.classList.add('opacity-0');
-        content.classList.add('scale-95');
-        
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 300);
-    }
-
-    // FUNGSI SIMPAN PROFIL DENGAN OPTIMISTIC UI
-    async function simpanProfil() {
-        // A. Ambil nilai dari Form
-        userProfil.namaKelompok = document.getElementById('edit-nama-kelompok').value;
-        userProfil.namaKetua = document.getElementById('edit-nama-ketua').value;
-        userProfil.telepon = document.getElementById('edit-telepon').value;
-        userProfil.email = document.getElementById('edit-email').value;
-        userProfil.alamat = document.getElementById('edit-alamat').value;
-        userProfil.luas = document.getElementById('edit-luas').value;
-        userProfil.komoditas = document.getElementById('edit-komoditas').value;
-        userProfil.lokasi = document.getElementById('edit-lokasi').value;
-
-        // B. Update LocalStorage Langsung
-        localStorage.setItem('sebotani_profil_data', JSON.stringify(userProfil));
-
-        // C. Tutup Modal Langsung & Update UI (Optimistic UI)
-        tutupModalEdit();
-        muatDataKeTampilan();
-        
-        // Munculkan notifikasi sukses sesaat setelah modal tertutup
-        setTimeout(() => alert("Perubahan profil berhasil disimpan!"), 350);
-
-        // D. Sinkronkan ke Firebase diam-diam di background (tidak akan menghalangi penutupan modal)
-        if (window.firebaseReady && window.db) {
+        // SINKRONISASI JADWAL DARI FIREBASE (Dipanggil saat memuat)
+        window.inisialisasiDataJadwal = async function() {
+            if (!window.firebaseReady || !window.db) return;
             try {
-                await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "profil_petani"), userProfil);
-            } catch (e) {
-                console.warn("Gagal menyimpan ke Cloud:", e);
+                const docRef = window.dbTools.doc(window.db, "sebotani_db", "jadwal_petani");
+                const docSnap = await window.dbTools.getDoc(docRef);
+                if (docSnap.exists() && docSnap.data().jadwal) {
+                    daftarJadwal = docSnap.data().jadwal;
+                    localStorage.setItem('sebotani_jadwal_relay', JSON.stringify(daftarJadwal));
+                    renderJadwal();
+                    console.log("Jadwal Relay berhasil disinkronkan dari Cloud!");
+                } else {
+                    // Buat dokumen pertama kali di cloud
+                    await window.dbTools.setDoc(docRef, { jadwal: daftarJadwal });
+                }
+            } catch(e) {
+                console.warn("Sinkronisasi Firebase lambat/gagal, menggunakan data lokal:", e);
+            }
+        };
+
+        const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
+        let socket;
+        let autoTriggerCooldown = false;
+
+        function hubungkanWebSocket() {
+            socket = new WebSocket(wsUrl);
+
+            socket.onopen = () => {
+                document.getElementById('connection-status').innerText = "Terhubung ke Mesin Relay (Online)";
+                document.getElementById('connection-status').className = "text-sm font-bold text-primary mt-0.5";
+                document.getElementById('status-indicator').className = "w-3.5 h-3.5 rounded-full bg-primary animate-pulse";
+            };
+
+            socket.onclose = () => {
+                document.getElementById('connection-status').innerText = "Terputus (Mencoba menyambungkan...)";
+                document.getElementById('connection-status').className = "text-sm font-bold text-error mt-0.5";
+                document.getElementById('status-indicator').className = "w-3.5 h-3.5 rounded-full bg-error";
+                setTimeout(hubungkanWebSocket, 5000);
+            };
+
+            socket.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'telemetry' && data.payload && data.payload.payload) {
+                        evaluasiOtomasiSensor(data.payload.payload);
+                    }
+                } catch(e) {}
+            };
+        }
+
+        function kirimPerintahRelay(outputNumber, durasiDetik) {
+            if (!socket || socket.readyState !== WebSocket.OPEN) {
+                alert("Gagal: Mesin Smart-Farming sedang offline/tidak terhubung!");
+                return;
+            }
+
+            const payloadPerintah = {
+                type: "command",
+                payload: { relay: outputNumber, state: "ON", duration: durasiDetik }
+            };
+
+            socket.send(JSON.stringify(payloadPerintah));
+            const namaOutput = outputNumber === 1 ? "OUTPUT 1 (Air)" : "OUTPUT 2 (Pupuk)";
+            alert(`Perintah terkirim: ${namaOutput} menyala selama ${durasiDetik} detik!`);
+        }
+
+        function triggerRelayManual(outputNum) {
+            const jenis = outputNum === 1 ? "Air" : "Pupuk Cair";
+            let durasi = prompt(`Masukkan durasi penyemprotan ${jenis} (detik):`, "10");
+            if (durasi !== null && !isNaN(durasi) && durasi.trim() !== "") {
+                kirimPerintahRelay(outputNum, parseInt(durasi));
             }
         }
-    }
 
-    // 4. Modal Ubah Password
-    function bukaModalPassword() {
-        const modal = document.getElementById('modal-password');
-        const content = document.getElementById('modal-password-content');
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-            content.classList.remove('scale-95');
-        }, 10);
-    }
+        function evaluasiOtomasiSensor(p) {
+            const temp = p.soil_temprature !== undefined ? parseFloat(p.soil_temprature) : NaN;
+            const moist = p.soil_moisture !== undefined ? parseFloat(p.soil_moisture) : NaN;
+            const monitorEl = document.getElementById('sensor-status-monitor');
 
-    function tutupModalPassword() {
-        const modal = document.getElementById('modal-password');
-        const content = document.getElementById('modal-password-content');
-        modal.classList.add('opacity-0');
-        content.classList.add('scale-95');
-        setTimeout(() => modal.classList.add('hidden'), 300);
-    }
+            if (isNaN(temp) || isNaN(moist)) {
+                monitorEl.innerText = "Menunggu data sensor valid...";
+                return;
+            }
 
-    function prosesUbahPassword() {
-        const lama = document.getElementById('old-pass').value;
-        const baru = document.getElementById('new-pass').value;
-        if (!lama || !baru) {
-            alert("Harap isi semua kolom password!");
-            return;
+            monitorEl.innerText = `Suhu: ${temp}°C | Kelembapan: ${moist}%`;
+
+            if (temp < 20 && moist < 50) {
+                monitorEl.innerText = `PERINGATAN: Suhu & Kelembapan Rendah!`;
+                monitorEl.className = "font-bold text-error animate-bounce";
+
+                if (!autoTriggerCooldown) {
+                    kirimPerintahRelay(1, 15);
+                    autoTriggerCooldown = true;
+                    setTimeout(() => { autoTriggerCooldown = false; }, 600000); // Cooldown 10 menit
+                }
+            } else {
+                monitorEl.className = "font-bold text-primary";
+            }
         }
-        alert("Password berhasil diperbarui!");
-        document.getElementById('old-pass').value = "";
-        document.getElementById('new-pass').value = "";
-        tutupModalPassword();
-    }
 
-    // 5. Toggle Notifikasi
-    async function toggleNotifikasi() {
-        userProfil.notifAktif = !userProfil.notifAktif;
-        localStorage.setItem('sebotani_profil_data', JSON.stringify(userProfil));
-        muatDataKeTampilan();
-        alert(`Status notifikasi diubah menjadi: ${userProfil.notifAktif ? "Aktif" : "Nonaktif"}`);
-        
-        if (window.firebaseReady && window.db) {
-            try { await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "profil_petani"), userProfil); } catch(e){}
+        function renderJadwal() {
+            const container = document.getElementById('schedule-list');
+            container.innerHTML = "";
+
+            if (daftarJadwal.length === 0) {
+                container.innerHTML = `<p class="text-xs text-outline text-center py-4 bg-surface-container-lowest rounded-xl border border-outline-variant/20">Belum ada jadwal tersimpan.</p>`;
+                return;
+            }
+
+            daftarJadwal.forEach((item) => {
+                const isOutput1 = item.output == 1;
+                const bgIcon = isOutput1 ? 'bg-blue-100 text-blue-600' : 'bg-amber-100 text-amber-600';
+                const iconName = isOutput1 ? 'water_drop' : 'compost';
+                const badgeColor = isOutput1 ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800';
+
+                const card = document.createElement('div');
+                card.className = "flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30";
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-full ${bgIcon} flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xl">${iconName}</span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-sm text-on-surface">${item.label}</span>
+                                <span class="px-2 py-0.5 rounded-full ${badgeColor} text-[9px] font-bold">OUT ${item.output}</span>
+                            </div>
+                            <p class="text-xs text-on-surface-variant mt-0.5">Pukul ${item.time} • Durasi: ${item.duration} Detik</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="jalankanJadwalSekarang(${item.output}, ${item.duration})" class="px-3 py-1.5 bg-primary/10 text-primary rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-colors">
+                            TEST
+                        </button>
+                        <button onclick="hapusJadwal(${item.id})" class="w-8 h-8 flex items-center justify-center text-outline hover:text-error transition-colors">
+                            <span class="material-symbols-outlined text-sm">delete</span>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
-    }
 
-    // 6. Ganti Bahasa
-    async function gantiBahasa() {
-        userProfil.bahasa = userProfil.bahasa === "Indonesia" ? "English" : "Indonesia";
-        localStorage.setItem('sebotani_profil_data', JSON.stringify(userProfil));
-        muatDataKeTampilan();
-        alert(`Bahasa diubah ke: ${userProfil.bahasa}`);
-        
-        if (window.firebaseReady && window.db) {
-            try { await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "profil_petani"), userProfil); } catch(e){}
+        // KONTROL MODAL DENGAN PENUTUPAN PAKSA (OPTIMISTIC UI)
+        function bukaModalTambah() {
+            const modal = document.getElementById('schedule-modal');
+            const content = document.getElementById('modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 10);
         }
-    }
 
-    // 7. Keluar Akun
-    function konfirmasiKeluar() {
-        if (confirm("Apakah Anda yakin ingin keluar dari aplikasi SEBOTANI?")) {
-            window.location.href = "login.html";
+        function tutupModalTambah() {
+            const modal = document.getElementById('schedule-modal');
+            const content = document.getElementById('modal-content');
+            
+            // Langsung manipulasi class untuk menutup instan
+            modal.style.opacity = '0';
+            content.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => { 
+                modal.classList.add('hidden'); 
+                modal.style.opacity = '';
+                content.style.transform = '';
+            }, 300);
         }
-    }
 
-    // Inisialisasi awal
-    document.addEventListener("DOMContentLoaded", () => {
-        muatDataKeTampilan();
-        // Cek Firebase setelah beberapa saat untuk memberi waktu script termuat
-        setTimeout(() => {
-            if (window.firebaseReady) window.inisialisasiDataProfil();
-        }, 1000);
-    });
+        async function simpanJadwalBaru() {
+            const outputVal = parseInt(document.getElementById('input-output-type').value);
+            const timeVal = document.getElementById('input-time').value;
+            const durationVal = parseInt(document.getElementById('input-duration').value);
 
-    // Efek Transparansi Header saat Scroll
-    window.addEventListener('scroll', () => {
-        const header = document.querySelector('header');
-        if (window.scrollY > 20) {
-            header.classList.add('bg-white/95', 'backdrop-blur-md');
-        } else {
-            header.classList.remove('bg-white/95', 'backdrop-blur-md');
+            if (!timeVal || isNaN(durationVal)) {
+                alert("Mohon isi waktu dan durasi dengan benar.");
+                return;
+            }
+
+            const namaLabel = outputVal === 1 ? "Jadwal Irigasi Air" : "Jadwal Pemupukan";
+
+            daftarJadwal.push({
+                id: Date.now(),
+                output: outputVal,
+                label: namaLabel,
+                time: timeVal,
+                duration: durationVal,
+                active: true
+            });
+
+            // Update Lokal & UI (Optimistic Update)
+            localStorage.setItem('sebotani_jadwal_relay', JSON.stringify(daftarJadwal));
+            renderJadwal();
+            tutupModalTambah();
+
+            // Simpan Ke Firebase secara Background
+            if (window.firebaseReady && window.db) {
+                try {
+                    await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "jadwal_petani"), { jadwal: daftarJadwal });
+                } catch(e) {
+                    console.warn("Gagal unggah jadwal ke Firebase:", e);
+                }
+            }
         }
-    });
-</script>
+
+        async function hapusJadwal(id) {
+            if(!confirm("Apakah Anda yakin ingin menghapus jadwal ini?")) return;
+            
+            daftarJadwal = daftarJadwal.filter(j => j.id !== id);
+            
+            // Update Lokal & UI (Optimistic Update)
+            localStorage.setItem('sebotani_jadwal_relay', JSON.stringify(daftarJadwal));
+            renderJadwal();
+
+            // Hapus di Firebase secara Background
+            if (window.firebaseReady && window.db) {
+                try {
+                    await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "jadwal_petani"), { jadwal: daftarJadwal });
+                } catch(e) {
+                    console.warn("Gagal hapus jadwal dari Firebase:", e);
+                }
+            }
+        }
+
+        function jalankanJadwalSekarang(output, durasi) {
+            kirimPerintahRelay(output, durasi);
+        }
+
+        // Loop Pengecekan Jadwal Tiap Menit
+        setInterval(() => {
+            const now = new Date();
+            const jamMnt = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+
+            daftarJadwal.forEach(j => {
+                if (j.time === jamMnt && j.active) {
+                    kirimPerintahRelay(j.output, j.duration);
+                }
+            });
+        }, 60000); // 1 menit
+
+        // Inisialisasi Saat Halaman Dimuat
+        document.addEventListener("DOMContentLoaded", () => {
+            hubungkanWebSocket();
+            renderJadwal();
+            
+            // Beri jeda 1 detik agar Firebase SDK termuat sepenuhnya
+            setTimeout(() => {
+                if (window.firebaseReady) window.inisialisasiDataJadwal();
+            }, 1000);
+        });
+    </script>
 </body>
 </html>
