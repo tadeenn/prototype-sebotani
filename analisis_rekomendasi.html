@@ -4,9 +4,52 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>SEBOTANI - Analisis & Rekomendasi</title>
+    
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <!-- KONFIGURASI FIREBASE SDK (App + Analytics + Firestore) -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+      import { 
+        getFirestore, 
+        collection, 
+        addDoc, 
+        serverTimestamp 
+      } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDTSexC_iufQJtZEwBhp4vF3pa1VdgvkZM",
+        authDomain: "sebotani-database.firebaseapp.com",
+        projectId: "sebotani-database",
+        storageBucket: "sebotani-database.firebasestorage.app",
+        messagingSenderId: "100314098060",
+        appId: "1:100314098060:web:29a6b3a8357f9a7e948ea9",
+        measurementId: "G-CZ09GHVW6W"
+      };
+
+      // Inisialisasi Firebase & Firestore
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const db = getFirestore(app);
+
+      // Fungsi simpan data disiapkan ke window agar bisa dipanggil dari skrip WebSocket
+      window.simpanKeFirestore = async function(ph, moisture, temp) {
+        try {
+          await addDoc(collection(db, "telemetry_logs"), {
+            soil_ph: ph,
+            soil_moisture: moisture,
+            soil_temperature: temp,
+            timestamp: serverTimestamp()
+          });
+          console.log("🔥 Data live berhasil disimpan ke Firestore!");
+        } catch (error) {
+          console.error("❌ Gagal menyimpan ke Firestore:", error);
+        }
+      };
+    </script>
     
     <!-- Pustaka Chart.js untuk Grafik -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -29,7 +72,6 @@
                         "surface-container-lowest": "#ffffff",
                         "outline-variant": "#bbcabf",
                         "secondary": "#855300",
-                        // Warna khusus grafik
                         "chart-ph": "#eab308",
                         "chart-moist": "#3b82f6",
                         "chart-temp": "#ef4444"
@@ -47,7 +89,6 @@
     <style>
         .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         body { background-color: #f8f9fa; color: #191c1d; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        /* Menyembunyikan scrollbar pada deretan tombol waktu */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -68,7 +109,7 @@
         </div>
     </div>
 
-    <!-- TopAppBar (Desain disamakan dengan halaman lain) -->
+    <!-- TopAppBar -->
     <header class="fixed top-0 w-full z-50 bg-primary shadow-sm flex justify-between items-center px-margin-mobile h-14">
         <div class="flex items-center w-full justify-between">
             <a href="dashboard_petani.html" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors active:scale-95 duration-150">
@@ -110,19 +151,19 @@
             
             <!-- Filter Waktu -->
             <div class="flex overflow-x-auto hide-scrollbar gap-2 mb-4 pb-1" id="filter-waktu">
-                <button onclick="ubahWaktu('1j')" class="waktu-btn bg-primary text-white text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Jam</button>
-                <button onclick="ubahWaktu('6j')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">6 Jam</button>
-                <button onclick="ubahWaktu('12j')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">12 Jam</button>
-                <button onclick="ubahWaktu('1h')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Hari</button>
-                <button onclick="ubahWaktu('3h')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">3 Hari</button>
-                <button onclick="ubahWaktu('1m')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Minggu</button>
-                <button onclick="ubahWaktu('1bln')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Bulan</button>
-                <button onclick="ubahWaktu('3bln')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">3 Bulan</button>
-                <button onclick="ubahWaktu('6bln')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">6 Bulan</button>
-                <button onclick="ubahWaktu('1t')" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Tahun</button>
+                <button onclick="ubahWaktu('1j', event)" class="waktu-btn bg-primary text-white text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Jam</button>
+                <button onclick="ubahWaktu('6j', event)" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">6 Jam</button>
+                <button onclick="ubahWaktu('12j', event)" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">12 Jam</button>
+                <button onclick="ubahWaktu('1h', event)" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Hari</button>
+                <button onclick="ubahWaktu('3h', event)" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">3 Hari</button>
+                <button onclick="ubahWaktu('1m', event)" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Minggu</button>
+                <button onclick="ubahWaktu('1bln', event)" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Bulan</button>
+                <button onclick="ubahWaktu('3bln', event)" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">3 Bulan</button>
+                <button onclick="ubahWaktu('6bln', event)" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">6 Bulan</button>
+                <button onclick="ubahWaktu('1t', event)" class="waktu-btn bg-gray-100 text-gray-600 text-xs font-semibold py-1.5 px-3 rounded-full shrink-0">1 Tahun</button>
             </div>
 
-            <!-- Canvas Grafik Simpel -->
+            <!-- Canvas Grafik -->
             <div class="w-full h-[280px] relative border border-gray-100 rounded-lg p-2 bg-gray-50/30">
                 <canvas id="sebotaniChart"></canvas>
             </div>
@@ -149,7 +190,7 @@
             </div>
         </div>
 
-        <!-- Tombol Kembali ke Beranda (Konsisten dengan halaman lain) -->
+        <!-- Tombol Kembali ke Beranda -->
         <div class="flex justify-center mt-xl">
             <a href="dashboard_petani.html" class="bg-primary text-on-primary font-semibold py-3 px-lg rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] active:scale-95 transition-transform duration-150 w-full text-center">
                 Kembali ke Beranda
@@ -172,7 +213,7 @@
         });
     </script>
 
-    <!-- CHART.JS LOGIC & GENERATOR WAKTU -->
+    <!-- CHART.JS LOGIC -->
     <script>
         const ctx = document.getElementById('sebotaniChart').getContext('2d');
         let sebotaniChart;
@@ -204,17 +245,19 @@
 
         sebotaniChart = new Chart(ctx, config);
 
-        // BATAS TANGGAL AKTIVASI DATABASE (2 Bulan yang lalu)
-        const TANGGAL_AKTIVASI_DATABASE = new Date();
-        TANGGAL_AKTIVASI_DATABASE.setMonth(TANGGAL_AKTIVASI_DATABASE.getMonth() - 2);
+        // 1. BATAS TANGGAL GRAFIK (Diatur ke 17 Agustus 2026)
+        // Di JavaScript, bulan 7 = Agustus (dimulai dari 0)
+        const TANGGAL_AKTIVASI_DATABASE = new Date(2026, 7, 17, 0, 0, 0);
 
-        function ubahWaktu(rentang) {
+        function ubahWaktu(rentang, e) {
             document.querySelectorAll('.waktu-btn').forEach(btn => {
                 btn.classList.remove('bg-primary', 'text-white');
                 btn.classList.add('bg-gray-100', 'text-gray-600');
             });
-            event.target.classList.remove('bg-gray-100', 'text-gray-600');
-            event.target.classList.add('bg-primary', 'text-white');
+
+            const targetBtn = e ? e.currentTarget : document.querySelectorAll('.waktu-btn')[0];
+            targetBtn.classList.remove('bg-gray-100', 'text-gray-600');
+            targetBtn.classList.add('bg-primary', 'text-white');
 
             let points = 20;
             let labels = [];
@@ -239,7 +282,7 @@
                 else if(rentang === '6bln') timePoint.setDate(now.getDate() - (i * 9));
                 else if(rentang === '1t') timePoint.setDate(now.getDate() - (i * 18));
 
-                // Lewati penggambaran grafik jika melampaui tanggal awal pemasangan database
+                // Lewati data jika terjadi sebelum 17 Agustus 2026
                 if (timePoint < TANGGAL_AKTIVASI_DATABASE) {
                     continue; 
                 }
@@ -270,9 +313,7 @@
             sebotaniChart.update();
         }
 
-        ubahWaktu('1j');
-        document.querySelectorAll('.waktu-btn')[0].classList.add('bg-primary', 'text-white');
-        document.querySelectorAll('.waktu-btn')[0].classList.remove('bg-gray-100', 'text-gray-600');
+        ubahWaktu('1j', null);
     </script>
 
     <!-- AI LOGIC, WEBSOCKET REALTIME & POPUP -->
@@ -363,8 +404,22 @@
                     if(!isNaN(cTemp)) document.getElementById('live-temp').innerText = cTemp.toFixed(1) + '°C';
 
                     if(!isNaN(cPh) && !isNaN(cMoist) && !isNaN(cTemp)) {
+                        // Jalankan Analisis AI
                         prosesAnalisisAI(cPh, cMoist, cTemp);
-                        
+
+                        // 2. LOGIKA PENYIMPANAN FIRESTORE (Hanya simpan jika waktu sekarang sudah mencapai/melewati 17 Agustus 2026)
+                        const sekarang = new Date();
+                        const tanggalMulaiSimpan = new Date(2026, 7, 17, 0, 0, 0); // 17 Agustus 2026
+
+                        if (sekarang >= tanggalMulaiSimpan) {
+                            if (typeof window.simpanKeFirestore === 'function') {
+                                window.simpanKeFirestore(cPh, cMoist, cTemp);
+                            }
+                        } else {
+                            console.log("ℹ️ Penyimpanan Firestore ditahan: Belum memasuki tanggal 17 Agustus 2026.");
+                        }
+
+                        // Update Grafik Live
                         const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                         sebotaniChart.data.labels.push(now);
                         sebotaniChart.data.datasets[0].data.push(cPh);
@@ -387,29 +442,3 @@
     </script>
 </body>
 </html>
-
-'''
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyDTSexC_iufQJtZEwBhp4vF3pa1VdgvkZM",
-    authDomain: "sebotani-database.firebaseapp.com",
-    projectId: "sebotani-database",
-    storageBucket: "sebotani-database.firebasestorage.app",
-    messagingSenderId: "100314098060",
-    appId: "1:100314098060:web:29a6b3a8357f9a7e948ea9",
-    measurementId: "G-CZ09GHVW6W"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
-'''
