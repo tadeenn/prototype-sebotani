@@ -298,6 +298,7 @@
             if (payload.parameter_code === 'soil_temprature') currentTemp = parseFloat(payload.raw_value);
             if (payload.parameter_code === 'soil_moisture') currentMoist = parseFloat(payload.raw_value);
 
+            // Menangkap laporan balasan dari ESP32
             if (payload.relay_ch1 !== undefined) {
                 relay1State = parseInt(payload.relay_ch1);
                 updateRelayUI(1, relay1State);
@@ -353,63 +354,55 @@
         }
 
         // =========================================================================
-        // FIX FINAL: SCHEMA PAYLOAD JSON YANG VALID (ESCAPED) & PENGIRIM ASLI
+        // FIX FINAL: STRUKTUR FETCH SESUAI DOKUMENTASI RESMI FLUX.ID
         // =========================================================================
         function kirimPerintahRelay(outputNumber, targetState, sumber = "Manual") {
+            // Update sementara untuk UI web
             if (outputNumber === 1) relay1State = targetState;
             if (outputNumber === 2) relay2State = targetState;
 
             const isRelay1On = (relay1State === 1) ? true : false;
             const isRelay2On = (relay2State === 1) ? true : false;
             
-            // 1. MEMBUAT OBJEK JSON VALID LALU DI-STRINGIFY
-            // Ini akan memastikan argumen memiliki tanda kutip yang benar: "{"1":true,"2":false}"
-            const argumenRelay = {
+            // Membuat string JSON untuk dikirim ke mesin
+            const innerPayloadString = JSON.stringify({
                 "1": isRelay1On,
                 "2": isRelay2On
-            };
-            const innerPayloadString = JSON.stringify(argumenRelay);
+            });
 
-            // 2. STRUKTUR UTAMA MENGGUNAKAN IDENTITAS WAJIB FLUXCONSOLE
+            // Menyusun Payload Induk persis seperti standar Fluxconsole
             const payloadPerintah = {
                 command: "RELAY",
-                sender: "fluxconsole-web-dashboard", // <-- Wajib ini, bukan User ID!
+                sender: "fluxconsole-web-dashboard",
                 timestamp: new Date().toISOString(),
                 payload: innerPayloadString 
             };
 
-            console.log("Mengirim payload valid:", payloadPerintah);
+            console.log("Mengirim Command API:", payloadPerintah);
 
-            // Skenario 1: MQTT Terotentikasi
-            if (mqttCmdClient && mqttCmdClient.connected) {
-                mqttCmdClient.publish(topicCommands, JSON.stringify(payloadPerintah));
-                catatRiwayatDariJadwal(outputNumber, targetState, sumber, "berhasil", "");
-                updateRelayUI(1, relay1State);
-                updateRelayUI(2, relay2State);
-                return true;
-            } 
-            
-            // Skenario 2: HTTP POST (API Publik dari Flux.id)
-            fetch(`https://console.flux.id/api/public/nodes/${nodeID}/command`, {
+            // PENGIRIMAN UTAMA MELALUI API FETCH HTTP (Lebih handal dari MQTT JS di Browser)
+            // Fix: endpoint menggunakan /commands (dengan 's') dan body langsung objek command
+            fetch(`https://console.flux.id/api/public/nodes/${nodeID}/commands`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ topic: topicCommands, payload: payloadPerintah })
+                body: JSON.stringify(payloadPerintah) 
             }).then(response => {
                 if (response.ok) {
                     catatRiwayatDariJadwal(outputNumber, targetState, sumber, "berhasil", "");
                     updateRelayUI(1, relay1State);
                     updateRelayUI(2, relay2State);
+                } else {
+                    console.error("Gagal mengirim API", response.status);
                 }
             }).catch(e => {
-                // Skenario 3: Memanfaatkan Open Socket
+                console.error("Fetch Error:", e);
+                // Fallback ke WebSocket jika HTTP gagal
                 if (socket && socket.readyState === WebSocket.OPEN) {
                     const wsPayload = { type: "publish", topic: topicCommands, payload: payloadPerintah };
                     socket.send(JSON.stringify(wsPayload));
-                    catatRiwayatDariJadwal(outputNumber, targetState, sumber, "berhasil", "");
-                    updateRelayUI(1, relay1State);
-                    updateRelayUI(2, relay2State);
                 }
             });
+            
             return true;
         }
 
