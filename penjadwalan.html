@@ -353,26 +353,25 @@
         }
 
         // =========================================================================
-        // PERBAIKAN FUNGSI PENGIRIMAN PERINTAH SESUAI "CUSTOM COMMAND" FLUX.ID
+        // PERBAIKAN FINAL: MENYONTEK PAYLOAD ASLI FLUX.ID
         // =========================================================================
         function kirimPerintahRelay(outputNumber, targetState, sumber = "Manual") {
-            // Ubah targetState (angka 1 atau 0) menjadi nilai Boolean (true atau false)
             const isRelayOn = (targetState === 1) ? true : false;
             
-            // Membuat payload sesuai persis dengan struktur Custom Command Flux.id
-            // Contoh yang dihasilkan: {"command": "RELAY", "args": {"1": true}}
+            // Format disamakan persis dengan log asli Flux: {"command":"RELAY", "payload":"{1:true}"}
+            const innerPayloadString = outputNumber === 1 ? `{1:${isRelayOn}}` : `{2:${isRelayOn}}`;
+
             const payloadPerintah = {
                 command: "RELAY",
-                args: {
-                    [outputNumber.toString()]: isRelayOn
-                }
+                sender: "sebotani-web-dashboard",
+                timestamp: new Date().toISOString(),
+                payload: innerPayloadString // Harus dikirim sebagai string sesuai sistem Flux
             };
 
             // Skenario 1: MQTT Terotentikasi
             if (mqttCmdClient && mqttCmdClient.connected) {
                 mqttCmdClient.publish(topicCommands, JSON.stringify(payloadPerintah));
                 catatRiwayatDariJadwal(outputNumber, targetState, sumber, "berhasil", "");
-                
                 if(outputNumber === 1) { relay1State = targetState; updateRelayUI(1, relay1State); }
                 if(outputNumber === 2) { relay2State = targetState; updateRelayUI(2, relay2State); }
                 return true;
@@ -402,11 +401,9 @@
             return true;
         }
 
-        // FUNGSI TOGGLE PINTAR
         function toggleRelayManual(outputNum) {
             const currentState = outputNum === 1 ? relay1State : relay2State;
             const targetState = currentState === 1 ? 0 : 1; 
-            
             kirimPerintahRelay(outputNum, targetState, "Manual Toggle");
         }
 
