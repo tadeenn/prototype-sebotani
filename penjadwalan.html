@@ -298,7 +298,6 @@
             if (payload.parameter_code === 'soil_temprature') currentTemp = parseFloat(payload.raw_value);
             if (payload.parameter_code === 'soil_moisture') currentMoist = parseFloat(payload.raw_value);
 
-            // Menangkap laporan balasan dari ESP32
             if (payload.relay_ch1 !== undefined) {
                 relay1State = parseInt(payload.relay_ch1);
                 updateRelayUI(1, relay1State);
@@ -354,34 +353,30 @@
         }
 
         // =========================================================================
-        // FIX FINAL: STRUKTUR FETCH SESUAI DOKUMENTASI RESMI FLUX.ID
+        // FIX SUPER FINAL: MERAKIT STRING PAYLOAD SECARA MANUAL TANPA KUTIP GANDA
         // =========================================================================
         function kirimPerintahRelay(outputNumber, targetState, sumber = "Manual") {
             // Update sementara untuk UI web
             if (outputNumber === 1) relay1State = targetState;
             if (outputNumber === 2) relay2State = targetState;
 
-            const isRelay1On = (relay1State === 1) ? true : false;
-            const isRelay2On = (relay2State === 1) ? true : false;
+            // Mengonversi status menjadi string "true" atau "false"
+            const strRelay1 = (relay1State === 1) ? "true" : "false";
+            const strRelay2 = (relay2State === 1) ? "true" : "false";
             
-            // Membuat string JSON untuk dikirim ke mesin
-            const innerPayloadString = JSON.stringify({
-                "1": isRelay1On,
-                "2": isRelay2On
-            });
+            // MERAKIT MANUAL (HINDARI JSON.stringify AGAR FORMAT SAMA PERSIS DENGAN KETIKAN)
+            // Hasilnya akan persis menjadi: "{1:true, 2:false}"
+            const payloadTeksMurni = `{1:${strRelay1}, 2:${strRelay2}}`;
 
-            // Menyusun Payload Induk persis seperti standar Fluxconsole
+            // Menyusun Payload Induk
             const payloadPerintah = {
                 command: "RELAY",
                 sender: "fluxconsole-web-dashboard",
                 timestamp: new Date().toISOString(),
-                payload: innerPayloadString 
+                payload: payloadTeksMurni 
             };
 
-            console.log("Mengirim Command API:", payloadPerintah);
-
-            // PENGIRIMAN UTAMA MELALUI API FETCH HTTP (Lebih handal dari MQTT JS di Browser)
-            // Fix: endpoint menggunakan /commands (dengan 's') dan body langsung objek command
+            // PENGIRIMAN UTAMA MELALUI API FETCH HTTP 
             fetch(`https://console.flux.id/api/public/nodes/${nodeID}/commands`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -391,11 +386,8 @@
                     catatRiwayatDariJadwal(outputNumber, targetState, sumber, "berhasil", "");
                     updateRelayUI(1, relay1State);
                     updateRelayUI(2, relay2State);
-                } else {
-                    console.error("Gagal mengirim API", response.status);
                 }
             }).catch(e => {
-                console.error("Fetch Error:", e);
                 // Fallback ke WebSocket jika HTTP gagal
                 if (socket && socket.readyState === WebSocket.OPEN) {
                     const wsPayload = { type: "publish", topic: topicCommands, payload: payloadPerintah };
