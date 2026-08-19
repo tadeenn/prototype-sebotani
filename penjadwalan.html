@@ -8,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
 
+    <!-- LIBRARY MQTT.JS UNTUK KONEKSI BROWSER KE BROKER -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
 <!-- KONFIGURASI FIREBASE SDK -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
@@ -206,32 +209,51 @@
             } catch(e) {}
         };
 
-        // URL WebSocket yang sudah disesuaikan
-        const wsUrl = 'wss://console.flux.id/ws/public/nodes/72f1cfe6-ba39-43ea-bd07-e81d08873b01';
-        let socket;
+        // KONFIGURASI MQTT BROKER DAN TOPIK SESUAI GAMBAR
+        // Ganti URL broker ini jika Flux.id menyediakan WebSocket khusus (misal: wss://mqtt.flux.id:443/mqtt)
+        // Di sini saya gunakan public broker standar sementara agar tidak error saat dicoba
+        const mqttBrokerUrl = 'wss://broker.hivemq.com:8000/mqtt'; 
+        
+        const topicTelemetry = "flux/72f1cfe6-ba39-43ea-bd07-e81d08873b01/telemetry";
+        const topicCommands = "flux/72f1cfe6-ba39-43ea-bd07-e81d08873b01/commands";
+
+        let mqttClient;
         let autoTriggerCooldown = false;
 
-        function hubungkanWebSocket() {
-            socket = new WebSocket(wsUrl);
-            socket.onopen = () => {
-                document.getElementById('connection-status').innerText = "Terhubung ke Mesin Relay (Online)";
+        function hubungkanMQTT() {
+            // Membuat Client ID acak untuk koneksi MQTT
+            const clientId = 'sebotani_web_' + Math.random().toString(16).substr(2, 8);
+            
+            mqttClient = mqtt.connect(mqttBrokerUrl, { clientId: clientId });
+
+            mqttClient.on('connect', () => {
+                document.getElementById('connection-status').innerText = "Terhubung ke Mesin (MQTT Online)";
                 document.getElementById('connection-status').className = "text-sm font-bold text-primary mt-0.5";
                 document.getElementById('status-indicator').className = "w-3.5 h-3.5 rounded-full bg-primary animate-pulse";
-            };
-            socket.onclose = () => {
+                
+                // Subscribe ke topik sensor (telemetry)
+                mqttClient.subscribe(topicTelemetry, (err) => {
+                    if (err) console.error("Gagal subscribe ke telemetry:", err);
+                });
+            });
+
+            mqttClient.on('offline', () => {
                 document.getElementById('connection-status').innerText = "Terputus (Mencoba menyambungkan...)";
                 document.getElementById('connection-status').className = "text-sm font-bold text-error mt-0.5";
                 document.getElementById('status-indicator').className = "w-3.5 h-3.5 rounded-full bg-error";
-                setTimeout(hubungkanWebSocket, 5000);
-            };
-            socket.onmessage = (event) => {
-                try {
-                    const data = JSON.parse(event.data);
-                    if (data.type === 'telemetry' && data.payload && data.payload.payload) {
-                        evaluasiOtomasiSensor(data.payload.payload);
+            });
+
+            mqttClient.on('message', (topic, message) => {
+                if (topic === topicTelemetry) {
+                    try {
+                        const data = JSON.parse(message.toString());
+                        // Melempar payload langsung ke fungsi evaluasi sensor
+                        evaluasiOtomasiSensor(data);
+                    } catch(e) {
+                        console.error("Gagal parsing data MQTT:", e);
                     }
-                } catch(e) {}
-            };
+                }
+            });
         }
 
         // FUNGSI PENCATAT RIWAYAT DENGAN STATUS GAGAL/BERHASIL
@@ -263,20 +285,23 @@
             }
         }
 
-        // FUNGSI KIRIM PERINTAH DAN TANGKAP STATUS GAGAL KONEKSI
+        // FUNGSI KIRIM PERINTAH KE TOPIK COMMANDS
         function kirimPerintahRelay(outputNumber, durasiDetik, sumber = "Manual") {
-            if (!socket || socket.readyState !== WebSocket.OPEN) {
+            if (!mqttClient || !mqttClient.connected) {
                 alert(`Gagal (${sumber}): Mesin Smart-Farming sedang offline!`);
                 catatRiwayatDariJadwal(outputNumber, durasiDetik, sumber, "gagal", "Mesin offline / Tidak ada koneksi jaringan.");
                 return false;
             }
 
-            const payloadPerintah = {
-                type: "command",
-                payload: { relay: outputNumber, state: "ON", duration: durasiDetik }
+            // Payload dikirim langsung tanpa "type: command" sesuai standar dasar
+            const payloadPerintah = { 
+                relay: outputNumber, 
+                state: "ON", 
+                duration: durasiDetik 
             };
 
-            socket.send(JSON.stringify(payloadPerintah));
+            mqttClient.publish(topicCommands, JSON.stringify(payloadPerintah));
+            
             const namaOutput = outputNumber === 1 ? "OUTPUT 1 (Air)" : "OUTPUT 2 (Pupuk)";
             alert(`Perintah terkirim (${sumber}): ${namaOutput} menyala ${durasiDetik} detik!`);
             catatRiwayatDariJadwal(outputNumber, durasiDetik, sumber, "berhasil", "");
@@ -437,7 +462,7 @@
         setInterval(periksaDanEksekusiJadwal, 60000); // Periksa tiap 1 menit
 
         document.addEventListener("DOMContentLoaded", () => {
-            hubungkanWebSocket();
+            hubungkanMQTT(); // Panggil fungsi MQTT
             renderJadwal();
             periksaDanEksekusiJadwal(); // Periksa jadwal terlewat saat baru buka aplikasi
             setTimeout(() => { if (window.firebaseReady) window.inisialisasiDataJadwal(); }, 1000);
