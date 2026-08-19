@@ -206,9 +206,14 @@
             } catch(e) {}
         };
 
-        const wsUrl = 'wss://console.flux.id/ws/public/nodes/c3d4e33c-b9df-45e4-af6d-71a4a183541f';
+        const wsUrl = 'wss://console.flux.id/ws/public/nodes/72f1cfe6-ba39-43ea-bd07-e81d08873b01';
         let socket;
         let autoTriggerCooldown = false;
+
+        const payloadPerintah = {
+            type: "command",
+            payload: { relay: outputNumber, state: "ON", duration: durasiDetik }
+            };
 
         function hubungkanWebSocket() {
             socket = new WebSocket(wsUrl);
