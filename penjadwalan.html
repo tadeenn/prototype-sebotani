@@ -245,6 +245,7 @@
             const mqttOptions = {
                 username: 'SFS123',
                 password: 'SFS123',
+                // Mencegah konflik ID dengan ESP32 fisik
                 clientId: 'flux-client-web-' + Math.random().toString(16).substr(2, 6)
             };
             // Default port WSS broker Mosquitto/EMQX umumnya 8084 atau 443
@@ -258,7 +259,7 @@
 
         // FUNGSI UTAMA: Evaluasi Format Data dari Flux.id
         function evaluasiOtomasiSensor(payload) {
-            // Memeriksa dan memproses flat JSON object (contoh: {soil_temprature: 31, soil_moisture: 45.5})
+            // Memeriksa dan memproses flat JSON object
             if (payload.soil_temprature !== undefined) currentTemp = parseFloat(payload.soil_temprature);
             if (payload.soil_moisture !== undefined) currentMoist = parseFloat(payload.soil_moisture);
 
@@ -302,43 +303,66 @@
             }
         }
 
-        // FUNGSI MULTI-JALUR: Pengiriman Perintah dengan Fail-Safe
+        // FUNGSI MULTI-JALUR: Pengiriman Perintah dengan Auto-OFF
         function kirimPerintahRelay(outputNumber, durasiDetik, sumber = "Manual") {
             const channelTarget = outputNumber === 1 ? "relay_ch1" : "relay_ch2";
             
-            // Format perintah digabungkan untuk memastikan terbaca oleh firmware standar maupun custom
-            const payloadPerintah = {
-                relay: outputNumber,
-                state: "ON", 
-                duration: durasiDetik,
-                [channelTarget]: 1 
+            // Payload persis mengikuti spesifikasi kontrol Flux.id
+            const payloadPerintahON = {
+                [channelTarget]: 1, // Mengirim angka 1 (Menyala)
+                duration: durasiDetik
+            };
+
+            const payloadPerintahOFF = {
+                [channelTarget]: 0 // Mengirim angka 0 (Mati)
             };
 
             // Skenario 1: MQTT Terotentikasi
             if (mqttCmdClient && mqttCmdClient.connected) {
-                mqttCmdClient.publish(topicCommands, JSON.stringify(payloadPerintah));
-                alert(`Berhasil (${sumber}): Perintah dikirim via MQTT!`);
+                mqttCmdClient.publish(topicCommands, JSON.stringify(payloadPerintahON));
+                alert(`Berhasil (${sumber}): Perintah ON dikirim via MQTT!`);
                 catatRiwayatDariJadwal(outputNumber, durasiDetik, sumber, "berhasil", "");
+                
+                // Menyalakan fitur Auto-OFF setelah durasi selesai
+                setTimeout(() => {
+                    mqttCmdClient.publish(topicCommands, JSON.stringify(payloadPerintahOFF));
+                }, durasiDetik * 1000);
+                
                 return true;
             } 
             
-            // Skenario 2: HTTP POST (API Publik dari Flux.id)
-            fetch(`https://console.flux.id/api/public/nodes/${nodeID}/commands`, {
+            // Skenario 2: HTTP POST (Menggunakan endpoint /command standar)
+            fetch(`https://console.flux.id/api/public/nodes/${nodeID}/command`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ topic: topicCommands, payload: payloadPerintah })
+                body: JSON.stringify({ topic: topicCommands, payload: payloadPerintahON })
             }).then(response => {
                 if (response.ok) {
-                    alert(`Berhasil (${sumber}): Perintah dikirim via Server API!`);
+                    alert(`Berhasil (${sumber}): Perintah ON dikirim via Server API!`);
                     catatRiwayatDariJadwal(outputNumber, durasiDetik, sumber, "berhasil", "");
+                    
+                    // Auto-OFF Fetch
+                    setTimeout(() => {
+                        fetch(`https://console.flux.id/api/public/nodes/${nodeID}/command`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ topic: topicCommands, payload: payloadPerintahOFF })
+                        });
+                    }, durasiDetik * 1000);
+                } else {
+                    throw new Error("API Post Failed");
                 }
             }).catch(e => {
                 // Skenario 3: Memanfaatkan Open Socket
                 if (socket && socket.readyState === WebSocket.OPEN) {
-                    const wsPayload = { type: "publish", topic: topicCommands, payload: payloadPerintah };
-                    socket.send(JSON.stringify(wsPayload));
+                    const wsPayloadON = { type: "publish", topic: topicCommands, payload: payloadPerintahON };
+                    socket.send(JSON.stringify(wsPayloadON));
                     alert(`Berhasil (${sumber}): Perintah dieksekusi via WS Override.`);
                     catatRiwayatDariJadwal(outputNumber, durasiDetik, sumber, "berhasil", "");
+                    
+                    setTimeout(() => {
+                        socket.send(JSON.stringify({ type: "publish", topic: topicCommands, payload: payloadPerintahOFF }));
+                    }, durasiDetik * 1000);
                 } else {
                     alert(`Gagal (${sumber}): Semua jalur komunikasi ke mesin tertutup.`);
                     catatRiwayatDariJadwal(outputNumber, durasiDetik, sumber, "gagal", "Jalur komunikasi terputus.");
