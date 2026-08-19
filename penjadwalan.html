@@ -353,28 +353,32 @@
         }
 
         // =========================================================================
-        // PERBAIKAN FINAL: MENGGUNAKAN USER ID SEBAGAI SENDER VALIDATION
+        // FIX FINAL: SCHEMA PAYLOAD JSON YANG VALID (ESCAPED) & PENGIRIM ASLI
         // =========================================================================
         function kirimPerintahRelay(outputNumber, targetState, sumber = "Manual") {
-            // Update state lokal terlebih dahulu agar tahu status keduanya
             if (outputNumber === 1) relay1State = targetState;
             if (outputNumber === 2) relay2State = targetState;
 
             const isRelay1On = (relay1State === 1) ? true : false;
             const isRelay2On = (relay2State === 1) ? true : false;
             
-            // 1. KIRIM STATUS KEDUANYA SEKALIGUS
-            const innerPayloadString = `{1:${isRelay1On}, 2:${isRelay2On}}`;
+            // 1. MEMBUAT OBJEK JSON VALID LALU DI-STRINGIFY
+            // Ini akan memastikan argumen memiliki tanda kutip yang benar: "{"1":true,"2":false}"
+            const argumenRelay = {
+                "1": isRelay1On,
+                "2": isRelay2On
+            };
+            const innerPayloadString = JSON.stringify(argumenRelay);
 
-            // 2. MENGGUNAKAN USER ID (UUID) SEBAGAI SENDER
+            // 2. STRUKTUR UTAMA MENGGUNAKAN IDENTITAS WAJIB FLUXCONSOLE
             const payloadPerintah = {
                 command: "RELAY",
-                sender: "5226da85-d2b9-4e40-bd73-e3b1cb8aeada", // User ID asli
+                sender: "fluxconsole-web-dashboard", // <-- Wajib ini, bukan User ID!
                 timestamp: new Date().toISOString(),
                 payload: innerPayloadString 
             };
 
-            console.log("Mengirim payload:", payloadPerintah);
+            console.log("Mengirim payload valid:", payloadPerintah);
 
             // Skenario 1: MQTT Terotentikasi
             if (mqttCmdClient && mqttCmdClient.connected) {
