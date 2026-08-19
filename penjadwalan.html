@@ -206,14 +206,10 @@
             } catch(e) {}
         };
 
+        // URL WebSocket yang sudah disesuaikan
         const wsUrl = 'wss://console.flux.id/ws/public/nodes/72f1cfe6-ba39-43ea-bd07-e81d08873b01';
         let socket;
         let autoTriggerCooldown = false;
-
-        const payloadPerintah = {
-            type: "command",
-            payload: { relay: outputNumber, state: "ON", duration: durasiDetik }
-            };
 
         function hubungkanWebSocket() {
             socket = new WebSocket(wsUrl);
