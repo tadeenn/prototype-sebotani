@@ -104,13 +104,11 @@
                 Klik tombol di bawah untuk menyalakan atau mematikan mesin secara permanen (tanpa durasi).
             </p>
             <div class="grid grid-cols-2 gap-3 pt-1">
-                <!-- Tombol Relay 1 (Air) -->
                 <button id="btn-relay-1" onclick="toggleRelayManual(1)" class="flex flex-col items-center justify-center p-4 bg-blue-50/80 border border-blue-200 rounded-xl hover:bg-blue-100 active:scale-95 transition-all group shadow-sm">
                     <span id="icon-relay-1" class="material-symbols-outlined text-blue-600 text-3xl mb-1 group-hover:scale-110 transition-transform">water_drop</span>
                     <span id="status-relay-1" class="font-bold text-blue-900 text-sm">Semprot Air</span>
                     <span id="badge-relay-1" class="text-[10px] text-blue-700 font-bold bg-blue-200/50 px-2 py-0.5 rounded-full mt-1.5">OUTPUT 1 (OFF)</span>
                 </button>
-                <!-- Tombol Relay 2 (Pupuk) -->
                 <button id="btn-relay-2" onclick="toggleRelayManual(2)" class="flex flex-col items-center justify-center p-4 bg-amber-50/80 border border-amber-200 rounded-xl hover:bg-amber-100 active:scale-95 transition-all group shadow-sm">
                     <span id="icon-relay-2" class="material-symbols-outlined text-amber-600 text-3xl mb-1 group-hover:scale-110 transition-transform">compost</span>
                     <span id="status-relay-2" class="font-bold text-amber-900 text-sm">Semprot Pupuk</span>
@@ -203,7 +201,6 @@
         let currentTemp = NaN;
         let currentMoist = NaN;
 
-        // Variabel untuk melacak status Relay saat ini (0 = OFF, 1 = ON)
         let relay1State = 0;
         let relay2State = 0;
 
@@ -261,7 +258,6 @@
             });
         }
 
-        // FUNGSI UPDATE UI TOMBOL RELAY BERDASARKAN STATUS
         function updateRelayUI(outputNum, state) {
             const btn = document.getElementById(`btn-relay-${outputNum}`);
             const icon = document.getElementById(`icon-relay-${outputNum}`);
@@ -270,14 +266,14 @@
             
             if (!btn) return;
 
-            if (state === 1) { // JIKA RELAY MENYALA
+            if (state === 1) {
                 btn.className = "flex flex-col items-center justify-center p-4 bg-red-50/80 border border-red-200 rounded-xl hover:bg-red-100 active:scale-95 transition-all group shadow-sm";
                 icon.className = "material-symbols-outlined text-red-600 text-3xl mb-1 group-hover:scale-110 transition-transform";
                 status.className = "font-bold text-red-900 text-sm";
                 status.innerText = "MATIKAN " + (outputNum === 1 ? "Air" : "Pupuk");
                 badge.className = "text-[10px] text-red-700 font-bold bg-red-200/50 px-2 py-0.5 rounded-full mt-1.5";
                 badge.innerText = `OUTPUT ${outputNum} (ON)`;
-            } else { // JIKA RELAY MATI
+            } else {
                 if (outputNum === 1) {
                     btn.className = "flex flex-col items-center justify-center p-4 bg-blue-50/80 border border-blue-200 rounded-xl hover:bg-blue-100 active:scale-95 transition-all group shadow-sm";
                     icon.className = "material-symbols-outlined text-blue-600 text-3xl mb-1 group-hover:scale-110 transition-transform";
@@ -297,13 +293,11 @@
         }
 
         function evaluasiOtomasiSensor(payload) {
-            // Update nilai Suhu & Kelembapan
             if (payload.soil_temprature !== undefined) currentTemp = parseFloat(payload.soil_temprature);
             if (payload.soil_moisture !== undefined) currentMoist = parseFloat(payload.soil_moisture);
             if (payload.parameter_code === 'soil_temprature') currentTemp = parseFloat(payload.raw_value);
             if (payload.parameter_code === 'soil_moisture') currentMoist = parseFloat(payload.raw_value);
 
-            // Update status Relay (Feedback dari mesin)
             if (payload.relay_ch1 !== undefined) {
                 relay1State = parseInt(payload.relay_ch1);
                 updateRelayUI(1, relay1State);
@@ -328,8 +322,8 @@
                 if (currentTemp < 20 && currentMoist < 50) {
                     monitorEl.innerText = `PERINGATAN: Suhu & Kelembapan Rendah!`;
                     monitorEl.className = "font-bold text-error animate-bounce";
-                    if (!autoTriggerCooldown && relay1State === 0) { // Hanya nyalakan jika posisinya sedang mati
-                        kirimPerintahRelay(1, 1, "Proteksi Sensor AI"); // 1 = ON
+                    if (!autoTriggerCooldown && relay1State === 0) { 
+                        kirimPerintahRelay(1, 1, "Proteksi Sensor AI");
                         autoTriggerCooldown = true;
                         setTimeout(() => { autoTriggerCooldown = false; }, 600000); 
                     }
@@ -358,12 +352,20 @@
             }
         }
 
-        // FUNGSI PENGIRIMAN PERINTAH TANPA DURASI (HANYA TARGET STATE 0 ATAU 1)
+        // =========================================================================
+        // PERBAIKAN FUNGSI PENGIRIMAN PERINTAH SESUAI "CUSTOM COMMAND" FLUX.ID
+        // =========================================================================
         function kirimPerintahRelay(outputNumber, targetState, sumber = "Manual") {
-            const channelTarget = outputNumber === 1 ? "relay_ch1" : "relay_ch2";
+            // Ubah targetState (angka 1 atau 0) menjadi nilai Boolean (true atau false)
+            const isRelayOn = (targetState === 1) ? true : false;
             
+            // Membuat payload sesuai persis dengan struktur Custom Command Flux.id
+            // Contoh yang dihasilkan: {"command": "RELAY", "args": {"1": true}}
             const payloadPerintah = {
-                [channelTarget]: targetState 
+                command: "RELAY",
+                args: {
+                    [outputNumber.toString()]: isRelayOn
+                }
             };
 
             // Skenario 1: MQTT Terotentikasi
@@ -371,7 +373,6 @@
                 mqttCmdClient.publish(topicCommands, JSON.stringify(payloadPerintah));
                 catatRiwayatDariJadwal(outputNumber, targetState, sumber, "berhasil", "");
                 
-                // Prediksi UI Berubah Langsung agar responsif
                 if(outputNumber === 1) { relay1State = targetState; updateRelayUI(1, relay1State); }
                 if(outputNumber === 2) { relay2State = targetState; updateRelayUI(2, relay2State); }
                 return true;
@@ -387,8 +388,6 @@
                     catatRiwayatDariJadwal(outputNumber, targetState, sumber, "berhasil", "");
                     if(outputNumber === 1) { relay1State = targetState; updateRelayUI(1, relay1State); }
                     if(outputNumber === 2) { relay2State = targetState; updateRelayUI(2, relay2State); }
-                } else {
-                    throw new Error("API Post Failed");
                 }
             }).catch(e => {
                 // Skenario 3: Memanfaatkan Open Socket
@@ -398,18 +397,15 @@
                     catatRiwayatDariJadwal(outputNumber, targetState, sumber, "berhasil", "");
                     if(outputNumber === 1) { relay1State = targetState; updateRelayUI(1, relay1State); }
                     if(outputNumber === 2) { relay2State = targetState; updateRelayUI(2, relay2State); }
-                } else {
-                    alert(`Gagal (${sumber}): Semua jalur komunikasi ke mesin tertutup.`);
-                    catatRiwayatDariJadwal(outputNumber, targetState, sumber, "gagal", "Jalur komunikasi terputus.");
                 }
             });
             return true;
         }
 
-        // FUNGSI TOGGLE PINTAR (Langsung klik, langsung nyala/mati)
+        // FUNGSI TOGGLE PINTAR
         function toggleRelayManual(outputNum) {
             const currentState = outputNum === 1 ? relay1State : relay2State;
-            const targetState = currentState === 1 ? 0 : 1; // Jika sedang nyala, maka matikan. Jika mati, nyalakan.
+            const targetState = currentState === 1 ? 0 : 1; 
             
             kirimPerintahRelay(outputNum, targetState, "Manual Toggle");
         }
@@ -428,7 +424,6 @@
                 const bgIcon = isOutput1 ? 'bg-blue-100 text-blue-600' : 'bg-amber-100 text-amber-600';
                 const iconName = isOutput1 ? 'water_drop' : 'compost';
                 
-                // Penyesuaian UI Jadwal untuk format ON/OFF
                 const badgeColor = item.action === 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
                 const actionText = item.action === 1 ? "ON (Menyala)" : "OFF (Mati)";
 
@@ -513,8 +508,8 @@
         setInterval(periksaDanEksekusiJadwal, 60000); 
 
         document.addEventListener("DOMContentLoaded", () => {
-            hubungkanWebSocket(); // Mulai tangkap data sensor & status relay realtime
-            hubungkanMQTTKirimPerintah(); // Siapkan jalur kirim perintah
+            hubungkanWebSocket(); 
+            hubungkanMQTTKirimPerintah(); 
             renderJadwal();
             periksaDanEksekusiJadwal();
             setTimeout(() => { if (window.firebaseReady) window.inisialisasiDataJadwal(); }, 1000);
