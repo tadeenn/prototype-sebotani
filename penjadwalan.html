@@ -98,18 +98,18 @@
         <div class="bg-surface-container-lowest rounded-xl shadow-sm p-5 border border-outline-variant/30 space-y-4">
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-primary">touch_app</span>
-                <h2 class="text-[16px] font-bold text-on-surface">Penyemprotan Instan (15 Detik)</h2>
+                <h2 class="text-[16px] font-bold text-on-surface">Kontrol Relay Manual</h2>
             </div>
             <p class="text-[13px] text-on-surface-variant leading-relaxed">
-                Klik tombol di bawah untuk mengaktifkan penyemprotan. Sistem akan otomatis mematikan relay setelah 15 detik.
+                Klik tombol di bawah untuk menyalakan mesin. Mesin akan terus menyala sampai kamu mengekliknya kembali untuk mematikan.
             </p>
             <div class="grid grid-cols-2 gap-3 pt-1">
-                <button id="btn-relay-1" onclick="triggerRelayManual(1)" class="flex flex-col items-center justify-center p-4 bg-blue-50/80 border border-blue-200 rounded-xl hover:bg-blue-100 active:scale-95 transition-all group shadow-sm">
+                <button id="btn-relay-1" onclick="toggleRelayManual(1)" class="flex flex-col items-center justify-center p-4 bg-blue-50/80 border border-blue-200 rounded-xl hover:bg-blue-100 active:scale-95 transition-all group shadow-sm">
                     <span id="icon-relay-1" class="material-symbols-outlined text-blue-600 text-3xl mb-1 group-hover:scale-110 transition-transform">water_drop</span>
                     <span id="status-relay-1" class="font-bold text-blue-900 text-sm">Semprot Air</span>
                     <span id="badge-relay-1" class="text-[10px] text-blue-700 font-bold bg-blue-200/50 px-2 py-0.5 rounded-full mt-1.5">OUTPUT 1 (OFF)</span>
                 </button>
-                <button id="btn-relay-2" onclick="triggerRelayManual(2)" class="flex flex-col items-center justify-center p-4 bg-amber-50/80 border border-amber-200 rounded-xl hover:bg-amber-100 active:scale-95 transition-all group shadow-sm">
+                <button id="btn-relay-2" onclick="toggleRelayManual(2)" class="flex flex-col items-center justify-center p-4 bg-amber-50/80 border border-amber-200 rounded-xl hover:bg-amber-100 active:scale-95 transition-all group shadow-sm">
                     <span id="icon-relay-2" class="material-symbols-outlined text-amber-600 text-3xl mb-1 group-hover:scale-110 transition-transform">compost</span>
                     <span id="status-relay-2" class="font-bold text-amber-900 text-sm">Semprot Pupuk</span>
                     <span id="badge-relay-2" class="text-[10px] text-amber-700 font-bold bg-amber-200/50 px-2 py-0.5 rounded-full mt-1.5">OUTPUT 2 (OFF)</span>
@@ -139,7 +139,7 @@
                 <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wider">Aktif</span>
             </div>
             <p class="text-[13px] text-on-surface-variant leading-relaxed">
-                Sistem otomatis memicu <strong>OUTPUT 1 (Air) selama 15 detik</strong> jika sensor membaca <strong>Suhu Udara &lt; 20°C</strong> dan <strong>Kelembapan &lt; 50%</strong>.
+                Sistem otomatis memicu <strong>OUTPUT 1 (Air) selama 15 detik</strong> jika sensor membaca <strong>Suhu Udara > 28°C</strong> dan <strong>Kelembapan &lt; 60%</strong>.
             </p>
             <div class="p-3 bg-gray-50 rounded-xl text-xs font-mono text-on-surface-variant flex justify-between items-center border border-gray-200">
                 <span>Status Sensor Live:</span>
@@ -159,7 +159,7 @@
 
     <div id="schedule-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm p-4">
         <div id="modal-content" class="bg-surface rounded-2xl shadow-xl max-w-sm w-[90%] p-6 flex flex-col transform scale-95 transition-transform duration-300 border border-outline-variant/30 space-y-4">
-            <h3 class="text-[18px] font-bold text-on-surface">Tambah Jadwal Relay</h3>
+            <h3 class="text-[18px] font-bold text-on-surface">Tambah Jadwal (15 Detik)</h3>
             <div class="space-y-3">
                 <div class="flex flex-col gap-1">
                     <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Pilih Output Relay</label>
@@ -173,7 +173,7 @@
                     <input id="input-time" class="w-full p-3 rounded-xl border border-outline-variant/30 bg-surface-container-lowest text-sm font-semibold focus:outline-primary" type="time" value="06:00">
                 </div>
                 <p class="text-[11px] text-primary/80 font-semibold bg-primary/5 p-2 rounded-lg text-center">
-                    Durasi penyemprotan akan berjalan otomatis selama 15 detik.
+                    Mesin akan menyala otomatis di jam ini, lalu mati sendiri setelah 15 detik.
                 </p>
             </div>
             <div class="flex gap-3 pt-2">
@@ -184,7 +184,8 @@
     </div>
 
     <script>
-        let daftarJadwal = JSON.parse(localStorage.getItem('sebotani_jadwal_relay_v3')) || [];
+        // Menggunakan key v4 karena schema penjadwalan berbeda dari v3 (tanpa aksi manual)
+        let daftarJadwal = JSON.parse(localStorage.getItem('sebotani_jadwal_relay_v4')) || [];
         
         const nodeID = 'c3d4e33c-b9df-45e4-af6d-71a4a183541f';
         const wsUrl = `wss://console.flux.id/ws/public/nodes/${nodeID}`;
@@ -203,11 +204,11 @@
         window.inisialisasiDataJadwal = async function() {
             if (!window.firebaseReady || !window.db) return;
             try {
-                const docRef = window.dbTools.doc(window.db, "sebotani_db", "jadwal_petani_v3");
+                const docRef = window.dbTools.doc(window.db, "sebotani_db", "jadwal_petani_v4");
                 const docSnap = await window.dbTools.getDoc(docRef);
                 if (docSnap.exists() && docSnap.data().jadwal) {
                     daftarJadwal = docSnap.data().jadwal;
-                    localStorage.setItem('sebotani_jadwal_relay_v3', JSON.stringify(daftarJadwal));
+                    localStorage.setItem('sebotani_jadwal_relay_v4', JSON.stringify(daftarJadwal));
                     renderJadwal();
                 } else { await window.dbTools.setDoc(docRef, { jadwal: daftarJadwal }); }
             } catch(e) {}
@@ -242,15 +243,14 @@
 
         function hubungkanMQTTKirimPerintah() {
             const mqttOptions = {
-                username: 'SFS123',
-                password: 'SFS123',
+                username: '5226da85-d2b9-4e40-bd73-e3b1cb8aeada', // Coba kembalikan ke username yg valid
+                password: '5226da85-d2b9-4e40-bd73-e3b1cb8aeada',
                 clientId: 'flux-client-web-' + Math.random().toString(16).substr(2, 6)
             };
             mqttCmdClient = mqtt.connect('wss://console.flux.id:8084/mqtt', mqttOptions);
             mqttCmdClient.on('connect', () => console.log("Jalur perintah MQTT Siap!"));
             mqttCmdClient.on('error', (err) => {
                 mqttCmdClient.end();
-                mqttCmdClient = mqtt.connect('wss://console.flux.id/mqtt', mqttOptions);
             });
         }
 
@@ -263,11 +263,11 @@
             if (!btn) return;
 
             if (state === 1) {
-                btn.className = "flex flex-col items-center justify-center p-4 bg-primary/10 border border-primary/30 rounded-xl hover:bg-primary/20 active:scale-95 transition-all group shadow-sm";
-                icon.className = "material-symbols-outlined text-primary text-3xl mb-1 animate-pulse";
-                status.className = "font-bold text-primary text-sm";
-                status.innerText = "SEDANG MENYEMPROT";
-                badge.className = "text-[10px] text-primary font-bold bg-primary/20 px-2 py-0.5 rounded-full mt-1.5";
+                btn.className = "flex flex-col items-center justify-center p-4 bg-red-50/80 border border-red-200 rounded-xl hover:bg-red-100 active:scale-95 transition-all group shadow-sm";
+                icon.className = "material-symbols-outlined text-red-600 text-3xl mb-1 group-hover:scale-110 transition-transform animate-pulse";
+                status.className = "font-bold text-red-900 text-sm";
+                status.innerText = "MATIKAN " + (outputNum === 1 ? "Air" : "Pupuk");
+                badge.className = "text-[10px] text-red-700 font-bold bg-red-200/50 px-2 py-0.5 rounded-full mt-1.5";
                 badge.innerText = `OUTPUT ${outputNum} (ON)`;
             } else {
                 if (outputNum === 1) {
@@ -315,11 +315,13 @@
             if (!isNaN(currentTemp) && !isNaN(currentMoist)) {
                 monitorEl.innerText = `Suhu: ${currentTemp}°C | Kelembapan: ${currentMoist}%`;
                 
-                if (currentTemp < 20 && currentMoist < 50) {
-                    monitorEl.innerText = `PERINGATAN: Suhu & Kelembapan Rendah!`;
+                // SKENARIO PINTAR: SUHU > 28 DAN KELEMBAPAN < 60
+                if (currentTemp > 28 && currentMoist < 60) {
+                    monitorEl.innerText = `PERINGATAN: Suhu Tinggi & Kelembapan Rendah!`;
                     monitorEl.className = "font-bold text-error animate-bounce";
                     if (!autoTriggerCooldown && relay1State === 0) { 
-                        kirimPerintahRelay(1, 15, "Proteksi Sensor AI");
+                        // Memicu trigger jadwal/pulse (menyala 15 detik)
+                        triggerPulseRelay(1, 15, "Proteksi Sensor AI");
                         autoTriggerCooldown = true;
                         setTimeout(() => { autoTriggerCooldown = false; }, 600000); 
                     }
@@ -353,7 +355,7 @@
             const strRelay1 = (relay1State === 1) ? "true" : "false";
             const strRelay2 = (relay2State === 1) ? "true" : "false";
             
-            // Merakit Teks Manual (Berdasarkan rahasia dari log Flux)
+            // Merakit Teks Manual untuk menghindari error parse di mesin
             const payloadTeksMurni = `{1:${strRelay1}, 2:${strRelay2}}`;
 
             const payloadPerintah = {
@@ -378,33 +380,42 @@
             });
         }
 
-        // FUNGSI PENGENDALI WAKTU (TIMER 15 DETIK)
-        function kirimPerintahRelay(outputNumber, durasiDetik, sumber = "Manual") {
+        // 1. KONTROL MANUAL (TOGGLE PERMANEN)
+        function toggleRelayManual(outputNumber) {
+            let targetState;
+            if (outputNumber === 1) {
+                targetState = relay1State === 1 ? 0 : 1;
+                relay1State = targetState;
+            } else {
+                targetState = relay2State === 1 ? 0 : 1;
+                relay2State = targetState;
+            }
+            
+            updateRelayUI(outputNumber, targetState);
+            eksekusiKirimKeMesin(outputNumber, targetState, "Tombol Manual");
+        }
+
+        // 2. KONTROL PENJADWALAN & PINTAR (PULSE 15 DETIK)
+        function triggerPulseRelay(outputNumber, durasiDetik, sumber) {
+            // Jika status relay sedang menyala (entah karena manual / pulse lain), jangan diganggu
+            if (outputNumber === 1 && relay1State === 1) return;
+            if (outputNumber === 2 && relay2State === 1) return;
+
             // 1. UBAH STATUS JADI NYALA LALU KIRIM
             if (outputNumber === 1) relay1State = 1;
             if (outputNumber === 2) relay2State = 1;
             
             updateRelayUI(outputNumber, 1);
-            eksekusiKirimKeMesin(outputNumber, 1, sumber + " (ON)");
+            eksekusiKirimKeMesin(outputNumber, 1, sumber + " (Mulai)");
 
-            // 2. TUNGGU SESUAI DURASI, LALU OTOMATIS MATIKAN
+            // 2. TUNGGU 15 DETIK, LALU OTOMATIS MATIKAN
             setTimeout(() => {
                 if (outputNumber === 1) relay1State = 0;
                 if (outputNumber === 2) relay2State = 0;
                 
                 updateRelayUI(outputNumber, 0);
-                eksekusiKirimKeMesin(outputNumber, 0, sumber + " (Auto-OFF)");
+                eksekusiKirimKeMesin(outputNumber, 0, sumber + " (Selesai)");
             }, durasiDetik * 1000);
-        }
-
-        // TRIGGER SAAT TOMBOL DIKLIK
-        function triggerRelayManual(outputNum) {
-            // Jika tombol diklik saat masih menyemprot, abaikan agar tidak dobel timer
-            const currentState = outputNum === 1 ? relay1State : relay2State;
-            if (currentState === 1) return; 
-
-            // Aktifkan selama 15 detik
-            kirimPerintahRelay(outputNum, 15, "Tombol Manual");
         }
 
         function renderJadwal() {
@@ -469,16 +480,16 @@
 
             // Simpan jadwal (Durasi dikunci otomatis 15 di dalam script eksekusi)
             daftarJadwal.push({ id: Date.now(), output: outputVal, label: namaLabel, time: timeVal, active: true });
-            localStorage.setItem('sebotani_jadwal_relay_v3', JSON.stringify(daftarJadwal));
+            localStorage.setItem('sebotani_jadwal_relay_v4', JSON.stringify(daftarJadwal));
             renderJadwal(); tutupModalTambah();
-            if (window.firebaseReady && window.db) { try { await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "jadwal_petani_v3"), { jadwal: daftarJadwal }); } catch(e){} }
+            if (window.firebaseReady && window.db) { try { await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "jadwal_petani_v4"), { jadwal: daftarJadwal }); } catch(e){} }
         }
 
         async function hapusJadwal(id) {
             if(!confirm("Hapus jadwal ini?")) return;
             daftarJadwal = daftarJadwal.filter(j => j.id !== id);
-            localStorage.setItem('sebotani_jadwal_relay_v3', JSON.stringify(daftarJadwal)); renderJadwal();
-            if (window.firebaseReady && window.db) { try { await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "jadwal_petani_v3"), { jadwal: daftarJadwal }); } catch(e){} }
+            localStorage.setItem('sebotani_jadwal_relay_v4', JSON.stringify(daftarJadwal)); renderJadwal();
+            if (window.firebaseReady && window.db) { try { await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "jadwal_petani_v4"), { jadwal: daftarJadwal }); } catch(e){} }
         }
 
         function periksaDanEksekusiJadwal() {
@@ -488,7 +499,9 @@
 
             daftarJadwal = daftarJadwal.filter(j => {
                 if (j.time === jamMnt && j.active) {
-                    kirimPerintahRelay(j.output, 15, "Jadwal Otomatis"); adaPerubahan = true; return false; 
+                    // Trigger pulse 15 detik untuk jadwal
+                    triggerPulseRelay(j.output, 15, "Jadwal Otomatis"); 
+                    adaPerubahan = true; return false; 
                 } else if (j.time < jamMnt) {
                     catatRiwayatDariJadwal(j.output, 0, "Jadwal Otomatis", "gagal", "Telah lewat waktunya."); adaPerubahan = true; return false;
                 }
@@ -496,8 +509,8 @@
             });
 
             if (adaPerubahan) {
-                localStorage.setItem('sebotani_jadwal_relay_v3', JSON.stringify(daftarJadwal)); renderJadwal();
-                if (window.firebaseReady && window.db) { window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "jadwal_petani_v3"), { jadwal: daftarJadwal }).catch(()=>{}); }
+                localStorage.setItem('sebotani_jadwal_relay_v4', JSON.stringify(daftarJadwal)); renderJadwal();
+                if (window.firebaseReady && window.db) { window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "jadwal_petani_v4"), { jadwal: daftarJadwal }).catch(()=>{}); }
             }
         }
 
