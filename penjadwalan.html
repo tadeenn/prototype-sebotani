@@ -186,6 +186,8 @@
 
     <script>
         let daftarJadwal = JSON.parse(localStorage.getItem('sebotani_jadwal_relay')) || [];
+        
+        // Node ID and endpoints adjusted to Flux.id documentation
         const nodeID = 'c3d4e33c-b9df-45e4-af6d-71a4a183541f';
         const wsUrl = `wss://console.flux.id/ws/public/nodes/${nodeID}`;
         const topicCommands = `flux/${nodeID}/commands`;
@@ -209,7 +211,7 @@
             } catch(e) {}
         };
 
-        // KONEKSI 1: WebSocket Public (Untuk Baca Data Sensor Saja - Realtime)
+        // KONEKSI 1: WebSocket Public (Khusus pembacaan telemetry real-time)
         function hubungkanWebSocket() {
             socket = new WebSocket(wsUrl);
             socket.onopen = () => {
@@ -226,44 +228,43 @@
             socket.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
-                    if (data.type === 'telemetry' && data.payload) {
-                        evaluasiOtomasiSensor(data.payload);
+                    // Filter handling untuk format agregat maupun parsial
+                    if (data.type === 'telemetry') {
+                        if (data.payload && data.payload.payload) {
+                            evaluasiOtomasiSensor(data.payload.payload);
+                        } else if (data.payload) {
+                            evaluasiOtomasiSensor(data.payload);
+                        }
                     }
                 } catch(e) {}
             };
         }
 
-        // KONEKSI 2: MQTT Ter-Otentikasi (Khusus Untuk Kirim Perintah/Tombol)
+        // KONEKSI 2: Skema Otentikasi MQTT untuk Jalur Kirim Perintah
         function hubungkanMQTTKirimPerintah() {
-            // Standar port MQTT via WebSockets biasanya 8084 atau langsung via /mqtt
-            const mqttBrokerUrl = 'wss://console.flux.id:8084/mqtt'; 
-            
-            // Konfigurasi Login menggunakan akun dari Flux.id
-            mqttCmdClient = mqtt.connect(mqttBrokerUrl, {
+            const mqttOptions = {
                 username: 'SFS123',
                 password: 'SFS123',
-                clientId: 'web_cmd_' + Math.random().toString(16).substr(2, 8)
-            });
-
-            mqttCmdClient.on('connect', () => {
-                console.log("Koneksi Pengirim Perintah Siap!");
-            });
-            
-            // Fallback: Jika port 8084 gagal, Flux.id mungkin memakai alamat WSS standar
+                clientId: 'flux-client-web-' + Math.random().toString(16).substr(2, 6)
+            };
+            // Default port WSS broker Mosquitto/EMQX umumnya 8084 atau 443
+            mqttCmdClient = mqtt.connect('wss://console.flux.id:8084/mqtt', mqttOptions);
+            mqttCmdClient.on('connect', () => console.log("Jalur perintah MQTT Siap!"));
             mqttCmdClient.on('error', (err) => {
-                console.warn("Mencoba jalur perintah alternatif...", err);
                 mqttCmdClient.end();
-                mqttCmdClient = mqtt.connect('wss://console.flux.id/mqtt', {
-                    username: 'SFS123', password: 'SFS123'
-                });
+                mqttCmdClient = mqtt.connect('wss://console.flux.id/mqtt', mqttOptions);
             });
         }
 
-        // PERBAIKAN: Baca payload satu baris utuh sesuai gambar image_f3c89f.png
+        // FUNGSI UTAMA: Evaluasi Format Data dari Flux.id
         function evaluasiOtomasiSensor(payload) {
-            // Mengekstrak data JSON yang bentuknya flat
+            // Memeriksa dan memproses flat JSON object (contoh: {soil_temprature: 31, soil_moisture: 45.5})
             if (payload.soil_temprature !== undefined) currentTemp = parseFloat(payload.soil_temprature);
             if (payload.soil_moisture !== undefined) currentMoist = parseFloat(payload.soil_moisture);
+
+            // Memeriksa format fallback parameter_code
+            if (payload.parameter_code === 'soil_temprature') currentTemp = parseFloat(payload.raw_value);
+            if (payload.parameter_code === 'soil_moisture') currentMoist = parseFloat(payload.raw_value);
 
             const monitorEl = document.getElementById('sensor-status-monitor');
             if (isNaN(currentTemp) || isNaN(currentMoist)) return;
@@ -301,14 +302,19 @@
             }
         }
 
+        // FUNGSI MULTI-JALUR: Pengiriman Perintah dengan Fail-Safe
         function kirimPerintahRelay(outputNumber, durasiDetik, sumber = "Manual") {
+            const channelTarget = outputNumber === 1 ? "relay_ch1" : "relay_ch2";
+            
+            // Format perintah digabungkan untuk memastikan terbaca oleh firmware standar maupun custom
             const payloadPerintah = {
                 relay: outputNumber,
                 state: "ON", 
-                duration: durasiDetik 
+                duration: durasiDetik,
+                [channelTarget]: 1 
             };
 
-            // Skenario 1: Kirim lewat jalur terenkripsi MQTT.js (Utama)
+            // Skenario 1: MQTT Terotentikasi
             if (mqttCmdClient && mqttCmdClient.connected) {
                 mqttCmdClient.publish(topicCommands, JSON.stringify(payloadPerintah));
                 alert(`Berhasil (${sumber}): Perintah dikirim via MQTT!`);
@@ -316,22 +322,29 @@
                 return true;
             } 
             
-            // Skenario 2: Kirim lewat WebSocket Public dengan format Target Topic (Cadangan)
-            if (socket && socket.readyState === WebSocket.OPEN) {
-                const wsPayload = {
-                    type: "publish",
-                    topic: topicCommands,
-                    payload: payloadPerintah
-                };
-                socket.send(JSON.stringify(wsPayload));
-                alert(`Berhasil (${sumber}): Perintah dikirim via WebSocket!`);
-                catatRiwayatDariJadwal(outputNumber, durasiDetik, sumber, "berhasil", "");
-                return true;
-            }
-
-            alert(`Gagal (${sumber}): Mesin / Server Smart-Farming sedang offline!`);
-            catatRiwayatDariJadwal(outputNumber, durasiDetik, sumber, "gagal", "Koneksi terputus.");
-            return false;
+            // Skenario 2: HTTP POST (API Publik dari Flux.id)
+            fetch(`https://console.flux.id/api/public/nodes/${nodeID}/commands`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ topic: topicCommands, payload: payloadPerintah })
+            }).then(response => {
+                if (response.ok) {
+                    alert(`Berhasil (${sumber}): Perintah dikirim via Server API!`);
+                    catatRiwayatDariJadwal(outputNumber, durasiDetik, sumber, "berhasil", "");
+                }
+            }).catch(e => {
+                // Skenario 3: Memanfaatkan Open Socket
+                if (socket && socket.readyState === WebSocket.OPEN) {
+                    const wsPayload = { type: "publish", topic: topicCommands, payload: payloadPerintah };
+                    socket.send(JSON.stringify(wsPayload));
+                    alert(`Berhasil (${sumber}): Perintah dieksekusi via WS Override.`);
+                    catatRiwayatDariJadwal(outputNumber, durasiDetik, sumber, "berhasil", "");
+                } else {
+                    alert(`Gagal (${sumber}): Semua jalur komunikasi ke mesin tertutup.`);
+                    catatRiwayatDariJadwal(outputNumber, durasiDetik, sumber, "gagal", "Jalur komunikasi terputus.");
+                }
+            });
+            return true;
         }
 
         function triggerRelayManual(outputNum) {
