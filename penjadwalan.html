@@ -353,27 +353,35 @@
         }
 
         // =========================================================================
-        // PERBAIKAN FINAL: MENYONTEK PAYLOAD ASLI FLUX.ID
+        // PERBAIKAN FINAL: MENGGUNAKAN USER ID SEBAGAI SENDER VALIDATION
         // =========================================================================
         function kirimPerintahRelay(outputNumber, targetState, sumber = "Manual") {
-            const isRelayOn = (targetState === 1) ? true : false;
-            
-            // Format disamakan persis dengan log asli Flux: {"command":"RELAY", "payload":"{1:true}"}
-            const innerPayloadString = outputNumber === 1 ? `{1:${isRelayOn}}` : `{2:${isRelayOn}}`;
+            // Update state lokal terlebih dahulu agar tahu status keduanya
+            if (outputNumber === 1) relay1State = targetState;
+            if (outputNumber === 2) relay2State = targetState;
 
+            const isRelay1On = (relay1State === 1) ? true : false;
+            const isRelay2On = (relay2State === 1) ? true : false;
+            
+            // 1. KIRIM STATUS KEDUANYA SEKALIGUS
+            const innerPayloadString = `{1:${isRelay1On}, 2:${isRelay2On}}`;
+
+            // 2. MENGGUNAKAN USER ID (UUID) SEBAGAI SENDER
             const payloadPerintah = {
                 command: "RELAY",
-                sender: "sebotani-web-dashboard",
+                sender: "5226da85-d2b9-4e40-bd73-e3b1cb8aeada", // User ID asli
                 timestamp: new Date().toISOString(),
-                payload: innerPayloadString // Harus dikirim sebagai string sesuai sistem Flux
+                payload: innerPayloadString 
             };
+
+            console.log("Mengirim payload:", payloadPerintah);
 
             // Skenario 1: MQTT Terotentikasi
             if (mqttCmdClient && mqttCmdClient.connected) {
                 mqttCmdClient.publish(topicCommands, JSON.stringify(payloadPerintah));
                 catatRiwayatDariJadwal(outputNumber, targetState, sumber, "berhasil", "");
-                if(outputNumber === 1) { relay1State = targetState; updateRelayUI(1, relay1State); }
-                if(outputNumber === 2) { relay2State = targetState; updateRelayUI(2, relay2State); }
+                updateRelayUI(1, relay1State);
+                updateRelayUI(2, relay2State);
                 return true;
             } 
             
@@ -385,8 +393,8 @@
             }).then(response => {
                 if (response.ok) {
                     catatRiwayatDariJadwal(outputNumber, targetState, sumber, "berhasil", "");
-                    if(outputNumber === 1) { relay1State = targetState; updateRelayUI(1, relay1State); }
-                    if(outputNumber === 2) { relay2State = targetState; updateRelayUI(2, relay2State); }
+                    updateRelayUI(1, relay1State);
+                    updateRelayUI(2, relay2State);
                 }
             }).catch(e => {
                 // Skenario 3: Memanfaatkan Open Socket
@@ -394,8 +402,8 @@
                     const wsPayload = { type: "publish", topic: topicCommands, payload: payloadPerintah };
                     socket.send(JSON.stringify(wsPayload));
                     catatRiwayatDariJadwal(outputNumber, targetState, sumber, "berhasil", "");
-                    if(outputNumber === 1) { relay1State = targetState; updateRelayUI(1, relay1State); }
-                    if(outputNumber === 2) { relay2State = targetState; updateRelayUI(2, relay2State); }
+                    updateRelayUI(1, relay1State);
+                    updateRelayUI(2, relay2State);
                 }
             });
             return true;
