@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontrol Jarak Jauh Penyiraman NICA</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin-top: 40px; background-color: #e9ecef; }
+        .container { max-width: 800px; margin: auto; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block; margin: 15px; width: 300px; vertical-align: top; }
+        h1 { color: #343a40; margin-bottom: 30px; }
+        h3 { color: #495057; margin-top: 0; }
+        .data { font-size: 28px; font-weight: bold; color: #007bff; margin: 15px 0; }
+        button { padding: 12px 25px; font-size: 16px; font-weight: bold; margin: 8px; cursor: pointer; border: none; border-radius: 6px; color: white; transition: 0.2s; width: 120px; }
+        .btn-on { background-color: #28a745; }
+        .btn-off { background-color: #dc3545; }
+        .btn-on:hover { background-color: #218838; }
+        .btn-off:hover { background-color: #c82333; }
+        .status-text { font-weight: bold; font-size: 18px; margin-top: 10px; display: block; }
+    </style>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Dashboard Jarak Jauh (Firebase)</h1>
+
+        <!-- Panel Monitor Sensor -->
+        <div class="card">
+            <h3>Suhu Lingkungan</h3>
+            <div class="data" id="suhu">-- °C</div>
+        </div>
+        
+        <div class="card">
+            <h3>Kelembapan Tanah</h3>
+            <div class="data" id="tanah">-- %</div>
+        </div>
+
+        <br>
+
+        <!-- Panel Kontrol Relay -->
+        <div class="card">
+            <h3>Pompa Air (Relay 1)</h3>
+            <span id="status-r1" class="status-text" style="color: gray;">Memuat...</span><br>
+            <button class="btn-on" onclick="kontrolRelay('relay1', true)">SIRAM</button>
+            <button class="btn-off" onclick="kontrolRelay('relay1', false)">MATIKAN</button>
+        </div>
+
+        <div class="card">
+            <h3>Perangkat Tambahan (Relay 2)</h3>
+            <span id="status-r2" class="status-text" style="color: gray;">Memuat...</span><br>
+            <button class="btn-on" onclick="kontrolRelay('relay2', true)">NYALAKAN</button>
+            <button class="btn-off" onclick="kontrolRelay('relay2', false)">MATIKAN</button>
+        </div>
+    </div>
+
+    <script>
+        // Konfigurasi Cloud Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyB6aqtU9MlDpBpj_mvHd0FN8psUXpG1JDM",
+            authDomain: "nica-divisipkm.firebaseapp.com",
+            databaseURL: "https://nica-divisipkm-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "nica-divisipkm",
+            storageBucket: "nica-divisipkm.firebasestorage.app",
+            messagingSenderId: "9897391640",
+            appId: "1:9897391640:web:6649bdffc1ff83852cb56d",
+            measurementId: "G-5F61CB00R5"
+        };
+
+        // Inisialisasi Aplikasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // 1. Sinkronisasi Data Sensor secara Real-time
+        database.ref('sensor').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if(data) {
+                document.getElementById('suhu').innerText = data.suhu + " °C";
+                document.getElementById('tanah').innerText = data.kelembapan_tanah + " %";
+            }
+        });
+
+        // 2. Sinkronisasi Status Relay (Tampilan Web mengikuti kondisi ESP32)
+        database.ref('kontrol').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if(data) {
+                const statusR1 = document.getElementById('status-r1');
+                if (data.relay1) {
+                    statusR1.innerText = "AKTIF / MENYIRAM";
+                    statusR1.style.color = "#28a745"; 
+                } else {
+                    statusR1.innerText = "MATI";
+                    statusR1.style.color = "#dc3545"; 
+                }
+
+                const statusR2 = document.getElementById('status-r2');
+                if (data.relay2) {
+                    statusR2.innerText = "AKTIF";
+                    statusR2.style.color = "#28a745";
+                } else {
+                    statusR2.innerText = "MATI";
+                    statusR2.style.color = "#dc3545";
+                }
+            }
+        });
+
+        // 3. Fungsi Pengiriman Perintah ke Database
+        function kontrolRelay(relay, status) {
+            database.ref('kontrol/' + relay).set(status)
+            .then(() => console.log(`Perintah ${relay} = ${status} berhasil dikirim.`))
+            .catch((error) => console.error("Gagal mengirim perintah:", error));
+        }
+    </script>
+</body>
+</html>
