@@ -316,14 +316,14 @@
                 monitorEl.innerText = `Suhu: ${currentTemp}°C | Kelembapan: ${currentMoist}%`;
                 
                 // SKENARIO PINTAR: SUHU > 28 DAN KELEMBAPAN < 60
-                if (currentTemp > 28 && currentMoist < 60) {
-                    monitorEl.innerText = `PERINGATAN: Suhu Tinggi & Kelembapan Rendah!`;
-                    monitorEl.className = "font-bold text-error animate-bounce";
-                    if (!autoTriggerCooldown && relay1State === 0) { 
+               // if (currentTemp > 28 && currentMoist < 60) {
+                 //   monitorEl.innerText = `PERINGATAN: Suhu Tinggi & Kelembapan Rendah!`;
+                   // monitorEl.className = "font-bold text-error animate-bounce";
+                    //if (!autoTriggerCooldown && relay1State === 0) { 
                         // Memicu trigger jadwal/pulse (menyala 15 detik)
-                        triggerPulseRelay(1, 15, "Proteksi Sensor AI");
-                        autoTriggerCooldown = true;
-                        setTimeout(() => { autoTriggerCooldown = false; }, 600000); 
+                      //  triggerPulseRelay(1, 15, "Proteksi Sensor AI");
+                        //autoTriggerCooldown = true;
+                        //setTimeout(() => { autoTriggerCooldown = false; }, 600000); 
                     }
                 } else {
                     monitorEl.className = "font-bold text-primary";
