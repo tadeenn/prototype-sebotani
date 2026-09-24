@@ -91,7 +91,7 @@
             <div id="status-indicator" class="w-3.5 h-3.5 rounded-full bg-error animate-pulse"></div>
         </div>
 
-        <!-- SEGMEN BARU: OTOMASI SENSOR & TOMBOL BERHENTI TOTAL -->
+        <!-- SEGMEN OTOMASI SENSOR & TOMBOL BERHENTI TOTAL -->
         <div id="panel-otomasi" class="bg-blue-50 rounded-xl shadow-sm p-5 border border-blue-200 space-y-3 transition-colors duration-500">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
@@ -122,16 +122,12 @@
                 <span class="material-symbols-outlined text-primary">touch_app</span>
                 <h2 class="text-[16px] font-bold text-on-surface">Kontrol Relay Manual</h2>
             </div>
-            <div class="grid grid-cols-2 gap-3 pt-1">
-                <button id="btn-relay-1" onclick="toggleRelayManual(1)" class="flex flex-col items-center justify-center p-4 bg-blue-50/80 border border-blue-200 rounded-xl hover:bg-blue-100 active:scale-95 transition-all group shadow-sm">
-                    <span id="icon-relay-1" class="material-symbols-outlined text-blue-600 text-3xl mb-1 transition-transform">water_drop</span>
-                    <span id="status-relay-1" class="font-bold text-blue-900 text-sm">Semprot Air</span>
-                    <span id="badge-relay-1" class="text-[10px] text-blue-700 font-bold bg-blue-200/50 px-2 py-0.5 rounded-full mt-1.5">OUTPUT 1 (OFF)</span>
-                </button>
-                <button id="btn-relay-2" onclick="toggleRelayManual(2)" class="flex flex-col items-center justify-center p-4 bg-amber-50/80 border border-amber-200 rounded-xl hover:bg-amber-100 active:scale-95 transition-all group shadow-sm">
-                    <span id="icon-relay-2" class="material-symbols-outlined text-amber-600 text-3xl mb-1 transition-transform">compost</span>
-                    <span id="status-relay-2" class="font-bold text-amber-900 text-sm">Semprot Pupuk</span>
-                    <span id="badge-relay-2" class="text-[10px] text-amber-700 font-bold bg-amber-200/50 px-2 py-0.5 rounded-full mt-1.5">OUTPUT 2 (OFF)</span>
+            <!-- TOMBOL KONTROL RELAY GABUNGAN -->
+            <div class="pt-1">
+                <button id="btn-relay-all" onclick="toggleRelayAll()" class="w-full flex flex-col items-center justify-center p-4 bg-blue-50/80 border border-blue-200 rounded-xl hover:bg-blue-100 active:scale-95 transition-all group shadow-sm">
+                    <span id="icon-relay-all" class="material-symbols-outlined text-blue-600 text-4xl mb-2 transition-transform">power_settings_new</span>
+                    <span id="status-relay-all" class="font-bold text-blue-900 text-[15px]">NYALAKAN SEMUA RELAY</span>
+                    <span id="badge-relay-all" class="text-[10px] text-blue-700 font-bold bg-blue-200/50 px-2 py-1 rounded-full mt-2">KEDUA OUTPUT (OFF)</span>
                 </button>
             </div>
         </div>
@@ -164,8 +160,7 @@
                 <div class="flex flex-col gap-1">
                     <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Pilih Output Relay</label>
                     <select id="input-output-type" class="w-full p-3 rounded-xl border border-outline-variant/30 bg-surface-container-lowest text-sm font-semibold focus:outline-primary">
-                        <option value="1">OUTPUT 1 (Penyiraman Air)</option>
-                        <option value="2">OUTPUT 2 (Penyemprotan Pupuk)</option>
+                        <option value="both">KEDUA OUTPUT (Air & Pupuk)</option>
                     </select>
                 </div>
                 <div class="flex flex-col gap-1">
@@ -190,9 +185,8 @@
         const topicCommands = `flux/${nodeID}/commands`;
         let socket;
         
-        // State Global
-        let relay1State = 0;
-        let relay2State = 0;
+        // State Global Gabungan
+        let relayAllState = 0; // 0 = OFF, 1 = ON
         let currentTemp = NaN;
         let currentMoist = NaN;
         let manualOverrideTriggered = false;
@@ -205,7 +199,7 @@
         // FUNGSI BERHENTI TOTAL
         // =======================================================
         function eksekusiBerhentiTotal() {
-            const konfirmasi = confirm("YAKIN INGIN BERHENTI TOTAL?\nIni akan mematikan otomatisasi sensor dan mengirim perintah MATI PAKSA ke mesin.");
+            const konfirmasi = confirm("YAKIN INGIN BERHENTI TOTAL?\nIni akan mematikan otomatisasi sensor dan mengirim perintah MATI PAKSA {1:0, 2:0} ke mesin.");
             if (!konfirmasi) return;
 
             // 1. Matikan flag otomatisasi sensor web
@@ -233,12 +227,10 @@
             btn.innerHTML = `<span class="material-symbols-outlined text-[20px]">restart_alt</span> <span>AKTIFKAN KEMBALI OTOMASI</span>`;
             btn.onclick = function() { aktifkanKembaliOtomasi(); };
 
-            // 4. Kirim Perintah Paksa Matikan Kedua Relay
+            // 4. Kirim Perintah Paksa Matikan Kedua Relay {1:0, 2:0}
             manualOverrideTriggered = true; 
-            relay1State = 0;
-            relay2State = 0;
-            updateRelayUI(1, 0);
-            updateRelayUI(2, 0);
+            relayAllState = 0;
+            updateRelayAllUI(0);
             
             eksekusiKirimKeMesinMatiPaksa();
             setTimeout(() => { manualOverrideTriggered = false; }, 2000);
@@ -272,7 +264,7 @@
                 command: "RELAY",
                 sender: "fluxconsole-web-dashboard",
                 timestamp: new Date().toISOString(),
-                payload: "{1:false, 2:false}" 
+                payload: "{1:0, 2:0}" 
             };
             fetch(`https://console.flux.id/api/public/nodes/${nodeID}/commands`, {
                 method: 'POST',
@@ -285,7 +277,6 @@
             });
         }
         // =======================================================
-
 
         function hubungkanWebSocket() {
             socket = new WebSocket(wsUrl);
@@ -321,22 +312,24 @@
             if (payload.parameter_code === 'soil_moisture') currentMoist = parseFloat(payload.raw_value);
 
             // Cek status Relay dari mesin
+            let statusR1 = 0;
+            let statusR2 = 0;
+
             if (payload.relay_ch1 !== undefined || payload.parameter_code === 'relay_ch1') {
-                let statusR1 = payload.relay_ch1 !== undefined ? parseInt(payload.relay_ch1) : parseInt(payload.raw_value);
+                statusR1 = payload.relay_ch1 !== undefined ? parseInt(payload.relay_ch1) : parseInt(payload.raw_value);
                 if (statusR1 === 1) mesinMelaporkanNyala = true;
-                
-                // Sinkronkan UI dengan mesin JIKA bukan kita yang pencet override
-                if (!manualOverrideTriggered) { 
-                    relay1State = statusR1; 
-                    updateRelayUI(1, relay1State); 
-                }
             }
 
             if (payload.relay_ch2 !== undefined || payload.parameter_code === 'relay_ch2') {
-                let statusR2 = payload.relay_ch2 !== undefined ? parseInt(payload.relay_ch2) : parseInt(payload.raw_value);
+                statusR2 = payload.relay_ch2 !== undefined ? parseInt(payload.relay_ch2) : parseInt(payload.raw_value);
+                if (statusR2 === 1) mesinMelaporkanNyala = true;
+            }
+
+            // Sinkronkan UI dengan mesin JIKA bukan kita yang pencet override
+            if (payload.relay_ch1 !== undefined || payload.relay_ch2 !== undefined || payload.parameter_code === 'relay_ch1' || payload.parameter_code === 'relay_ch2') {
                 if (!manualOverrideTriggered) { 
-                    relay2State = statusR2; 
-                    updateRelayUI(2, relay2State); 
+                    relayAllState = (statusR1 === 1 || statusR2 === 1) ? 1 : 0;
+                    updateRelayAllUI(relayAllState); 
                 }
             }
 
@@ -352,10 +345,10 @@
                     if (currentTemp > 28 && currentMoist < 60) {
                         monitorEl.className = "font-bold text-red-600 animate-bounce";
                         
-                        // Eksekusi trigger 15 detik jika relay masih mati & cooldown selesai
-                        if (!autoTriggerCooldown && relay1State === 0) { 
-                            manualOverrideTriggered = true; // Anggap sebagai perintah resmi dari web
-                            triggerPulseRelay(1, 15);
+                        // Eksekusi trigger 15 detik untuk kedua relay jika relay masih mati
+                        if (!autoTriggerCooldown && relayAllState === 0) { 
+                            manualOverrideTriggered = true; 
+                            triggerPulseRelayAll(15);
                             autoTriggerCooldown = true;
                             setTimeout(() => { autoTriggerCooldown = false; }, 600000); // 10 menit cooldown
                         }
@@ -380,30 +373,27 @@
             }
         }
 
-        function triggerPulseRelay(outputNumber, durasiDetik) {
-            if (outputNumber === 1) relay1State = 1;
-            if (outputNumber === 2) relay2State = 1;
+        function triggerPulseRelayAll(durasiDetik) {
+            relayAllState = 1;
             
-            updateRelayUI(outputNumber, 1);
-            eksekusiKirimKeMesinMurni(outputNumber, 1);
+            updateRelayAllUI(1);
+            eksekusiKirimKeMesinMurni(1);
 
             // Matikan otomatis setelah x detik
             setTimeout(() => {
-                if (outputNumber === 1) relay1State = 0;
-                if (outputNumber === 2) relay2State = 0;
+                relayAllState = 0;
                 
-                updateRelayUI(outputNumber, 0);
-                eksekusiKirimKeMesinMurni(outputNumber, 0);
+                updateRelayAllUI(0);
+                eksekusiKirimKeMesinMurni(0);
                 
                 // Kembalikan flag setelah proses selesai
                 setTimeout(() => { manualOverrideTriggered = false; }, 2000);
             }, durasiDetik * 1000);
         }
 
-        function eksekusiKirimKeMesinMurni(outputNumber, targetState) {
-            const strRelay1 = (relay1State === 1) ? "true" : "false";
-            const strRelay2 = (relay2State === 1) ? "true" : "false";
-            const payloadTeksMurni = `{1:${strRelay1}, 2:${strRelay2}}`;
+        function eksekusiKirimKeMesinMurni(targetState) {
+            // targetState = 0 atau 1
+            const payloadTeksMurni = `{1:${targetState}, 2:${targetState}}`;
 
             fetch(`https://console.flux.id/api/public/nodes/${nodeID}/commands`, {
                 method: 'POST',
@@ -412,60 +402,45 @@
             }).catch(e => {});
         }
 
-        function toggleRelayManual(outputNumber) {
+        function toggleRelayAll() {
             manualOverrideTriggered = true; 
             
-            let targetState;
-            if (outputNumber === 1) {
-                targetState = relay1State === 1 ? 0 : 1;
-                relay1State = targetState;
-            } else {
-                targetState = relay2State === 1 ? 0 : 1;
-                relay2State = targetState;
-            }
-            updateRelayUI(outputNumber, targetState);
-            eksekusiKirimKeMesinMurni(outputNumber, targetState);
+            relayAllState = relayAllState === 1 ? 0 : 1;
+            
+            updateRelayAllUI(relayAllState);
+            eksekusiKirimKeMesinMurni(relayAllState);
 
-            if (relay1State === 0 && relay2State === 0) {
+            if (relayAllState === 0) {
                 setTimeout(() => { manualOverrideTriggered = false; }, 2000);
             }
         }
 
-        function updateRelayUI(outputNum, state) {
-            const btn = document.getElementById(`btn-relay-${outputNum}`);
-            const icon = document.getElementById(`icon-relay-${outputNum}`);
-            const status = document.getElementById(`status-relay-${outputNum}`);
-            const badge = document.getElementById(`badge-relay-${outputNum}`);
+        function updateRelayAllUI(state) {
+            const btn = document.getElementById('btn-relay-all');
+            const icon = document.getElementById('icon-relay-all');
+            const status = document.getElementById('status-relay-all');
+            const badge = document.getElementById('badge-relay-all');
             if (!btn) return;
 
             if (state === 1) {
-                btn.className = "flex flex-col items-center justify-center p-4 bg-red-50/80 border border-red-200 rounded-xl shadow-sm";
-                icon.className = "material-symbols-outlined text-red-600 text-3xl mb-1 animate-pulse";
-                status.className = "font-bold text-red-900 text-sm";
-                status.innerText = "MATIKAN " + (outputNum === 1 ? "Air" : "Pupuk");
-                badge.className = "text-[10px] text-red-700 font-bold bg-red-200/50 px-2 py-0.5 rounded-full mt-1.5";
-                badge.innerText = `OUTPUT ${outputNum} (ON)`;
+                btn.className = "w-full flex flex-col items-center justify-center p-4 bg-red-50/80 border border-red-200 rounded-xl shadow-sm transition-all";
+                icon.className = "material-symbols-outlined text-red-600 text-4xl mb-2 animate-pulse";
+                status.className = "font-bold text-red-900 text-[15px]";
+                status.innerText = "MATIKAN SEMUA RELAY";
+                badge.className = "text-[10px] text-red-700 font-bold bg-red-200/50 px-2 py-1 rounded-full mt-2";
+                badge.innerText = "KEDUA OUTPUT (ON)";
             } else {
-                if (outputNum === 1) {
-                    btn.className = "flex flex-col items-center justify-center p-4 bg-blue-50/80 border border-blue-200 rounded-xl shadow-sm";
-                    icon.className = "material-symbols-outlined text-blue-600 text-3xl mb-1";
-                    status.className = "font-bold text-blue-900 text-sm";
-                    status.innerText = "Semprot Air";
-                    badge.className = "text-[10px] text-blue-700 font-bold bg-blue-200/50 px-2 py-0.5 rounded-full mt-1.5";
-                    badge.innerText = "OUTPUT 1 (OFF)";
-                } else {
-                    btn.className = "flex flex-col items-center justify-center p-4 bg-amber-50/80 border border-amber-200 rounded-xl shadow-sm";
-                    icon.className = "material-symbols-outlined text-amber-600 text-3xl mb-1";
-                    status.className = "font-bold text-amber-900 text-sm";
-                    status.innerText = "Semprot Pupuk";
-                    badge.className = "text-[10px] text-amber-700 font-bold bg-amber-200/50 px-2 py-0.5 rounded-full mt-1.5";
-                    badge.innerText = "OUTPUT 2 (OFF)";
-                }
+                btn.className = "w-full flex flex-col items-center justify-center p-4 bg-blue-50/80 border border-blue-200 rounded-xl shadow-sm transition-all";
+                icon.className = "material-symbols-outlined text-blue-600 text-4xl mb-2";
+                status.className = "font-bold text-blue-900 text-[15px]";
+                status.innerText = "NYALAKAN SEMUA RELAY";
+                badge.className = "text-[10px] text-blue-700 font-bold bg-blue-200/50 px-2 py-1 rounded-full mt-2";
+                badge.innerText = "KEDUA OUTPUT (OFF)";
             }
         }
 
         // =======================================================
-        // FIREBASE JADWAL LOGIC (OPSIONAL, TETAP DIPERTAHANKAN)
+        // FIREBASE JADWAL LOGIC
         // =======================================================
         window.inisialisasiDataJadwal = async function() {
             if (!window.firebaseReady || !window.db) return;
@@ -488,18 +463,17 @@
                 return;
             }
             daftarJadwal.forEach((item) => {
-                const isOutput1 = item.output == 1;
                 const card = document.createElement('div');
                 card.className = "flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30";
                 card.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-full ${isOutput1 ? 'bg-blue-100 text-blue-600' : 'bg-amber-100 text-amber-600'} flex items-center justify-center">
-                            <span class="material-symbols-outlined text-xl">${isOutput1 ? 'water_drop' : 'compost'}</span>
+                        <div class="w-11 h-11 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xl">power_settings_new</span>
                         </div>
                         <div>
                             <div class="flex items-center gap-2">
                                 <span class="font-bold text-sm text-on-surface">${item.label}</span>
-                                <span class="px-2 py-0.5 rounded-full ${isOutput1 ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'} text-[9px] font-bold">OUT ${item.output}</span>
+                                <span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[9px] font-bold">KEDUA OUTPUT</span>
                             </div>
                             <p class="text-xs text-on-surface-variant mt-0.5">Pukul ${item.time}</p>
                         </div>
@@ -523,12 +497,11 @@
         }
 
         async function simpanJadwalBaru() {
-            const outputVal = parseInt(document.getElementById('input-output-type').value);
             const timeVal = document.getElementById('input-time').value;
             if (!timeVal) { alert("Mohon isi waktu eksekusi dengan benar."); return; }
-            const namaLabel = outputVal === 1 ? "Jadwal Irigasi Air" : "Jadwal Pemupukan";
+            const namaLabel = "Jadwal Menyala Keseluruhan";
 
-            daftarJadwal.push({ id: Date.now(), output: outputVal, label: namaLabel, time: timeVal, active: true });
+            daftarJadwal.push({ id: Date.now(), output: 'both', label: namaLabel, time: timeVal, active: true });
             localStorage.setItem('sebotani_jadwal_relay_v4', JSON.stringify(daftarJadwal));
             renderJadwal(); tutupModalTambah();
             if (window.firebaseReady && window.db) { try { await window.dbTools.setDoc(window.dbTools.doc(window.db, "sebotani_db", "jadwal_petani_v4"), { jadwal: daftarJadwal }); } catch(e){} }
