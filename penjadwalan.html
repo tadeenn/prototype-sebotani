@@ -136,10 +136,11 @@
                     <span class="material-symbols-outlined text-primary">psychology</span>
                     Otomasi Proteksi Sensor
                 </h2>
-                <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wider">Aktif</span>
+                <!-- Ubah badge visual untuk mode debug -->
+                <span class="px-2.5 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-[10px] font-bold uppercase tracking-wider">DEBUG: NONAKTIF</span>
             </div>
             <p class="text-[13px] text-on-surface-variant leading-relaxed">
-                Sistem otomatis memicu <strong>OUTPUT 1 (Air) selama 15 detik</strong> jika sensor membaca <strong>Suhu Udara > 28°C</strong> dan <strong>Kelembapan &lt; 60%</strong>.
+                Sistem otomatis memicu <strong>OUTPUT 1 (Air) selama 15 detik</strong> jika sensor membaca <strong>Suhu Udara > 28°C</strong> dan <strong>Kelembapan &lt; 60%</strong>. (Mode otomatis saat ini dinonaktifkan).
             </p>
             <div class="p-3 bg-gray-50 rounded-xl text-xs font-mono text-on-surface-variant flex justify-between items-center border border-gray-200">
                 <span>Status Sensor Live:</span>
@@ -243,7 +244,7 @@
 
         function hubungkanMQTTKirimPerintah() {
             const mqttOptions = {
-                username: '5226da85-d2b9-4e40-bd73-e3b1cb8aeada', // Coba kembalikan ke username yg valid
+                username: '5226da85-d2b9-4e40-bd73-e3b1cb8aeada', 
                 password: '5226da85-d2b9-4e40-bd73-e3b1cb8aeada',
                 clientId: 'flux-client-web-' + Math.random().toString(16).substr(2, 6)
             };
@@ -316,15 +317,19 @@
                 monitorEl.innerText = `Suhu: ${currentTemp}°C | Kelembapan: ${currentMoist}%`;
                 
                 // SKENARIO PINTAR: SUHU > 28 DAN KELEMBAPAN < 60
-               // if (currentTemp > 28 && currentMoist < 60) {
-                 //   monitorEl.innerText = `PERINGATAN: Suhu Tinggi & Kelembapan Rendah!`;
-                   // monitorEl.className = "font-bold text-error animate-bounce";
-                    //if (!autoTriggerCooldown && relay1State === 0) { 
+                if (currentTemp > 28 && currentMoist < 60) {
+                    monitorEl.innerText = `PERINGATAN: Suhu Tinggi & Kelembapan Rendah!`;
+                    monitorEl.className = "font-bold text-error animate-bounce";
+                    
+                    // --- DEBUG: EKSEKUSI OTOMATIS BERDASARKAN SENSOR DINONAKTIFKAN ---
+                    /*
+                    if (!autoTriggerCooldown && relay1State === 0) { 
                         // Memicu trigger jadwal/pulse (menyala 15 detik)
-                      //  triggerPulseRelay(1, 15, "Proteksi Sensor AI");
-                        //autoTriggerCooldown = true;
-                        //setTimeout(() => { autoTriggerCooldown = false; }, 600000); 
+                        triggerPulseRelay(1, 15, "Proteksi Sensor AI");
+                        autoTriggerCooldown = true;
+                        setTimeout(() => { autoTriggerCooldown = false; }, 600000); 
                     }
+                    */
                 } else {
                     monitorEl.className = "font-bold text-primary";
                 }
@@ -499,10 +504,13 @@
 
             daftarJadwal = daftarJadwal.filter(j => {
                 if (j.time === jamMnt && j.active) {
-                    // Trigger pulse 15 detik untuk jadwal
-                    triggerPulseRelay(j.output, 15, "Jadwal Otomatis"); 
+                    
+                    // --- DEBUG: EKSEKUSI JADWAL DINONAKTIFKAN ---
+                    // triggerPulseRelay(j.output, 15, "Jadwal Otomatis"); 
+                    
                     adaPerubahan = true; return false; 
                 } else if (j.time < jamMnt) {
+                    // Jadwal terlewat tetap dicatat gagal, tapi tidak menyemprot
                     catatRiwayatDariJadwal(j.output, 0, "Jadwal Otomatis", "gagal", "Telah lewat waktunya."); adaPerubahan = true; return false;
                 }
                 return true; 
